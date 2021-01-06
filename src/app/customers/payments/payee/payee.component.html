@@ -1,0 +1,189 @@
+<div class="container-fluid">
+  <div class="row" *ngIf="user">
+    <div class="col-md-8">
+      <nz-card>
+        <div class="d-flex justify-content-between">
+          <div class="media align-items-center">
+            <nz-avatar nzShape="square" [nzSrc]="user.photoURL"></nz-avatar>
+            <div class="m-l-10">
+              <h4 class="m-b-0">{{ user.displayName }}</h4>
+              <p class="m-t-0">{{ user.studentId }}</p>
+            </div>
+          </div>
+          <div>
+            <nz-tag *ngIf="user.paid" class="m-b-0" [nzColor]="'blue'">Activo</nz-tag>
+            <nz-tag *ngIf="!user.paid" class="m-b-0" [nzColor]="'yellow'">Inactivo</nz-tag>
+          </div>
+        </div>
+        <div class="m-t-40">
+          <div class="row">
+            <div class="d-md-block d-none"></div>
+            <div class="col">
+              <ul class="list-unstyled m-t-10">
+                <li class="row">
+                  <p class="col-sm-3 col-4 font-weight-semibold text-dark m-b-5">
+                    <i class="m-r-10 text-primary" nz-icon nzType="mail"
+                      [nzTheme]="user.emailVerified ? 'twotone' : 'outline'"></i>
+                    <span>Email: </span>
+                  </p>
+                  <p class="col font-weight-semibold">
+                    <nz-avatar *ngIf="user.emailVerified" [nzSize]="25" class="ant-avatar-cyan" nzIcon="check">
+                    </nz-avatar> {{ user.email }}
+                  </p>
+                </li>
+                <li class="row">
+                  <p class="col-sm-3 col-4 font-weight-semibold text-dark m-b-5">
+                    <i class="m-r-10 text-primary" nz-icon nzType="phone" nzTheme="outline"></i>
+                    <span>Phone: </span>
+                  </p>
+                  <p class="col font-weight-semibold">{{ user.phoneNumber }}</p>
+                </li>
+                <li class="row">
+                  <p class="col-sm-3 col-5 font-weight-semibold text-dark m-b-5">
+                    <i class="m-r-10 text-primary" nz-icon nzType="compass" nzTheme="outline"></i>
+                    <span>Ruta: </span>
+                  </p>
+                  <p class="col font-weight-semibold">{{ user.defaultRoute }} / {{ user.defaultRound }}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="d-md-flex m-t-30 align-items-center justify-content-between">
+          <div class="d-flex align-items-center m-t-10">
+            <span class="text-dark font-weight-semibold m-r-10 m-b-5">Otros en esta ruta: </span>
+            <a class="m-r-5 m-b-5" *ngFor="let item of memberList">
+              <nz-avatar [nzSize]="30" [nzSrc]="item.avatar" nz-tooltip [nzTitle]="item.name"></nz-avatar>
+            </a>
+          </div>
+          <div class="m-t-10">
+            <span class="font-weight-semibold m-r-10 m-b-5 text-dark">Actualizado: </span>
+            <span *ngIf="!!user.lastUpdatedAt">{{ (user.lastUpdatedAt).toDate() | date: 'medium' }}</span>
+          </div>
+        </div> -->
+        <div class="off-gutter-x m-t-30">
+          <nz-tabset>
+            <nz-tab nzTitle="Última Compra">
+              <div class="p-h-30 p-v-25">
+                <div class="m-b-25">
+                  <table class="product-info-table m-t-20" *ngIf="!loadingLastPurchase">
+                    <tbody>
+                      <tr>
+                        <td>Fecha de compra:</td>
+                        <td class="text-dark font-weight-semibold">{{ (lastPurchase.dop).toDate() | date: 'medium' }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Ruta:</td>
+                        <td>{{ lastPurchase.route }} / {{ lastPurchase.round }}</td>
+                      </tr>
+                      <tr>
+                        <td>Concepto:</td>
+                        <td>
+                            {{ lastPurchase.monthName }}
+                            <p>{{ lastPurchase.description }}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Valor de la compra:</td>
+                        <td>{{ lastPurchase.amountPaid | currency }}</td>
+                      </tr>
+                      <tr>
+                        <td>Status:</td>
+                        <td>
+                          <nz-tag *ngIf="lastPurchase.status === 'Pagado'" [nzColor]="'cyan'">Pagado</nz-tag>
+                          <nz-tag *ngIf="lastPurchase.status !== 'Pagado'" [nzColor]="'red'">Pagado Parcial</nz-tag>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </nz-tab>
+            <nz-tab nzTitle="Pagos">
+              <div class="p-h-30 p-v-25">
+                <nz-list [nzDataSource]="commentList" [nzRenderItem]="review" [nzItemLayout]="'vertical'"
+                  [nzPagination]="pagination">
+                  <ng-template #review let-item>
+                    <nz-list-item [nzContent]="item.review">
+                      <nz-list-item-meta [nzTitle]="reviewTitle" [nzAvatar]="item.img" [nzDescription]="item.date">
+                        <ng-template #reviewTitle>
+                          <a class="font-size-15" href="">{{item.name}}</a>
+                        </ng-template>
+                      </nz-list-item-meta>
+                    </nz-list-item>
+                  </ng-template>
+                  <ng-template #pagination>
+                    <nz-pagination [nzPageIndex]="1" [nzTotal]="50"></nz-pagination>
+                  </ng-template>
+                </nz-list>
+              </div>
+            </nz-tab>
+            <nz-tab nzTitle="Archivos adjuntos">
+              <div class="p-h-30 p-v-25">
+                <a class="file p-15" *ngFor="let item of fileList" style="min-width: 200px">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="media">
+                      <nz-avatar *ngIf="item.type == 'zip'" nzShape="square" nzIcon="file-exclamation"
+                        class="ant-avatar-cyan font-size-20"></nz-avatar>
+                      <nz-avatar *ngIf="item.type == 'doc'" nzShape="square" nzIcon="file-word"
+                        class="ant-avatar-blue font-size-20"></nz-avatar>
+                      <nz-avatar *ngIf="item.type == 'image'" nzShape="square" nzIcon="picture"
+                        class="ant-avatar-gold font-size-20"></nz-avatar>
+                      <div class="m-l-10">
+                        <h6 class="m-b-0">{{item.name}}</h6>
+                        <span class="text-muted font-size-13">{{item.size}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </nz-tab>
+          </nz-tabset>
+        </div>
+      </nz-card>
+    </div>
+    <div class="col-md-4">
+      <nz-card nzTitle="Nuevo Pase de Abordar">
+          <form
+          nz-form
+          nzLayout="vertical"
+          [formGroup]="validateForm"
+          (ngSubmit)="submitForm()"
+        >
+        <nz-form-item>
+            <nz-form-label>Ruta</nz-form-label>
+            <nz-select style="width: 320px;" formControlName="route" nzAllowClear nzPlaceHolder="Selecciona la ruta">
+              <nz-option *ngFor="let o of routes" [nzValue]="o.name" [nzLabel]="o.name"></nz-option>
+            </nz-select>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Turno</nz-form-label>
+            <nz-select style="width: 200px;" formControlName="round" nzAllowClear nzPlaceHolder="Selecciona Turno">
+              <nz-option nzValue="Día" nzLabel="Día"></nz-option>
+              <nz-option nzValue="Tarde" nzLabel="Tarde"></nz-option>
+            </nz-select>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Mes</nz-form-label>
+            <nz-select style="width: 320px;" formControlName="month" nzAllowClear nzPlaceHolder="Mes a pagar">
+              <nz-option nzValue="7" nzLabel="Agosto 2019" nzDisabled></nz-option>
+              <nz-option nzValue="8" nzLabel="Septiembre 2019"></nz-option>
+            </nz-select>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Cantidad a pagar</nz-form-label>
+            <nz-input-number
+              formControlName="paymentAmount"
+              [nzMin]="50"
+              [nzMax]="1299"
+              [nzStep]="50"
+              [nzFormatter]="formatterDollar"
+              [nzParser]="parserDollar"
+            ></nz-input-number>
+          </nz-form-item>
+        </form>
+      </nz-card>
+    </div>
+  </div>
+</div>

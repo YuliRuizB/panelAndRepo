@@ -1,0 +1,120 @@
+<nz-card>
+  <div id="chartdiv"></div>
+</nz-card>
+<nz-card>
+  <!-- <nz-table #nestedTable [nzData]="routesList" [nzPageSize]="10">
+    <thead>
+      <tr>
+        <th nzShowExpand></th>
+        <th>Cliente</th>
+        <th>Ruta</th>
+        <th>Usuarios</th>
+        <th>Upgraded</th>
+        <th>Creator</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="nestedTable.data">
+        <tr>
+          <td nzShowExpand [(nzExpand)]="data.expand"></td>
+          <td>{{ data.customerName }}</td>
+          <td>{{ data.passes[0].routeName }}</td>
+          <td>{{ data.passes.length }}</td>
+          <td>{{ data.customerName }}</td>
+          <td>{{ data.customerName }}</td>
+          <td>{{ data.customerName }}</td>
+          <td>
+            <a>Publish</a>
+          </td>
+        </tr>
+        <tr [nzExpand]="data.expand">
+          <td></td>
+          <td colspan="7">
+            <nz-table #innerTable [nzData]="routesList.passes" nzSize="middle" [nzShowPagination]="true">
+              <thead>
+                <tr>
+                  <th>Parada</th>
+                  <th>Turno</th>
+                  <th>Válido desde</th>
+                  <th>Válido hasta</th>
+                  <th>Pase abordar</th>
+                  <th>Pase cortesía</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of innerTable.data">
+                  <td>{{ data.stopName }}</td>
+                  <td>{{ data.round }}</td>
+                  <td>{{ (data.validFrom).toDate() | date:'mediumDate' }}</td>
+                  <td>{{ (data.validTo).toDate() | date: 'mediumDate' }}</td>
+                  <td>{{ data.product_description }}</td>
+                  <td>{{ data.is_courtesy }}</td>
+                  <td>
+                    <span class="table-operation">
+                      <a nz-dropdown class="operation" [nzDropdownMenu]="menu">
+                        Pause <i nz-icon nzType="down"></i>
+                      </a>
+                      <nz-dropdown-menu #menu="nzDropdownMenu">
+                        <ul nz-menu>
+                          <li nz-menu-item>
+                            <a>Action 1</a>
+                          </li>
+                          <li nz-menu-item>
+                            <a>Action 2</a>
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <a class="operation">Stop</a>
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <a>More</a>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table> -->
+  <nz-tabset>
+    <nz-tab nzTitle="Por ruta">
+      <ag-grid-angular
+      #agGrid
+      style="width: 100%; height: 500px;"
+      id="myGrid"
+      class="ag-theme-material"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [masterDetail]="true"
+      [detailCellRendererParams]="detailCellRendererParams"
+      [rowData]="rowData"
+      (firstDataRendered)="onFirstDataRendered($event)"
+      (gridReady)="onGridReady($event)"
+    ></ag-grid-angular>
+    </nz-tab>
+    <nz-tab nzTitle="Pases de abordar">
+      <ag-grid-angular
+      #agGrid
+      style="width: 100%; height: 500px;"
+      id="myBoardingPassGrid"
+      class="ag-theme-material"
+      [columnDefs]="usersColumnDefs"
+      [defaultColDef]="defaultColDef"
+      [rowData]="usersList"
+      [rowGroupPanelShow]="'always'"
+      [suppressDragLeaveHidesColumns]="true"
+      [suppressMakeColumnVisibleAfterUnGroup]="true"
+      [groupUseEntireRow]="true"
+      [enableRangeSelection]="true"
+      [animateRows]="true"
+      (firstDataRendered)="onFirstDataRendered($event)"
+      (gridReady)="onGridReady($event)"
+    ></ag-grid-angular>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>

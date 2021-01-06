@@ -1,0 +1,141 @@
+<nz-page-header nzBackIcon class="page-header">
+  <nz-page-header-title>{{ record.name }}</nz-page-header-title>
+  <nz-page-header-subtitle>Detalles del vehículo</nz-page-header-subtitle>
+  <nz-page-header-content>
+
+
+    <form nz-form [formGroup]="objectForm" *ngIf="objectForm" (ngSubmit)="submitForm()">
+      <div class="container">
+        <nz-card *ngIf="!!record" nzType="inner" nzTitle="Información Básica" [nzExtra]="basicTpl">
+          <div class="media align-items-center">
+            <nz-avatar [nzSize]="80" nzIcon="user" nzShape="square" [nzSrc]="record.avatar"></nz-avatar>
+            <div class="m-l-20 m-r-20">
+              <h5 class="m-b-5 font-size-18">{{ record.name }}</h5>
+              <p class="opacity-07 font-size-13 m-b-0">
+                {{ record.licensePlate }}
+              </p>
+            </div>
+            <nz-upload nzName="avatar" nzAction="action" [nzBeforeUpload]="beforeUpload()" [nzShowUploadList]="false"
+              (nzChange)="handleChange($event)">
+              <button nz-button nzType="primary" nzGhost>
+                <span>Cambiar imágen</span>
+              </button>
+            </nz-upload>
+          </div>
+          <hr class="m-v-25">
+          <div class="row">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Eco</nz-form-label>
+                <nz-form-control>
+                  <input type="text" nz-input formControlName="name" placeholder="Eco (alias)">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Placas</nz-form-label>
+                <nz-form-control>
+                  <input nz-input formControlName="licensePlate" placeholder="Placas">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tipo</nz-form-label>
+                <nz-form-control>
+                  <nz-select formControlName="type" nzAllowClear nzPlaceHolder="Tipo de vehículo">
+                    <nz-option nzValue="Camión" nzLabel="Camión"></nz-option>
+                    <nz-option nzValue="Camioneta" nzLabel="Camioneta"></nz-option>
+                    <nz-option nzValue="Vehículo" nzLabel="Vehículo"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Modelo</nz-form-label>
+                <nz-form-control>
+                  <input nz-input formControlName="model" placeholder="Modelo">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Chasis</nz-form-label>
+                <nz-form-control>
+                  <input nz-input formControlName="chassis" placeholder="No serie">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Año modelo</nz-form-label>
+                <nz-form-control>
+                  <input type="number" nz-input formControlName="year" placeholder="Año">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Conductor</nz-form-label>
+                <nz-form-control>
+                  <nz-select formControlName="driver" nzAllowClear nzPlaceHolder="Conductor">
+                    <nz-option *ngFor="let d of driversList" [nzValue]="d.id" [nzLabel]="d.displayName"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Asientos</nz-form-label>
+                <nz-form-control>
+                  <input type="number" nz-input formControlName="seats" placeholder="Asientos">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Puertas</nz-form-label>
+                <nz-form-control>
+                  <input type="number" nz-input formControlName="doors" placeholder="Puertas">
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Aire Acondicionado</nz-form-label>
+                <nz-form-control>
+                  <nz-switch formControlName="ac" nzCheckedChildren="Si" nzUnCheckedChildren="No"></nz-switch>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </nz-card>
+        <ng-template #basicTpl>
+          <nz-switch formControlName="active" nzCheckedChildren="Activo" nzUnCheckedChildren="Inactivo">
+          </nz-switch>
+        </ng-template>
+        <nz-card nzType="inner" nzTitle="Detalles">
+
+
+
+        </nz-card>
+        <nz-card nzType="inner" nzTitle="Contacto Primario">
+
+        </nz-card>
+      </div>
+      <div class="media justify-content-end m-r-15 m-b-15">
+        <button nz-button nzType="primary" type="submit" [disabled]="!objectForm.valid">
+          <i nz-icon nzType="edit" theme="outline"></i>
+          <span>Actualizar</span>
+        </button>
+      </div>
+    </form>
+
+  </nz-page-header-content>
+</nz-page-header>

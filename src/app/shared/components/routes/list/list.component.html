@@ -1,0 +1,32 @@
+<div class="site-page-header-ghost-wrapper">
+  <nz-page-header [nzGhost]="false">
+    <!-- <nz-page-header-title>Rutas</nz-page-header-title>
+    <nz-page-header-subtitle>Listado de rutas del cliente con detalles</nz-page-header-subtitle> -->
+    <nz-page-header-extra>
+      <button nz-button nzType="primary" (click)="addNewRoute(newProjectContent)">Agregar Ruta</button>
+    </nz-page-header-extra>
+  </nz-page-header>
+</div>
+
+<ng-template #newProjectContent>
+  <form [formGroup]="objectForm" nz-form nzLayout="vertical">
+    <nz-form-item>
+      <nz-form-label>Nombre de la Ruta</nz-form-label>
+      <nz-form-control>
+        <input type="text" formControlName="name" nz-input placeholder="Escriba el nombre de la ruta">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>Descripción</nz-form-label>
+      <nz-form-control>
+        <textarea formControlName="description" nz-input></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>
+
+<nz-tabset [nzTabPosition]="nzTabPosition" [(nzSelectedIndex)]="selectedIndex">
+  <nz-tab *ngFor="let tab of routesList" [nzTitle]="tab.name">
+    <app-shared-stoppoints-list [accountId]="accountId" [routeId]="tab.id"></app-shared-stoppoints-list>
+  </nz-tab>
+</nz-tabset>

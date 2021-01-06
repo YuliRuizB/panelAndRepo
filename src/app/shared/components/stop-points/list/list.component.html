@@ -1,0 +1,114 @@
+<div class="site-page-header-ghost-wrapper" *ngIf="!!item">
+  <nz-page-header [nzGhost]="false">
+    <nz-page-header-title>Detalles de la ruta</nz-page-header-title>
+    <nz-page-header-subtitle>Listado de las paradas de esta ruta</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
+        <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item *ngIf="!item.active" (click)="toggleActive(item)">
+            <i nz-icon nzType="eye" theme="outline"></i>
+            <span class="m-l-10">Activar</span>
+          </li>
+          <li nz-menu-item *ngIf="item.active" (click)="toggleActive(item)">
+            <i nz-icon nzType="eye" theme="outline"></i>
+            <span class="m-l-10">Desactivar</span>
+          </li>
+          <li nz-menu-item>
+            <a [routerLink]="['/customers/routes/edit/', item.customerId, item.routeId]">
+              <i nz-icon nzType="edit" theme="outline"></i>
+              <span class="m-l-10">Editar</span>
+            </a>
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="deleteRoute(item)">
+            <i nz-icon nzType="delete" theme="outline"></i>
+            <span class="m-l-10">Eliminar</span>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </nz-page-header-extra>
+  </nz-page-header>
+</div>
+
+<div class="page-header">
+  <div class="row align-items-md-center">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-5">
+          <nz-input-group [nzPrefix]="searchPrefix">
+            <input type="text" nz-input placeholder="Buscar parada">
+          </nz-input-group>
+          <ng-template #searchPrefix>
+            <i class="opacity-04" nz-icon nzType="search"></i>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="text-md-right m-v-10">
+        
+        <button nz-button nzType="primary" (click)="showModalCreate()">
+          <i nz-icon nzType="plus"></i>
+          <span>Agregar parada</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<nz-table #basicTable [nzData]="stopPointsList" [nzLoading]="loading">
+  <thead>
+    <tr>
+      <th>Orden</th>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th>Ubicación</th>
+      <th>Horario Día</th>
+      <th>Horario Tarde</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data">
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{data.order}}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.name }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{data.description}}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{data.geopoint.latitude }},
+        {{ data.geopoint.longitude }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round1 }}
+      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round2 }}
+      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
+        <a nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight">
+          <i nz-icon nzType="ellipsis" nzTooltipTitle="Más información" nzTooltipPlacement="topLeft" nz-tooltip></i>
+        </a>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            <li *ngIf="!data.active" nz-menu-item (click)="toggleActive(data)">
+              <i nz-icon nzType="check-circle"></i>
+              Activar
+            </li>
+            <li *ngIf="data.active" nz-menu-item (click)="toggleActive(data)">
+              <i nz-icon nzType="pause-circle"></i>
+              Desactivar
+            </li>
+            <li nz-menu-item (click)="showModalEdit(data)">
+              <i nz-icon nzType="edit"></i>
+              Editar
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item>
+              <i nz-icon nzTheme="twotone" nzTwotoneColor="#de4436" nzType="delete"></i>
+              Eliminar
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

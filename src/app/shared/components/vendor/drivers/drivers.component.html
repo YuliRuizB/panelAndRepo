@@ -1,0 +1,143 @@
+<div class="page-header">
+    <div class="row align-items-md-center">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-5">
+            <nz-input-group [nzPrefix]="searchPrefix">
+              <input type="text" nz-input placeholder="Buscar">
+            </nz-input-group>
+            <ng-template #searchPrefix>
+              <i class="opacity-04" nz-icon nzType="search"></i>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="text-md-right m-v-10">
+          <nz-radio-group class="m-r-10" [(ngModel)]="view">
+            <label nz-radio-button nzValue="cardView" nzTitle="Vista tarjetas" nzPlacement="bottom" nz-tooltip>
+              <i class="font-size-16" nz-icon nzType="appstore" theme="outline"></i>
+            </label>
+            <label nz-radio-button nzValue="listView" nzTitle="Vista tabla" nzPlacement="bottom" nz-tooltip>
+              <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
+            </label>
+          </nz-radio-group>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row" *ngIf="view == 'cardView'">
+      <div class="col-md-3" *ngFor="let item of driversList">
+        <nz-card>
+          <div class="d-flex justify-content-between">
+            <div class="media">
+              <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]="item.photoURL"></nz-avatar>
+              <div class="m-l-10">
+                <h5 class="m-b-0">{{ item.displayName }}</h5>
+                <span class="text-muted font-size-13">{{ item.employeeId }}</span>
+              </div>
+            </div>
+            <div>
+              <a class="text-gray font-size-18" nz-dropdown nzPlacement="bottomRight" nzTrigger="click"
+                [nzDropdownMenu]="projectListSetting">
+                <i nz-icon nzType="ellipsis" theme="outline"></i>
+              </a>
+              <nz-dropdown-menu #projectListSetting="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                    <li *ngIf="!item.active" nz-menu-item (click)="toggleActive(item)">
+                      <i nz-icon nzType="check-circle"></i>
+                      Habilitar
+                    </li>
+                    <li *ngIf="item.active" nz-menu-item (click)="toggleActive(item)">
+                      <i nz-icon nzType="pause-circle"></i>
+                      Deshabilitar
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="deletePermission(item)">
+                      <i nz-icon nzTheme="twotone" nzTwotoneColor="#de4436" nzType="delete"></i>
+                      Eliminar
+                    </li>
+                  </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <p class="m-t-25">{{ item.legalName }}</p>
+          <p class="m-t-0 m-b-0">{{ item.primaryContact }}</p>
+          <p class="m-t-0 m-b-0">{{ item.primaryEmail }}</p>
+          <div class="m-t-20">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <nz-tag class="m-b-0" *ngIf="item.status == 'In Progress'" [nzColor]="'blue'">{{item.status}}</nz-tag>
+                <nz-tag class="m-b-0" *ngIf="item.status == 'Ready'" [nzColor]="'cyan'">{{item.status}}</nz-tag>
+                <nz-tag class="m-b-0" *ngIf="item.status == 'Behind'" [nzColor]="'red'">{{item.status}}</nz-tag>
+              </div>
+              <div>
+              </div>
+            </div>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+    <nz-card *ngIf="view == 'listView'">
+      <nz-table #listViewTable [nzData]="driversList">
+        <thead>
+          <tr>
+            <th>Id Empleado</th>
+            <th>Nombre(s)</th>
+            <th>Apellido(s)</th>
+            <th>Usuario</th>
+            <th>Teléfono</th>
+            <th>Activo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listViewTable.data">
+            <td>
+              <div class="media align-items-center">
+                <nz-avatar nzShape="square" [nzSrc]="item.photoURL"></nz-avatar>
+                <div class="m-l-10">
+                  <h5 class="m-b-0">{{item.displayName}}</h5>
+                </div>
+              </div>
+            </td>
+            <td>{{item.firstName}}</td>
+            <td>
+              {{ item.lastName }}
+            </td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.phone }}</td>
+            <td>{{ item.active ? 'Si':'No' }}</td>
+            
+            <td class="text-right">
+              <div>
+                <a class="text-gray font-size-18" nz-dropdown nzPlacement="bottomRight" nzTrigger="click"
+                  [nzDropdownMenu]="projectListSetting2">
+                  <i nz-icon nzType="ellipsis" theme="outline"></i>
+                </a>
+                <nz-dropdown-menu #projectListSetting2="nzDropdownMenu">
+                    <ul nz-menu nzSelectable>
+                        <li *ngIf="!item.active" nz-menu-item (click)="toggleActive(item)">
+                          <i nz-icon nzType="check-circle"></i>
+                          Habilitar
+                        </li>
+                        <li *ngIf="item.active" nz-menu-item (click)="toggleActive(item)">
+                          <i nz-icon nzType="pause-circle"></i>
+                          Deshabilitar
+                        </li>
+                        <li nz-menu-divider></li>
+                        <li nz-menu-item (click)="deletePermission(item)">
+                          <i nz-icon nzTheme="twotone" nzTwotoneColor="#de4436" nzType="delete"></i>
+                          Eliminar
+                        </li>
+                      </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>

@@ -1,0 +1,143 @@
+<nz-card>
+  <div class="row m-b-30">
+    <div class="col-lg-8">
+      <div class="d-md-flex">
+        <div class="m-b-10 m-r-20">
+          <nz-input-group [nzPrefix]="prefixTemplate">
+            <input type="text" nz-input placeholder="Buscar" [(ngModel)]="search">
+          </nz-input-group>
+          <ng-template #prefixTemplate>
+            <i nz-icon nzType="search" class="opacity-05"></i>
+          </ng-template>
+        </div>
+        <div class="m-b-10 m-r-20 d-flex align-items-center">
+          <!-- <nz-select style="min-width: 220px;" class="w-100" nzPlaceHolder="Status">
+            <nz-option nzLabel="All" nzValue="all"></nz-option>
+            <nz-option nzLabel="Approved" nzValue="approved"></nz-option>
+            <nz-option nzLabel="Pending" nzValue="pending"></nz-option>
+            <nz-option nzLabel="Rejected" nzValue="rejected"></nz-option>
+          </nz-select> -->
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 text-right">
+      <!-- <button nz-button nzType="primary" (click)="showModal()">
+        <i nz-icon nzType="plus" theme="outline"></i>
+        <span>Nueva asignación</span>
+      </button> -->
+    </div>
+  </div>
+  <div class="row m-b-30">
+    <p>Nota: Las asignaciones que no aparezcan, es debido a que no tienen usuarios activos.</p>
+  </div>
+  <!-- <ng-template #noResultTemplate>
+    <nz-empty [nzNotFoundImage]="
+        'https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original'
+      " [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
+      <ng-template #contentTpl>
+        <span>¡No has creado ninguna asignación aún!</span>
+      </ng-template>
+      <ng-template #footerTpl>
+        <button nz-button nzType="primary" (click)="showModal()">Nueva asignación</button>
+      </ng-template>
+    </nz-empty>
+  </ng-template> -->
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="Crear asignación" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+    [nzOkLoading]="isOkLoading">
+    <form nz-form [formGroup]="objectForm">
+      <div class="row">
+        <div class="col-md-12">
+          <nz-form-item>
+            <nz-form-label nzFor="routeId">Ruta</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="routeId" nzAllowClear nzPlaceHolder="Seleccionar">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <nz-form-item>
+            <nz-form-label nzFor="program">Programa</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="program" nzAllowClear nzPlaceHolder="Seleccionar">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <nz-form-item>
+            <nz-form-label nzFor="round">Turno</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="program" nzAllowClear nzPlaceHolder="Seleccionar">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <nz-form-item>
+            <nz-form-label nzFor="vehicle">Vehículo</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="program" nzAllowClear nzPlaceHolder="Seleccionar">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <nz-form-item>
+            <nz-form-label nzFor="round">Conductor</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="program" nzAllowClear nzPlaceHolder="Seleccionar">
+                <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+                <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+                <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
+      <nz-form-item>
+        <nz-form-label>Se repite los días</nz-form-label>
+        <nz-form-control>
+          <label nz-checkbox formControlName="isSunday">Dom</label>
+          <label nz-checkbox formControlName="isMonday">Lun</label>
+          <label nz-checkbox formControlName="isTuesday">Mar</label>
+          <label nz-checkbox formControlName="isWednesday">Mié</label>
+          <label nz-checkbox formControlName="isThursday">Jue</label>
+          <label nz-checkbox formControlName="isFriday">Vie</label>
+          <label nz-checkbox formControlName="isSaturday">Sáb</label>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-modal>
+
+  <nz-tabset nzTabPosition="left">
+    <nz-tab *ngFor="let tab of customersList" [nzTitle]="tab">
+
+      <div *ngFor="let panel of vendorRoutesList">
+
+        <nz-collapse>
+          <nz-collapse-panel *ngIf="panel.customerName == tab" [nzHeader]="panel.routeName + ' ' + panel.passes.length" [nzActive]="panel.active"
+            [nzDisabled]="!panel.permission">
+            <app-shared-vendor-assignments [vendorId]="user.vendorId"  [customerName]="tab" [routeId]="panel.routeId" [routeName]="panel.routeName">
+            </app-shared-vendor-assignments>
+          </nz-collapse-panel>
+        </nz-collapse>
+
+      </div>
+    </nz-tab>
+  </nz-tabset>
+
+</nz-card>

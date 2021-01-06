@@ -1,0 +1,180 @@
+<nz-page-header nzBackIcon class="page-header">
+  <nz-page-header-title>{{ record.name }}</nz-page-header-title>
+  <nz-page-header-subtitle>Detalles del transportista</nz-page-header-subtitle>
+  <nz-page-header-content>
+
+    <nz-tabset [nzSelectedIndex]="selectedIndex" class="page-header-tab">
+      <nz-tab nzTitle="General">
+        <form nz-form [formGroup]="objectForm" *ngIf="objectForm" (ngSubmit)="submitForm()">
+          <div class="container">
+            <nz-card *ngIf="!!record" nzType="inner" nzTitle="Información Básica" [nzExtra]="basicTpl">
+              <div class="media align-items-center">
+                <nz-avatar [nzSize]="80" nzIcon="user" nzShape="square" [nzSrc]="record.avatar"></nz-avatar>
+                <div class="m-l-20 m-r-20">
+                  <h5 class="m-b-5 font-size-18">{{ record.name }}</h5>
+                  <p class="opacity-07 font-size-13 m-b-0">
+                    {{ record.website }}
+                  </p>
+                </div>
+                <nz-upload nzName="avatar" nzAction="action" [nzBeforeUpload]="beforeUpload()"
+                  [nzShowUploadList]="false" (nzChange)="handleChange($event)">
+                  <button nz-button nzType="primary" nzGhost>
+                    <span>Cambiar imágen</span>
+                  </button>
+                </nz-upload>
+              </div>
+              <hr class="m-v-25">
+              <div class="row">
+                <div class="col-md-8">
+                  <nz-form-item>
+                    <nz-form-label>Nombre Comercial</nz-form-label>
+                    <nz-form-control>
+                      <input type="text" nz-input formControlName="name" placeholder="Nombre comercial (alias)">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-4">
+                  <nz-form-item>
+                    <nz-form-label>RFC</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="rfc" placeholder="RFC">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <nz-form-item>
+                    <nz-form-label>Razón Social</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="legalName" placeholder="Razón social" type="text">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+            </nz-card>
+            <ng-template #basicTpl>
+              <nz-switch formControlName="active" nzCheckedChildren="Activo" nzUnCheckedChildren="Inactivo"></nz-switch>
+            </ng-template>
+            <nz-card nzType="inner" nzTitle="Dirección">
+
+              <div class="row" formGroupName="address">
+                <div class="col-md-9 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Calle</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="street" nz-input type="text" placeholder="Calle">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Número</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="number" nz-input type="text" placeholder="Número">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Entre calles</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="address2" nz-input type="text" placeholder="Entre calles">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Colonia</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="address3" nz-input type="text" placeholder="Colonia">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Código Postal</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="zipcode" nz-input type="text" placeholder="Código postal">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Municipio / Ciudad</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="city" nz-input type="text" placeholder="Municipio / Ciudad">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label nzFor="street">Estado</nz-form-label>
+                    <nz-form-control>
+                      <input formControlName="state" nz-input type="text" placeholder="Estado">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+
+            </nz-card>
+            <nz-card nzType="inner" nzTitle="Contacto Primario">
+              <div class="row">
+                <div class="col-md-6 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label>Nombre</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="primaryContact" placeholder="Nombre">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label>Teléfono</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="primaryPhone" placeholder="Teléfono">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                  <nz-form-item>
+                    <nz-form-label>Email</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="primaryEmail" placeholder="Email">
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+              </div>
+            </nz-card>
+          </div>
+          <div class="media justify-content-end m-r-15 m-b-15">
+            <button nz-button nzType="primary" type="submit" [disabled]="!objectForm.valid">
+              <i nz-icon nzType="edit" theme="outline"></i>
+              <span>Actualizar</span>
+            </button>
+          </div>
+        </form>
+      </nz-tab>
+      <nz-tab nzTitle="Rutas">
+        <ng-template nz-tab>
+          <app-shared-vendor-settings [vendorId]="recordId" [userCanUpdate]="true"></app-shared-vendor-settings>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Conductores">
+        <ng-template nz-tab>
+          <app-shared-vendor-drivers [vendorId]="recordId"></app-shared-vendor-drivers>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Usuarios del sistema">
+        <ng-template nz-tab>
+          <app-shared-vendor-users-list [vendorId]="recordId"></app-shared-vendor-users-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Flota">
+        <ng-template nz-tab>
+          <app-shared-vendor-vehicles [vendorId]="recordId"></app-shared-vendor-vehicles>
+        </ng-template>
+      </nz-tab>
+    </nz-tabset>
+  </nz-page-header-content>
+</nz-page-header>

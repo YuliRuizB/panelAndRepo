@@ -1,0 +1,35 @@
+<!-- <nz-empty style="padding-top: 80px !important;" [nzNotFoundImage]="'https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original'" [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
+  <ng-template #contentTpl>
+    <span>
+        Te llegará un correo con información necesaria para validar tu cuenta de correo. <br/>
+        Si no recibiste el correo podemos enviártelo nuevamente presionando <button style="margin:0px !important; padding: 0px !important;" nz-button nzType="link" (click)="authService.sendVerificationMail()">aquí</button>
+       </span><br/><br/>
+       <span>
+          Una vez que la hayas validado puedes entrar en el siguiente botón
+       </span>
+  </ng-template>
+  <ng-template #footerTpl>
+    <button nz-button nzType="primary" [routerLink]="['/sign-in']">Ingresar</button>
+  </ng-template>
+</nz-empty> -->
+<div class="container-fluid h-100" style="background-image: url('assets/images/others/login-3.png')">
+  <div class="d-flex h-100 p-v-15 flex-column justify-content-between">
+    <div class="d-none d-md-flex p-h-40">
+      <img src="assets/images/logo/logo.png" alt="">
+    </div>
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="">
+          <nz-result nzStatus="success" nzTitle="¡Gracias! Tu registro se ha llevado a cabo con éxito."
+            nzSubTitle="Te llegará un correo con información necesaria para validar tu cuenta de correo. Si no recibiste el correo podemos enviártelo nuevamente el botón de Reenviar Correo">
+            <div nz-result-extra>
+              <button nz-button nzType="primary" [routerLink]="['/authentication/login']">Ingresar</button>
+              <button nz-button (click)="authService.sendVerificationMail()">Reenviar Correo</button>
+            </div>
+          </nz-result>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,211 @@
+<div class="page-header">
+  <div class="row align-items-md-center">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-5">
+          <nz-input-group [nzPrefix]="searchPrefix">
+            <input type="text" nz-input placeholder="Buscar ruta">
+          </nz-input-group>
+          <ng-template #searchPrefix>
+            <i class="opacity-04" nz-icon nzType="search"></i>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="text-md-right m-v-10">
+        <nz-radio-group class="m-r-10" [(ngModel)]="view">
+          <label nz-radio-button nzValue="cardView" nzTitle="Card View" nzPlacement="bottom" nz-tooltip>
+            <i class="font-size-16" nz-icon nzType="appstore" theme="outline"></i>
+          </label>
+          <label nz-radio-button nzValue="listView" nzTitle="List View" nzPlacement="bottom" nz-tooltip>
+            <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
+          </label>
+        </nz-radio-group>
+        <button nz-button nzType="primary" (click)="addNewRoute(newProjectContent)">
+          <i nz-icon nzType="plus"></i>
+          <span>Agregar ruta</span>
+        </button>
+        <ng-template #newProjectContent>
+          <form [formGroup]="objectForm" nz-form nzLayout="vertical">
+            <nz-form-item>
+              <nz-form-label>Nombre de la Ruta</nz-form-label>
+              <nz-form-control>
+                <input type="text" formControlName="name" nz-input placeholder="Escriba el nombre de la ruta">
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>Descripción</nz-form-label>
+              <nz-form-control>
+                <textarea formControlName="description" nz-input></textarea>
+              </nz-form-control>
+            </nz-form-item>
+            <div class="row">
+              <div class="col-md-12">
+                <nz-form-item>
+                  <nz-form-label>Cliente</nz-form-label>
+                  <nz-form-control>
+                    <nz-form-control>
+                      <nz-select formControlName="customerId" (ngModelChange)="setCustomerName($event)" class="w-100"
+                        nzPlaceHolder="Selecciona cliente">
+                        <nz-option *ngFor="let item of accountsList" [nzLabel]="item.name" [nzValue]="item.id">
+                        </nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row" *ngIf="view == 'cardView'">
+    <div class="col-md-3" *ngFor="let item of routesList">
+      <nz-card>
+        <div class="d-flex justify-content-between">
+          <div class="media">
+            <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]="item.imageUrl"></nz-avatar>
+            <div class="m-l-10">
+              <h5 class="m-b-0">{{item.name}}</h5>
+              <span class="text-muted font-size-13">{{item.customerName}}</span>
+            </div>
+          </div>
+          <div>
+            <a class="text-gray font-size-18" nz-dropdown nzPlacement="bottomRight" nzTrigger="click"
+              [nzDropdownMenu]="projectListSetting">
+              <i nz-icon nzType="ellipsis" theme="outline"></i>
+            </a>
+            <nz-dropdown-menu #projectListSetting="nzDropdownMenu">
+              <ul nz-menu nzSelectable>
+                <li nz-menu-item *ngIf="!item.active" (click)="toggleActive(item)">
+                  <i nz-icon nzType="eye" theme="outline"></i>
+                  <span class="m-l-10">Activar</span>
+                </li>
+                <li nz-menu-item *ngIf="item.active" (click)="toggleActive(item)">
+                  <i nz-icon nzType="eye" theme="outline"></i>
+                  <span class="m-l-10">Desactivar</span>
+                </li>
+                <li nz-menu-item>
+                  <a [routerLink]="['/customers/routes/edit/', item.customerId, item.routeId]">
+                    <i nz-icon nzType="edit" theme="outline"></i>
+                    <span class="m-l-10">Editar</span>
+                  </a>
+                </li>
+                <li nz-menu-item (click)="duplicate(item)">
+                  <i nz-icon nzType="copy" theme="outline"></i>
+                  <span class="m-l-10">Duplicar</span>
+                </li>
+                <li nz-menu-divider></li>
+                <li nz-menu-item (click)="deleteRoute(item)">
+                  <i nz-icon nzType="delete" theme="outline"></i>
+                  <span class="m-l-10">Eliminar</span>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+        </div>
+        <p class="m-t-25">{{item.desc}}</p>
+        <div class="m-t-30">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <nz-tag class="m-b-0" *ngIf="item.active" [nzColor]="'blue'">Activa</nz-tag>
+              <nz-tag class="m-b-0" *ngIf="!item.active" [nzColor]="'cyan'">Inactiva</nz-tag>
+            </div>
+          </div>
+        </div>
+      </nz-card>
+    </div>
+  </div>
+  <nz-card *ngIf="view == 'listView'">
+    <nz-table #listViewTable [nzData]="routesList">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Paradas</th>
+          <th class="text-center">Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of listViewTable.data">
+          <td>
+            <div class="media align-items-center">
+              <nz-avatar nzShape="square" [nzSrc]="item.imageUrl"></nz-avatar>
+              <div class="m-l-10">
+                <h5 class="m-b-0">{{item.customerName }}</h5>
+              </div>
+            </div>
+          </td>
+          <td>{{item.name}}</td>
+          <td>{{item.description}}</td>
+          <td>{{item.stopCounts}}</td>
+          <td>
+            <nz-tag class="m-b-0" *ngIf="item.active" [nzColor]="'blue'">Activa</nz-tag>
+            <nz-tag class="m-b-0" *ngIf="!item.active" [nzColor]="'cyan'">Inactiva</nz-tag>
+          </td>
+          <td class="text-right">
+            <div>
+              <a class="text-gray font-size-18" nz-dropdown nzPlacement="bottomRight" nzTrigger="click"
+                [nzDropdownMenu]="projectListSetting2">
+                <i nz-icon nzType="ellipsis" theme="outline"></i>
+              </a>
+              <nz-dropdown-menu #projectListSetting2="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item *ngIf="!item.active" (click)="toggleActive(item)">
+                    <i nz-icon nzType="eye" theme="outline"></i>
+                    <span class="m-l-10">Activar</span>
+                  </li>
+                  <li nz-menu-item *ngIf="item.active" (click)="toggleActive(item)">
+                    <i nz-icon nzType="eye" theme="outline"></i>
+                    <span class="m-l-10">Desactivar</span>
+                  </li>
+                  <li nz-menu-item (click)="duplicate(item)">
+                    <i nz-icon nzType="copy" theme="outline"></i>
+                    <span class="m-l-10">Duplicar</span>
+                  </li>
+                  <li nz-menu-item>
+                    <a [routerLink]="['/customers/routes/edit/', item.customerId, item.routeId]">
+                      <i nz-icon nzType="edit" theme="outline"></i>
+                      <span class="m-l-10">Editar</span>
+                    </a>
+                  </li>
+                  <li nz-menu-divider></li>
+                  <li nz-menu-item (click)="deleteRoute(item)">
+                    <i nz-icon nzType="delete" theme="outline"></i>
+                    <span class="m-l-10">Eliminar</span>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
+
+<nz-modal [(nzVisible)]="duplicateVisible" nzTitle="Duplicar ruta para cliente" (nzOnCancel)="handleCancel()">
+  <div class="row">
+    <div class="col-sm-12">
+      <form nz-form>
+        <nz-form-item>
+          <nz-form-label nzFor="customerId">Cliente</nz-form-label>
+          <nz-select [(ngModel)]="duplicateCustomerId" name="duplicateCustomerId" nzAllowClear (ngModelChange)="onCustomerChange($event)" nzPlaceHolder="Selecciona el cliente">
+            <nz-option *ngFor="let o of accountsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+                nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
+          </nz-select>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
+    <button nz-button nzType="primary" (click)="createDuplicated()" [nzLoading]="isDuplicateLoading">Duplicar</button>
+  </div>
+</nz-modal>

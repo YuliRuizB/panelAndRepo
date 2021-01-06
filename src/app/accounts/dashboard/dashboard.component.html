@@ -1,0 +1,163 @@
+<nz-page-header>
+  <nz-page-header-title>CRM</nz-page-header-title>
+  <nz-page-header-subtitle>Información Comercial</nz-page-header-subtitle>
+  <nz-page-header-extra>
+    <div class="d-md-flex align-items-center d-none">
+      <div class="media align-items-center m-r-40 m-v-5">
+        <div class="font-size-27">
+          <i class="text-primary" nz-icon nzType="folder" theme="outline"></i>
+        </div>
+        <div class="d-flex align-items-center m-l-10">
+          <h2 class="m-b-0 m-r-5">{{ summarized.currentAccounts | number: '1.0-2' }}</h2>
+          <span class="text-gray">Clientes</span>
+        </div>
+      </div>
+      <div class="media align-items-center m-r-40 m-v-5">
+        <div class="font-size-27">
+          <i class="text-success" nz-icon nzType="idcard" theme="outline"></i>
+        </div>
+        <div class="d-flex align-items-center m-l-10">
+          <h2 class="m-b-0 m-r-5">{{ summarized.currentUsers | number }}</h2>
+          <span class="text-gray" >Usuarios</span>
+        </div>
+      </div>
+      <div class="media align-items-center m-v-5">
+        <div class="font-size-27">
+          <i class="text-danger" nz-icon nzType="security-scan" theme="outline"></i>
+        </div>
+        <div class="d-flex align-items-center m-l-10">
+          <h2 class="m-b-0 m-r-5">{{ summarized.currentParents | number }}</h2>
+          <span class="text-gray">Padres</span>
+        </div>
+      </div>
+      <div class="media align-items-center m-v-5 m-l-10">
+        <button nz-button nzType="primary" (click)="showModal()"><i nz-icon nzType="plus-circle"></i>Nuevo cliente</button>
+      </div>
+    </div>
+  </nz-page-header-extra>
+  <nz-page-header-footer>
+    <ul nz-menu nzMode="horizontal">
+      <li nz-submenu nzTitle="Ventas" nzIcon="dollar">
+        <ul>
+          <li nz-menu-group nzTitle="Mostrar por">
+            <ul>
+              <li nz-menu-item>Clientes</li>
+              <li nz-menu-item>Rutas</li>
+              <li nz-menu-item>Transportista</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="Reportes" nzIcon="pie-chart">
+        <ul>
+          <li nz-menu-group nzTitle="Periodos">
+            <ul>
+              <li nz-menu-item>Este mes</li>
+              <li nz-menu-item>Mes pasado</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    
+      <li nz-menu-item [routerLink]="['/customers/list']" routerLinkActive="router-link-active">
+        <i nz-icon nzType="user"></i>
+        Usuarios
+      </li>
+      <li nz-menu-item>
+        <i nz-icon nzType="book"></i>
+        Transacciones
+      </li>
+    </ul>
+  </nz-page-header-footer>
+</nz-page-header>
+<br />
+<nz-empty *ngIf="accountsList.length === 0"></nz-empty>
+<div nz-row [nzGutter]="8">
+  <div nz-col nzSpan="8" *ngFor="let account of accountsList">
+    <nz-card [nzActions]="[actionSetting, actionEdit, actionEllipsis]">
+      <nz-skeleton [nzActive]="true" [nzLoading]="loading" [nzAvatar]="{ size: 'large' }">
+        <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="account.name" [nzDescription]="account.address">
+        </nz-card-meta>
+      </nz-skeleton>
+    </nz-card>
+    <ng-template #avatarTemplate>
+      <nz-avatar
+      [ngStyle]="{ 'background-color': '#3f87f5' }"
+      [nzText]="account.name"
+      nzSize="large"
+      style="vertical-align: middle;"
+    ></nz-avatar>
+      
+    </ng-template>
+    <ng-template #actionSetting>
+      <i *ngIf="account.active" (click)="toggleAccountActive(account.id, true)" nz-icon [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'" nzTooltipTitle="Activo" nzTooltipPlacement="topLeft" nz-tooltip></i>
+      <i *ngIf="!account.active" (click)="toggleAccountActive(account.id, false)" nz-icon [nzType]="'pause-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#de4436'" nzTooltipTitle="Inactivo" nzTooltipPlacement="topLeft" nz-tooltip></i>
+    </ng-template>
+    <ng-template #actionEdit>
+      <i nz-icon nzType="edit" [routerLink]="['/accounts/edit', account.id, 0]" routerLinkActive="router-link-active"
+        nzTooltipTitle="Editar" nzTooltipPlacement="topLeft" nz-tooltip></i>
+    </ng-template>
+    <ng-template #actionEllipsis>
+
+      <a nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight">
+        <i nz-icon nzType="ellipsis" nzTooltipTitle="Más información" nzTooltipPlacement="topLeft" nz-tooltip></i>
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item [routerLink]="['/accounts/edit', account.id, 1]" routerLinkActive="router-link-active">
+            <i nz-icon nzType="user"></i>
+            Usuarios
+          </li>
+          <li nz-menu-item [routerLink]="['/accounts/edit', account.id, 2]" routerLinkActive="router-link-active">
+            <i nz-icon nzType="shopping"></i>
+            Productos y servicios
+          </li>
+          <li nz-menu-item [routerLink]="['/accounts/edit', account.id, 3]" routerLinkActive="router-link-active">
+            <i nz-icon nzType="clock-circle"></i>
+            Rutas y horarios
+          </li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="deleteAccountModal(account)">
+            <i nz-icon nzTheme="twotone" nzTwotoneColor="#de4436" nzType="delete"></i>
+            Eliminar
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </ng-template>
+  </div>
+</div>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Nuevo cliente" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()"
+  [nzOkLoading]="isOkLoading" nzCancelText="Cancelar" nzOkText="Crear" [nzOkDisabled]="!validateForm.valid"
+  nzOkType="primary">
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Nombre Corto</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 5 y 30 caracteres.">
+        <input nz-input formControlName="name" id="name" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address" nzRequired>
+        <span>
+          Dirección
+          <i nz-icon nz-tooltip nzTitle="Domicilio completo del cliente" nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ingrese el domicilio!">
+        <input nz-input id="address" formControlName="address" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phoneNumber">Teléfono</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ingrese el teléfono de contacto con el cliente.">
+        <input nz-input formControlName="phoneNumber" id="phoneNumber" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="website" nzRequired>Sitio web</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ingrese el sitio web!">
+        <input nz-input id="website" formControlName="website" placeholder="website" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>

@@ -1,0 +1,75 @@
+<ul nz-list [nzDataSource]="vehicleAssignmentsList" nzSize="small" [nzLoading]="loading" [nzHeader]="header"
+  [nzRenderItem]="item">
+  <ng-template #header>
+    <div>
+      Asignaciones
+      <button nz-button nzType="link" (click)="showModal()">Agregar</button>
+    </div>
+  </ng-template>
+  <ng-template #item let-item>
+    <nz-list-item [nzActions]="item.loading ? [] : [ellipsisAction]">
+      <nz-list-item-meta [nzTitle]="item.driverName" [nzDescription]="'Unidad ' + item.vehicleName">
+        <ng-template #nzTitle>
+          <a href="https://ng.ant.design">{{ item.title }}</a>
+        </ng-template>
+        <ng-template #ellipsisAction>
+          <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
+            <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item *ngIf="!item.active" (click)="toggleActive(item)">
+                <i nz-icon nzType="eye" theme="outline"></i>
+                <span class="m-l-10">Activar</span>
+              </li>
+              <li nz-menu-item *ngIf="item.active" (click)="toggleActive(item)">
+                <i nz-icon nzType="eye" theme="outline"></i>
+                <span class="m-l-10">Desactivar</span>
+              </li>
+              <li nz-menu-item *ngIf="item.active" (click)="selectProgramDay(item)">
+                <i nz-icon nzType="eye" theme="outline"></i>
+                <span class="m-l-10">Programar</span>
+              </li>
+              <li nz-menu-divider></li>
+              <li nz-menu-item (click)="deleteAssignment(item)">
+                <i nz-icon nzType="delete" theme="outline"></i>
+                <span class="m-l-10">Eliminar</span>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </ng-template>
+      </nz-list-item-meta>
+    </nz-list-item>
+  </ng-template>
+</ul>
+<button *ngIf="vehicleAssignmentsList.length == 0 && !loading" nz-button nzType="primary"
+  (click)="showModal()">Asignar</button>
+
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="Asignación" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <form nz-form [formGroup]="assignmentForm" (ngSubmit)="handleOk()">
+    <nz-form-item>
+      <nz-form-label>Vehículo</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="vehicleId" nzAllowClear nzPlaceHolder="Selecciona la unidad"
+          (ngModelChange)="onVehicleSelected($event, 'vehicleName')">
+          <nz-option *ngFor="let o of vehiclesList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+              nzType="car"></i> {{ o.name }}</nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>Operador</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="driverId" nzAllowClear nzPlaceHolder="Selecciona el conductor"
+          (ngModelChange)="onDriverSelected($event, 'driverName')">
+          <nz-option *ngFor="let o of driversList" nzCustomContent [nzLabel]="o.displayName" [nzValue]="o.id"><i nz-icon
+              nzType="user"></i> {{ o.displayName }}</nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isSelectDayVisible" nzTitle="Programar para el día" (nzOnCancel)="handleCancel()" (nzOnOk)="makeProgram()">
+  <nz-date-picker [(ngModel)]="programSelectedDate" (ngModelChange)="onSelectedDayChange($event)"></nz-date-picker>
+</nz-modal>

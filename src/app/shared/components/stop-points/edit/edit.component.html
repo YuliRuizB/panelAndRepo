@@ -1,0 +1,68 @@
+<form nz-form [nzLayout]="'vertical'" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Por favor escriba el nombre!">
+      <nz-input-group nzPrefixIcon="edit">
+        <input formControlName="name" nz-input placeholder="nombre" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input your Password!">
+      <nz-input-group nzPrefixIcon="edit">
+        <input formControlName="description" nz-input type="text" placeholder="Descripción" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Latitud</nz-form-label>
+        <nz-form-control nzErrorTip="La geocerca no puede estar en blanco">
+          <nz-input-group nzPrefixIcon="edit">
+            <input formControlName="latitude" nz-input placeholder="geocerca" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Longitud</nz-form-label>
+        <nz-form-control nzErrorTip="La geocerca no puede estar en blanco">
+          <nz-input-group nzPrefixIcon="edit">
+            <input formControlName="longitude" nz-input placeholder="geocerca" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Horario día</nz-form-label>
+        <nz-form-control nzErrorTip="Agregue horario">
+          <nz-input-group nzPrefixIcon="edit">
+            <input formControlName="round1" nz-input placeholder="00:00" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Horario Tarde</nz-form-label>
+        <nz-form-control nzErrorTip="Agregue horario">
+          <nz-input-group nzPrefixIcon="edit">
+            <input formControlName="round2" nz-input placeholder="00:00" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <nz-form-item>
+    <nz-form-label>Orden</nz-form-label>
+    <nz-form-control nzErrorTip="Orden de ejecución de la ruta">
+      <nz-input-group nzPrefixIcon="edit">
+        <input formControlName="order" nz-input type="number" placeholder="numérico" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+</form>

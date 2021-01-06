@@ -1,0 +1,44 @@
+<nz-page-header nzBackIcon class="page-header">
+  <nz-page-header-title>{{ record.name }}</nz-page-header-title>
+  <nz-page-header-subtitle>Detalles del cliente</nz-page-header-subtitle>
+  <nz-page-header-content>
+
+    <nz-tabset [nzSelectedIndex]="selectedIndex" class="page-header-tab">
+      <nz-tab nzTitle="General">
+       <ng-template nz-tab>
+         <app-shared-account-edit [accountId]="recordId"></app-shared-account-edit>
+       </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Métodos de Pago">
+        <ng-template nz-tab>
+          <app-shared-account-payment-methods [accountId]="recordId"></app-shared-account-payment-methods>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Rutas">
+        <ng-template nz-tab>
+          <app-shared-routes-list [accountId]="recordId"></app-shared-routes-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Asignaciones">
+        <ng-template nz-tab>
+          <app-shared-customer-vendor-assignments [accountId]="recordId"></app-shared-customer-vendor-assignments>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Usuarios">
+        <ng-template nz-tab>
+          <app-shared-users-list [accountId]="recordId" [accountName]="record.name"></app-shared-users-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Acceso al sistema">
+        <ng-template nz-tab>
+          <app-shared-system-users-list [accountId]="recordId" [accountName]="record.name"></app-shared-system-users-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Productos y Servicios">
+        <ng-template nz-tab>
+          <app-shared-products-list [accountId]="recordId"></app-shared-products-list>
+        </ng-template>
+      </nz-tab>
+    </nz-tabset>
+  </nz-page-header-content>
+</nz-page-header>

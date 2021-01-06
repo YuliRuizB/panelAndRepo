@@ -1,0 +1,135 @@
+<nz-page-header class="site-page-header">
+
+    <!--title-->
+    <nz-page-header-title>Usuarios del sistema</nz-page-header-title>
+  
+    <!--subtitle-->
+    <nz-page-header-subtitle>Roles del sistema</nz-page-header-subtitle>
+  
+    <!--extra-->
+    <nz-page-header-extra>
+      <button nz-button (click)="showModal()">Nuevo Usuario</button>
+      <!-- <button nz-button nzType="primary" (click)="showModal()">Importar desde archivo</button> -->
+    </nz-page-header-extra>
+  
+    <!--content-->
+    <nz-page-header-content>
+      <div nz-row>
+        <div class="content">
+          <div class="col-md-4 col-sm-12">
+            <nz-input-group [nzSuffix]="suffixIconSearch">
+              <input type="text" nz-input placeholder="Buscar ..." />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+              <i nz-icon nzType="search"></i>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </nz-page-header-content>
+  </nz-page-header>
+  <br />
+  <ag-grid-angular style="width: 100%; height: 450px;" class="ag-theme-material" [rowData]="usersList"
+    [getContextMenuItems]="getContextMenuItems" [columnDefs]="columnDefs" [gridOptions]="gridOptions"
+    [popupParent]="popupParent">
+  </ag-grid-angular>
+  
+  
+  <!-- Modal -->
+  
+  
+  <nz-modal [(nzVisible)]="isVisible" [nzWidth]="620" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+    (nzOnCancel)="handleCancel()">
+    <ng-template #modalTitle>
+      Nuevo usuario de sistema
+    </ng-template>
+  
+    <ng-template #modalContent>
+  
+    </ng-template>
+  
+    <ng-template #modalFooter>
+      <div class=""> 
+       
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="done()">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Correo</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Por favor escriba un correo electrónico">
+              <input nz-input formControlName="email" id="email" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="password" nzRequired>Contraseña</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Escriba una contraseña">
+              <input nz-input type="password" id="password" formControlName="password" (ngModelChange)="updateConfirmValidator()" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="checkPassword" nzRequired>Confirmar</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="errorTpl">
+              <input nz-input type="password" formControlName="checkPassword" id="checkPassword" />
+              <ng-template #errorTpl let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  Por favor confirme su contraseña
+                </ng-container>
+                <ng-container *ngIf="control.hasError('confirm')">
+                  Las contraseñas no coinciden
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="nickname" nzRequired>
+              <span>
+                Nombre(s)
+                <i nz-icon nz-tooltip nzTooltipTitle="Escriba su nombre completo" nzType="question-circle" nzTheme="outline"></i>
+              </span>
+            </nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Por favor ingrese su nombre completo">
+              <input nz-input id="firstName" formControlName="firstName" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="nickname" nzRequired>
+              <span>
+                Apellido(s)
+                <i nz-icon nz-tooltip nzTooltipTitle="Escriba su nombre completo" nzType="question-circle" nzTheme="outline"></i>
+              </span>
+            </nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Por favor ingrese su nombre completo">
+              <input nz-input id="lastName" formControlName="lastName" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber" nzRequired>Teléfono</nz-form-label>
+            <nz-form-control
+              [nzSm]="14"
+              [nzXs]="24"
+              [nzValidateStatus]="validateForm.controls['phoneNumber']"
+              nzErrorTip="Ingrese su numero de teléfono"
+            >
+              <nz-input-group>
+                <input formControlName="phoneNumber" id="'phoneNumber'" nz-input />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24">Rol del usuario</nz-form-label>
+            <nz-form-control [nzSm]="14"
+            [nzXs]="24" nzHasFeedback>
+              <nz-select name="select-error" formControlName="role">
+                <nz-option nzValue="customer" nzLabel="Cliente"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+         
+          <button nz-button nzType="primary"  type="submit" [nzLoading]="isSavingUsers" (click)="done()" *ngIf="!isDone">
+            <span>Crear Usuario</span>
+          </button>
+
+        </form>
+
+      </div>
+    </ng-template>
+  </nz-modal>

@@ -1,0 +1,69 @@
+<div class="row">
+  <div class="col-md-4 col-sm-6 col-xs-12" *ngFor="let card of assignmentList">
+    <nz-card>
+      <nz-page-header>
+        <!--breadcrumb-->
+        <nz-breadcrumb nz-page-header-breadcrumb>
+          <nz-breadcrumb-item>{{ card.program == 'M' ? 'Mete':'Saca'}}</nz-breadcrumb-item>
+          <nz-breadcrumb-item>
+            {{ card.round }}
+          </nz-breadcrumb-item>
+          <nz-breadcrumb-item>{{ card.type }}</nz-breadcrumb-item>
+        </nz-breadcrumb>
+
+        <!--avatar-->
+        <!-- <nz-avatar nz-page-header-avatar nzSrc="">
+        </nz-avatar> -->
+
+        <!--title-->
+        <nz-page-header-title>{{ (card.time).toDate() | date: 'shortTime' }}</nz-page-header-title>
+
+        <!--subtitle-->
+        <!-- <nz-page-header-subtitle>This is a subtitle</nz-page-header-subtitle> -->
+
+        <!--tags-->
+        <nz-page-header-tags>
+          <nz-tag *ngIf="card.active" [nzColor]="'blue'">Activa</nz-tag>
+        </nz-page-header-tags>
+
+        <!--extra-->
+        <nz-page-header-extra>
+          <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
+            <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item *ngIf="card.active">Desactivar</li>
+              <li nz-menu-item *ngIf="!card.active">Activar</li>
+            </ul>
+          </nz-dropdown-menu>
+        </nz-page-header-extra>
+
+        <!--content-->
+        <nz-page-header-content>
+          <div class="wrap">
+            <div class="content">
+              <div class="content">
+                <p class="content-link">
+                  <nz-tag *ngIf="card.isSunday" [nzColor]=" card.isSunday ? 'blue': null">Dom</nz-tag>
+                  <nz-tag *ngIf="card.isMonday" [nzColor]=" card.isMonday ? 'blue': null">Lun</nz-tag>
+                  <nz-tag *ngIf="card.isTuesday" [nzColor]=" card.isTuesday ? 'blue': null">Mar</nz-tag>
+                  <nz-tag *ngIf="card.isWednesday" [nzColor]=" card.isWednesday ? 'blue': null">Mié</nz-tag>
+                  <nz-tag *ngIf="card.isThursday" [nzColor]=" card.isThursday ? 'blue': null">Jue</nz-tag>
+                  <nz-tag *ngIf="card.isFriday" [nzColor]=" card.isFriday ? 'blue': null">Vie</nz-tag>
+                  <nz-tag *ngIf="card.isSaturday" [nzColor]=" card.isSaturday ? 'blue': null">Sáb</nz-tag>
+                </p>
+              </div>
+            </div>
+            <div class="extra-content"></div>
+          </div>
+        </nz-page-header-content>
+      </nz-page-header>
+      <app-shared-vehicle-assignments [customerId]="card.customerId" [customerName]="customerName" [routeId]="card.routeId" [routeName]="routeName" [vendorId]="card.vendorId"
+        [assignmentId]="card.id"></app-shared-vehicle-assignments>
+    </nz-card>
+    <ng-template #extraTemplate>
+      <a>Agregar</a>
+    </ng-template>
+  </div>
+</div>

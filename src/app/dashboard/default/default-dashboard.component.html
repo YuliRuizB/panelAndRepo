@@ -1,0 +1,179 @@
+<div class="row">
+  <div class="col-md-6 col-lg-3">
+      <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+        <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+              <div *ngIf="dbInfo">
+                  <p class="m-b-0">Ingreso Neto</p>
+                  <h2 class="m-b-0">
+                      <span>{{ dbInfo.netRevenue | currency }}</span>
+                  </h2>
+              </div>
+              <nz-avatar [nzSize]="50" nzIcon="dollar" class="ant-avatar-blue"></nz-avatar>
+          </div>
+      </nz-card>
+    </nz-spin>
+  </div>
+  <div class="col-md-6 col-lg-3">
+      <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+      <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+              <div *ngIf="dbInfo">
+                  <p class="m-b-0">Ventas vs Mes Anterior</p>
+                  <h2 class="m-b-0">
+                      <span>{{ dbInfo.bounceRate | percent }}</span>
+                  </h2>
+              </div>
+              <nz-avatar [nzSize]="50" nzIcon="bar-chart" class="ant-avatar-cyan"></nz-avatar>
+          </div>
+      </nz-card>
+      </nz-spin>
+  </div>
+  <div class="col-md-6 col-lg-3">
+      <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+      <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+              <div *ngIf="dbInfo">
+                  <p class="m-b-0">Ventas</p>
+                  <h2 class="m-b-0">
+                      <span>{{ dbInfo.orders | number }}</span>
+                  </h2>
+              </div>
+              <nz-avatar [nzSize]="50" nzIcon="profile" class="ant-avatar-red"></nz-avatar>
+          </div>
+      </nz-card>
+      </nz-spin>
+  </div>
+  <div class="col-md-6 col-lg-3">
+      <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+      <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+              <div *ngIf="dbInfo">
+                  <p class="m-b-0">Gastos</p>
+                  <h2 class="m-b-0">
+                      <span>{{ dbInfo.totalExpense | currency }}</span>
+                  </h2>
+              </div>
+              <nz-avatar [nzSize]="50" nzIcon="bar-chart" class="ant-avatar-gold"></nz-avatar>
+          </div>
+      </nz-card>
+      </nz-spin>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-3">
+      <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+      <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+              <h5>Satisfacción</h5>
+          </div>
+          <div class="d-flex align-items-center m-t-20" *ngIf="dbInfo">
+              <h1 class="m-b-0 m-r-10 font-weight-normal">{{ dbInfo.overallRating }}</h1>
+              <nz-rate *ngIf="dbInfo" [(ngModel)]="dbInfo.overallRating" nzDisabled></nz-rate>
+          </div>
+          <p><span *ngIf="dbInfo" class="text-success font-weight-bold">{{ dbInfo.ratingDifference }}</span> puntos vs mes anterior</p>
+          <div class="m-t-30" style="height: 150px">
+              <canvas ngChartjs 
+                  [datasets]="ratingChartData" 
+                  [labels]="ratingChartLabels"
+                  [options]="ratingChartOptions" 
+                  [colors]="ratingChartColors" 
+                  [legend]="false"
+                  [chartType]="ratingChartType">
+              </canvas>
+          </div>
+      </nz-card>
+      </nz-spin>
+  </div>
+  <div class="col-lg-6">
+      <nz-card>
+          <div class="d-md-flex justify-content-between align-items-center">
+              <h5>Ventas por Ruta</h5>
+              <div class="d-flex">
+                  <div class="m-r-10">
+                      <nz-badge nzStatus="default" [nzStyle]="{'background-color': purple}"></nz-badge>
+                      <span class="text-gray font-weight-semibold font-size-13">Día</span>
+                  </div>
+                  <div class="m-r-10">
+                      <nz-badge nzStatus="default" [nzStyle]="{'background-color': purpleLight}"></nz-badge>
+                      <span class="text-gray font-weight-semibold font-size-13">Tarde</span>
+                  </div>
+              </div>
+          </div>
+          <div class="m-t-50">
+              <canvas ngChartjs
+                  style="height: 220px"
+                  [datasets]="salesChartData"
+                  [labels]="salesChartLabels"
+                  [options]="salesChartOptions" 
+                  [colors]="salesChartColors"
+                  [legend]="false" 
+                  [chartType]="salesChartType">
+              </canvas>
+          </div>
+      </nz-card>
+  </div>
+  <div class="col-lg-3">
+      <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+            <div *ngIf="dbInfo">
+              <p class="m-b-0">Meta Mensual</p>
+              <h2 class="m-b-0" *ngIf="dbInfo">
+                  <span>{{ dbInfo.monthlyTarget | currency }}</span>
+              </h2>
+            </div>
+          </div>  
+          <div class="text-center m-v-45">
+              <nz-progress *ngIf="dbInfo" [nzPercent]="70" nzType="circle" [nzWidth]="160" [nzStrokeWidth]="3" [nzFormat]="" nzStatus="warning"></nz-progress>
+          </div>
+          <!-- <div class="d-flex justify-content-center">
+              <nz-badge nzStatus="default" [nzStyle]="{'background-color': cyan}"></nz-badge>
+              <span><span *ngIf="dbInfo" class="font-weight-semibold">{{ dbInfo.targetDifference | percent }}</span> de la meta</span>
+          </div> -->
+      </nz-card>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+              <h5>Operaciones Recientes</h5>
+              <div>
+                  <button nz-button nzType="default" nzSize="small">Ver todas</button>
+              </div>
+          </div>
+          <div class="m-t-30">
+              <nz-table #ordersListTable [nzData]="ordersList"  [nzShowPagination]="false" class="no-border-last">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Customer</th>
+                          <th>Date</th>
+                          <th>Amount</th>
+                          <th>Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let item of ordersListTable.data">
+                          <td>#{{item.id}}</td>
+                          <td>
+                              <div class="d-flex align-items-center">
+                                  <nz-avatar [nzSize]="30" nzIcon="user" [nzSrc]="item.avatar"></nz-avatar>
+                                  <h6 class="m-l-10 m-b-0">{{item.name}}</h6>
+                              </div>
+                          </td>
+                          <td>{{item.date}}</td>
+                          <td>${{item.amount | number:'3.2-5'}}</td>
+                          <td>
+                              <nz-badge *ngIf="item.status == 'approved'" nzStatus="success"></nz-badge>
+                              <nz-badge *ngIf="item.status == 'rejected'" nzStatus="error"></nz-badge>
+                              <nz-badge *ngIf="item.status == 'pending'"  nzStatus="processing"></nz-badge> 
+                              <span class="text-capitalize">{{item.status}}</span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </nz-table>
+          </div>
+      </nz-card>
+  </div>
+</div>

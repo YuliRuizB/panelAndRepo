@@ -1,0 +1,7 @@
+:host ::ng-deep .ant-tabs-nav-wrap {
+  padding: 0px 25px;
+}
+
+:host ::ng-deep .ant-timeline-item-head-custom {
+  margin-top: 10px;
+}

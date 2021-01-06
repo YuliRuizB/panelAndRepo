@@ -1,0 +1,205 @@
+<div class="site-page-header-ghost-wrapper">
+  <nz-page-header nzGhost="false">
+    <nz-page-header-extra>
+      <button nz-button nzType="primary" (click)="showCreateModal()">Agregar asignación</button>
+    </nz-page-header-extra>
+  </nz-page-header>
+</div>
+
+<nz-table *ngIf="routesList.length > 0" #programsListTable [nzData]="programsList" [nzLoading]="loading">
+  <thead>
+    <tr>
+      <th>Asignado A</th>
+      <th>Ruta</th>
+      <th>Tarea</th>
+      <th>Días</th>
+      <th>Turno</th>
+      <th>Hora</th>
+      <th>AC</th>
+      <th>Inicio</th>
+      <th>Fin</th>
+      <th>Tipo</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of programsListTable.data">
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.vendorName }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ getRouteName(data.routeId) }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.program == 'M' ? 'Mete' : 'Saca' }}
+      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
+        <nz-tag [nzColor]="data.isSunday ? 'blue':''">Dom</nz-tag>
+        <nz-tag [nzColor]="data.isMonday ? 'blue':''">Lun</nz-tag>
+        <nz-tag [nzColor]="data.isTuesday ? 'blue':''">Mar</nz-tag>
+        <nz-tag [nzColor]="data.isWednesday ? 'blue':''">Mié</nz-tag>
+        <nz-tag [nzColor]="data.isThursday ? 'blue':''">Jue</nz-tag>
+        <nz-tag [nzColor]="data.isFriday ? 'blue':''">Vie</nz-tag>
+        <nz-tag [nzColor]="data.isSaturday ? 'blue':''">Sáb</nz-tag>
+      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.round }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ (data.time).toDate() | date: 'shortTime' }}
+      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.acRequired ? 'Si':'No' }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.stopBeginName }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.stopEndName }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.type }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
+        <a nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight">
+          <i nz-icon nzType="ellipsis" nzTooltipTitle="Más información" nzTooltipPlacement="topLeft" nz-tooltip></i>
+        </a>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li *ngIf="!data.active" nz-menu-item (click)="toggleActive(data)">
+              <i nz-icon nzType="check-circle"></i>
+              Activar
+            </li>
+            <li *ngIf="data.active" nz-menu-item (click)="toggleActive(data)">
+              <i nz-icon nzType="pause-circle"></i>
+              Desactivar
+            </li>
+            <li nz-menu-item (click)="showModalEdit(data)">
+              <i nz-icon nzType="edit"></i>
+              Editar
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item nz-popconfirm nzPopconfirmTitle="¿Estás seguro de eliminar esta asignación?"
+              (nzOnConfirm)="showModalDelete(data)" (nzOnCancel)="handleCancel()" nzPopconfirmPlacement="topRight">
+              <i nz-icon nzTheme="twotone" nzTwotoneColor="#de4436" nzType="delete"></i>
+              Eliminar
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+
+<nz-modal [(nzVisible)]="isCreateVisible" nzTitle="Agregar asignación" (nzOnCancel)="handleCancel()"
+  (nzOnOk)="createProgram()">
+  <form nz-form [formGroup]="programForm" (ngSubmit)="createProgram()">
+    <nz-form-item>
+      <nz-form-label>Transportista</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="vendorId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+          (ngModelChange)="onVendorSelected($event, 'vendorName')">
+          <nz-option *ngFor="let o of vendorsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+              nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Tipo de asignación</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="type">
+              <nz-option nzValue="Permanente" nzLabel="Permanente"></nz-option>
+              <nz-option nzValue="Temporal" nzLabel="Temporal"></nz-option>
+              <nz-option nzValue="Viaje Especial" nzLabel="Viaje Especial"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Ruta</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="routeId" (ngModelChange)="onRouteSelected($event)">
+              <nz-option *ngFor="let o of routesList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+                  nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Turno</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="round">
+              <nz-option nzValue="Día" nzLabel="Día"></nz-option>
+              <nz-option nzValue="Tarde" nzLabel="Tarde"></nz-option>
+              <nz-option nzValue="Noche" nzLabel="Noche"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Tarea</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="program">
+              <nz-option nzValue="M" nzLabel="Mete"></nz-option>
+              <nz-option nzValue="S" nzLabel="Saca"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Hora Compromiso</nz-form-label>
+          <nz-form-control>
+            <nz-time-picker formControlName="time" nzFormat="HH:mm"></nz-time-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Aire acondicionado</nz-form-label>
+          <nz-form-control>
+            <nz-switch formControlName="acRequired" nzCheckedChildren="Si" nzUnCheckedChildren="No"></nz-switch>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <nz-form-item>
+      <nz-form-label nzFor="days">Días</nz-form-label>
+      <nz-form-control>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isSunday.value"
+          (nzCheckedChange)="checkChange('isSunday',$event)">Dom</nz-tag>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isMonday.value"
+          (nzCheckedChange)="checkChange('isMonday',$event)">Lun</nz-tag>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isTuesday.value"
+          (nzCheckedChange)="checkChange('isTuesday',$event)">Mar</nz-tag>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isWednesday.value"
+          (nzCheckedChange)="checkChange('isWednesday',$event)">Mié</nz-tag>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isThursday.value"
+          (nzCheckedChange)="checkChange('isThursday',$event)">Jue</nz-tag>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isFriday.value"
+          (nzCheckedChange)="checkChange('isFriday',$event)">Vie</nz-tag>
+        <nz-tag nzMode="checkable" [nzChecked]="programForm.controls.isSaturday.value"
+          (nzCheckedChange)="checkChange('isSaturday',$event)">Sáb</nz-tag>
+      </nz-form-control>
+    </nz-form-item>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Inicia en</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="stopBeginId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+              (ngModelChange)="onStopPointSelected($event, 'stopBeginName','stopBeginHour')">
+              <nz-option *ngFor="let o of stopPointsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+                  nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Termina en</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="stopEndId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+              (ngModelChange)="onStopPointSelected($event, 'stopEndName','stopEndHour')">
+              <nz-option *ngFor="let o of stopPointsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+                  nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</nz-modal>

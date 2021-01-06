@@ -1,0 +1,18 @@
+<div class="container">
+    
+      <nz-card nzType="inner" nzTitle="Métodos de Pago (Aplican cuando el Usuario es responsable del Pago)" [nzLoading]="loading">
+        
+        <div class="row">
+            <ng-container *ngFor="let pm of accountPaymentMethods">
+            <div class="col-md-6">
+                <label nzFor="pm.name">{{ pm.name }}&nbsp;</label>
+                <nz-switch [ngModel]="pm.active" (ngModelChange)="onChange($event, pm)" nzCheckedChildren="Si" nzUnCheckedChildren="No"></nz-switch>
+            </div>
+        </ng-container>
+        </div>
+          
+      </nz-card>
+      
+    
+  
+  </div>
