@@ -67,6 +67,7 @@
       <th>Ubicación</th>
       <th>Horario Día</th>
       <th>Horario Tarde</th>
+      <th>Horario Noche</th>
       <th></th>
     </tr>
   </thead>
@@ -77,11 +78,11 @@
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{data.description}}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{data.geopoint.latitude }},
         {{ data.geopoint.longitude }}</td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round1 }}
-      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round1 }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round2 }}
-      </td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round2 }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round3 }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
         <a nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight">

@@ -34,7 +34,8 @@ export class SharedStopPointsEditComponent implements OnInit, OnDestroy {
       kmzUrl: [this.stopPoint.kmzUrl, [Validators.required]],
       order: [this.stopPoint.order, [Validators.required]],
       round1: [this.stopPoint.round1, [Validators.required]],
-      round2: [this.stopPoint.round2, [Validators.required]]
+      round2: [this.stopPoint.round2, [Validators.required]],
+      round3: [this.stopPoint.round3, [Validators.required]]
     });
   }
 

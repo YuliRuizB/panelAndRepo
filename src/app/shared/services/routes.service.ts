@@ -274,7 +274,8 @@ export class RoutesService {
     let wrappedData = object;
     wrappedData.rounds = {
       round1: object.round1,
-      round2: object.round2
+      round2: object.round2,
+      round3: object.round3
     };
     wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
     console.log(wrappedData);
@@ -286,7 +287,8 @@ export class RoutesService {
     let wrappedData = object;
     wrappedData.rounds = {
       round1: object.round1,
-      round2: object.round2
+      round2: object.round2,
+      round3: object.round3
     };
     wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
     console.log(wrappedData);
