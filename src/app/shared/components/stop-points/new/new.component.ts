@@ -34,7 +34,8 @@ export class SharedStopPointsNewComponent implements OnInit {
       kmzUrl: [''],
       order: [0, [Validators.required]],
       round1: ['', [Validators.required]],
-      round2: ['', [Validators.required]]
+      round2: ['', [Validators.required]],
+      round3: ['', [Validators.required]]
     });
   }
 

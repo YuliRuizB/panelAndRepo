@@ -8,10 +8,11 @@ import * as basicAuth from 'express-basic-auth';
 //import * as request from 'request';
 
 const Openpay = require('openpay');
-const openpay = new Openpay('m2mkwvsgfxzuc0hrg8fm', 'sk_dc43597b199448588611083a15c02407'); //production
-// const openpay = new Openpay('mptiot2sftktydvpfgxj', 'sk_0038400338e04bdb9ba760ad05f8aa93'); //development
+// const openpay = new Openpay('m2mkwvsgfxzuc0hrg8fm', 'sk_dc43597b199448588611083a15c02407'); //production
+//const openpay = new Openpay('mptiot2sftktydvpfgxj', 'sk_0038400338e04bdb9ba760ad05f8aa93'); //development
+const openpay = new Openpay('ma76iv4jwl1dmjtrqx9p', 'sk_577999058ae043c9b90e9a18e1679976'); //development
 
-openpay.setProductionReady(true);
+openpay.setProductionReady(false);
 
 // CORS Express middleware to enable CORS Requests.
 import * as cors from "cors";
@@ -121,6 +122,31 @@ app.post('/allevents', function (req, res) {
   //   }).catch(err => resolve(err));
   // });
   res.status(200).send('charge.succeeded was successful.');
+});
+
+app.post('/speiReceived', basicAuth({ users: { 'bus2uUser': 'R92bxFFtNRqZHkNw' } }), function (req, res) {
+  console.log('charge completed api call');
+  const transaction = req.body.transaction;
+  console.log('transaction var:', transaction);
+  const orderArray = transaction.order_id.split('-');
+  const userId = orderArray[1];
+  console.log('userId var: ', userId);
+  transaction.transaction_id = transaction.id;
+  delete transaction.id;
+  console.log('transaction manipulated var: ', transaction);
+
+  new Promise((resolve, reject) => {
+    const purchaseRequestRef = admin.firestore().collection('users').doc(userId).collection('purchaseRequests').doc(transaction.transaction_id);
+    purchaseRequestRef.update(transaction).then((response: unknown) => {
+      console.log(response);
+      resolve(response);
+    })
+      .catch((err: any) => {
+        console.log('err: ', err);
+        reject(err)
+      });
+  });
+  res.sendStatus(200);
 });
 
 // app.post('/chargeFailed', function (req, res) {
@@ -314,6 +340,40 @@ exports.addNewOpenpayStoreChargeRequest = functions.https.onCall((data, context)
   });
 });
 
+exports.addNewOpenpaySPEIChargeRequest = functions.https.onCall((data, context) => {
+
+  if (!context.auth) {
+    // Throwing an HttpsError so that the client gets the error details.
+    throw new functions.https.HttpsError('failed-precondition',
+      'The function must be called while authenticated.');
+  }
+
+  // Authentication / user information is automatically added to the request.
+  const newChargeRequest = data.charge_request;
+  // const customerId = data.customer_id;
+  // newChargeRequest.customer_id = customerId;
+  console.log(data);
+  //   const uid = context.auth.uid;
+  //   const name = context.auth.token.name || null;
+  //   const picture = context.auth.token.picture || null;
+  //   const email = context.auth.token.email || null;
+
+  return new Promise((resolve) => {
+    openpay.charges.create(newChargeRequest, (error: unknown, charge: any) => {
+      if (error) { resolve(error) };
+      if (charge) {
+        resolve(charge)
+        // const purchaseRef$ = admin.firestore().collection('users').doc(uid).collection('purchaseRequests').doc(charge.id);
+        // purchaseRef$.set(charge).then(() => {
+        //   admin.firestore().collection('storeChargeRequests').doc(charge.id).set(charge);
+        // }).then(() => {
+        //   resolve(charge);
+        // })
+      };
+    });
+  });
+});
+
 exports.addNewOpenpayCardChargeRequest = functions.https.onCall((data, context) => {
 
   if (!context.auth) {
@@ -326,13 +386,13 @@ exports.addNewOpenpayCardChargeRequest = functions.https.onCall((data, context) 
   console.log(data);
   const newChargeRequest = data.charge_request;
   // const customerId = data.customer_id;
-  //   const uid = context.auth.uid;
-  //   const name = context.auth.token.name || null;
-  //   const picture = context.auth.token.picture || null;
-  //   const email = context.auth.token.email || null;
+  // const uid = context.auth.uid;
+  // const name = context.auth.token.name || null;
+  // const picture = context.auth.token.picture || null;
+  // const email = context.auth.token.email || null;
 
   return new Promise((resolve) => {
-    openpay.charges.create(newChargeRequest, (error: unknown, charge: unknown) => {
+    openpay.charges.create(newChargeRequest, (error: unknown, charge: any) => {
       if (error) { resolve(error) };
       if (charge) {
         resolve(charge)
@@ -429,36 +489,40 @@ exports.sendFCMNotification = functions.firestore.document('testFCM/{userId}').o
   }).catch((err: any) => console.log('error: ', err));
 })
 
-exports.setLiveProgram = functions.firestore.document('customers/{customerId}/program/{programId}').onUpdate(async (snap, context) => {
-  const updated:any = snap.after.data();
-  const before: any = snap.before.data();
+exports.addCustomClaim = functions.https.onCall((data, context) => {
+  // Get the user we want to add custom claims
+  
+  return admin.auth().getUserByEmail(data.email).then( (user:any) => {
+    return admin.auth().setCustomUserClaims(user.uid, {...data.claims})
+  }).then( () => {
+    return {
+      message: `${data.email} has been added next claims: ${ JSON.stringify(data.claims)}`
+    }
+  }).catch((err: any) => {
+    return err;
+  })
+});
 
-  const isLive = updated.isLive || false;
-  const wasLive = before.isLive || false;
-  const hasEnded = updated.hasEnded || false;
+// exports.sendVerificationEmailOnUserCreate = functions.auth.user().onCreate((user) => {
+  
+//   return admin.auth().generateEmailVerificationLink(user.email).then((link: any) => {
+//     return {
+//       success: true,
+//       link
+//     };
+//     console.log(link);
+//   })
+//   .catch(function(error: any) {
+//     // Some error occurred, you can inspect the code: error.code
+//     return {
+//       success: false,
+//       message: error.code,
+//       error
+//     }
+//     console.log(error);
+//   });
 
-  const customerId = context.params.customerId;
-    const programId = context.params.programId;
-
-  if(!wasLive && isLive) {
-    const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
-    return insertLiveProgram.create(updated);
-  } 
-
-  if(hasEnded) {
-    const batch = admin.firestore().batch();
-    const liveProgramDocRef = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
-    const endedProgramDocRef = await admin.firestore().doc(`customers/${customerId}/operations/${programId}`);
-    batch.delete(liveProgramDocRef);
-    batch.create(endedProgramDocRef, updated);
-    return batch.commit();
-  }
-
-  const updateLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
-  return updateLiveProgram.update(updated);
-
-})
-
+// })
 
 exports.createUser = functions.https.onCall(async (data) => {
   const user = data;
@@ -476,7 +540,13 @@ exports.createUser = functions.https.onCall(async (data) => {
     const uid = userRecord.uid;
     const usersCollectionRef = db.collection('users').doc(uid);
 
-    return usersCollectionRef.set(user)
+    return usersCollectionRef.set(user).then( () => {
+      return {
+        success: true,
+        user: userRecord,
+        message: 'Successfully created user'
+      }
+    })
       .catch((err: any) => {
         return {
           success: false,
@@ -535,22 +605,50 @@ exports.onDeleteUser = functions.firestore.document('users/{userId}').onDelete((
     });
 });
 
-exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
-
+exports.onAuthenticationDeletedUser = functions.auth.user().onDelete((user) => {
   console.log(user);
-  return admin.auth().generatePasswordResetLink(user.email)
-    .then(() => {
-      return {
-        success: true,
-        message: 'reset link password generated'
-      }
-    })
-    .catch((err: any) => {
-      return {
-        success: false,
-        message: err
-      }
-    });
+  const userCollectionRefDoc = admin.firestore().collection('users').doc(user.uid);
+  return userCollectionRefDoc.delete();
+});
+
+// exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
+
+//   console.log(user);
+//   return admin.auth().generatePasswordResetLink(user.email)
+//     .then(() => {
+//       return {
+//         success: true,
+//         message: 'reset link password generated'
+//       }
+//     })
+//     .catch((err: any) => {
+//       return {
+//         success: false,
+//         message: err
+//       }
+//     });
+
+// });
+
+exports.sendVerificationEmail = functions.https.onCall( async(data, context) => {
+  
+  const useremail = data.email;
+  return admin.auth().generateEmailVerificationLink(useremail).then((link: any) => {
+    console.log(link);
+    return {
+      success: true,
+      link
+    };
+  })
+  .catch(function(error: any) {
+    // Some error occurred, you can inspect the code: error.code
+    console.log(error);
+    return {
+      success: false,
+      message: error.code,
+      error
+    };
+  });
 
 });
 
@@ -590,3 +688,33 @@ exports.sendNotificationOnDiscountRequest = functions.firestore.document('discou
   return await admin.messaging().sendToDevice(tokens, payload);
 
 });
+
+exports.setLiveProgram = functions.firestore.document('customers/{customerId}/program/{programId}').onUpdate(async (snap, context) => {
+  const updated:any = snap.after.data();
+  const before: any = snap.before.data();
+
+  const isLive = updated.isLive || false;
+  const wasLive = before.isLive || false;
+  const hasEnded = updated.hasEnded || false;
+
+  const customerId = context.params.customerId;
+    const programId = context.params.programId;
+
+  if(!wasLive && isLive) {
+    const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
+    return insertLiveProgram.create(updated);
+  } 
+
+  if(hasEnded) {
+    const batch = admin.firestore().batch();
+    const liveProgramDocRef = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
+    const endedProgramDocRef = await admin.firestore().doc(`customers/${customerId}/operations/${programId}`);
+    batch.delete(liveProgramDocRef);
+    batch.create(endedProgramDocRef, updated);
+    return batch.commit();
+  }
+
+  const updateLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
+  return updateLiveProgram.update(updated);
+
+})
