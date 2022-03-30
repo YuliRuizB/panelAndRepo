@@ -1,167 +1,125 @@
-<nz-drawer
-      [nzClosable]="false"
-      [nzVisible]="visible"
-      nzPlacement="right"
-      nzTitle="Alertas"
-      (nzOnClose)="close()"
-    >
-    <div class="m-t-40">
-      <div class="overflow-y-auto p-l-10 p-t-15">
-        <nz-timeline>
-          <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
-            <div class="m-l-20">
-              <h5 class="m-b-5">{{item.studentName}}</h5>
-              <p class="m-b-0">
-                <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
-                <span class="m-l-5"> {{item.studentId}}</span>
-              </p>
-              <span class="text-muted font-size-13">
-                <i nz-icon nzType="clock-circle" theme="outline"></i>
-                <span class="m-l-5">{{formatDate(item.created)}}</span>
-              </span>
-            </div>
-            <ng-template #dotTemplate>
-              <div class="font-size-20 p-5">
-                <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
-                <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip"
-                  theme="outline"></i>
-                <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message"
-                  theme="outline"></i>
-                <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle"
-                  theme="outline"></i>
-              </div>
-            </ng-template>
-          </nz-timeline-item>
-        </nz-timeline>
-      </div>
-    </div>
-    </nz-drawer>
-<nz-tabset>
-  
-  <nz-tab nzTitle="Diagrama">
-    <div class="row">
-      <button nz-button nzType="primary" (click)="open()">Excepciones</button>
-    </div>
-      <div class="row">
-      <div class="col-lg-6 col-sm-12">
-        <nz-card>
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Diagrama de actividad </h5>
-            <div>
-              <a class="text-dark font-size-20" nz-dropdown [nzTrigger]="'click'" [nzPlacement]="'bottomRight'"
-                [nzDropdownMenu]="projectCompletionDropDown">
-                <i nz-icon nzType="ellipsis" theme="outline"></i>
-              </a>
-              <nz-dropdown-menu #projectCompletionDropDown="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Matutino</span>
-                  </li>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Vespertino</span>
-                  </li>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Ayer</span>
-                  </li>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Antiér</span>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" nzTitle="Alertas" (nzOnClose)="close()">
+  <div class="m-t-40">
+    <div class="overflow-y-auto p-l-10 p-t-15">
+      <nz-timeline>
+        <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
+          <div class="m-l-20">
+            <h5 class="m-b-5">{{item.studentName}}</h5>
+            <p class="m-b-0">
+              <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
+              <span class="m-l-5"> {{item.studentId}}</span>
+            </p>
+            <span class="text-muted font-size-13">
+              <i nz-icon nzType="clock-circle" theme="outline"></i>
+              <span class="m-l-5">{{formatDate(item.created)}}</span>
+            </span>
           </div>
-          <div class="d-md-flex justify-content-space m-t-50">
-            <div id="chartdiv" style="width: 100%; height: 500px"></div>
-          </div>
-        </nz-card>
-      </div>
-      <div class="col-lg-6">
-        <nz-card>
-          <!-- <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Excepciones</h5>
-          </div>
-          <div class="m-t-40">
-            <div class="overflow-y-auto p-l-10 p-t-15">
-              <nz-timeline>
-                <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
-                  <div class="m-l-20">
-                    <h5 class="m-b-5">{{item.studentName}}</h5>
-                    <p class="m-b-0">
-                      <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
-                      <span class="m-l-5"> {{item.studentId}}</span>
-                    </p>
-                    <span class="text-muted font-size-13">
-                      <i nz-icon nzType="clock-circle" theme="outline"></i>
-                      <span class="m-l-5">{{formatDate(item.created)}}</span>
-                    </span>
-                  </div>
-                  <ng-template #dotTemplate>
-                    <div class="font-size-20 p-5">
-                      <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
-                      <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip"
-                        theme="outline"></i>
-                      <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message"
-                        theme="outline"></i>
-                      <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle"
-                        theme="outline"></i>
-                    </div>
-                  </ng-template>
-                </nz-timeline-item>
-              </nz-timeline>
+          <ng-template #dotTemplate>
+            <div class="font-size-20 p-5">
+              <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
+              <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip" theme="outline"></i>
+              <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message" theme="outline"></i>
+              <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle" theme="outline"></i>
             </div>
-          </div> -->
-          <div class="map" #map id="map" class="match-parent"></div>
-        </nz-card>
-      </div>
+          </ng-template>
+        </nz-timeline-item>
+      </nz-timeline>
     </div>
-  </nz-tab>
-  <nz-tab nzTitle="Mapa">
-    <div class="row">
-      <button nz-button nzType="primary" (click)="open()">Excepciones</button>
-      <div class="col-lg-12">
-        <nz-card>
-            <div class="map" #map id="map" class="match-parent"></div>
-        </nz-card>
-      </div>
+  </div>
+</nz-drawer>
 
-    </div>
-  </nz-tab>
-</nz-tabset>
-<nz-tabset>
-  <nz-tab nzTitle="Por vehículo">
-    <div class="row">
-      <div class="col-lg-12">
-        <nz-card>
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Ejecución de rutas</h5>
-          </div>
-          <div class="m-t-30">
-            <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="liveServiceData"
-              [onGridReady]='onGridReady' [columnDefs]="liveProgramColumnDefs" [groupIncludeFooter]="true" [sideBar]="false">
-            </ag-grid-angular>
-          </div>
-        </nz-card>
-      </div>
-    </div>
-  </nz-tab>
-  <nz-tab nzTitle="Detallado">
-    <div class="row">
-      <div class="col-lg-12">
-        <nz-card>
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Información detallada</h5>
-          </div>
-          <div class="m-t-30">
-            <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowData"
-              [onGridReady]='onGridReady' [columnDefs]="columnDefs" [groupIncludeFooter]="true" [sideBar]="true">
-            </ag-grid-angular>
-          </div>
-        </nz-card>
-      </div>
-    </div>
-  </nz-tab>
-</nz-tabset>
+<div nz-row [nzGutter]="8">
+  <div nz-col nzSpan="8">
+
+    <nz-card style="width:100%;" nzTitle="Programación" [nzExtra]="extraTemplate">
+      <nz-calendar [nzFullscreen]="false" (nzSelectChange)="onValueChange($event)"
+        (nzPanelChange)="onPanelChange($event)"></nz-calendar>
+    </nz-card>
+    <ng-template #extraTemplate>
+      <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
+        <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
+      </button>
+      <!-- <button nz-button nz-dropdown [nzDropdownMenu]="menu"><i nz-icon nzType="ellipsis"></i></button> -->
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="getAssignments()">
+            Ver asignaciones para {{ date | date: 'mediumDate' }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </ng-template>
+
+  </div>
+  <div nz-col nzSpan="16">
+    
+
+  </div>
+</div>
+
+<nz-card style="width:100%;" [nzBodyStyle]="{ 'padding': '0px' }" nzTitle="Detalles">
+      
+  <nz-table #ajaxTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="listOfData" [nzLoading]="loading"
+    [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzPageIndexChange)="searchData()"
+    (nzPageSizeChange)="searchData(true)">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th>Inicia</th>
+        <th>Cliente</th>
+        <th>Ruta</th>
+        <th>Programa / Turno</th>
+        <th>Conductor</th>
+        <th>Vehículo</th>
+        <th>Inició</th>
+        <th>Finalizó</th>
+        <th nzWidth="100px" nzRight="0px"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of ajaxTable.data">
+        <td>{{ data.time.toDate() | date: 'shortTime' }}</td>
+        <td>{{ data.customerName }}</td>
+        <td>{{ data.routeName }}</td>
+        <td>{{ data.round }} / {{ data.program }}</td>
+        <td>{{ data.driver }}</td>
+        <td>{{ data.vehicleName }}</td>
+        <td *ngIf="data.started">{{ data.startedAt.toDate() | date: 'shortTime' }}</td>
+        <td *ngIf="!data.started">No</td>
+        <td *ngIf="data.hasEnded">{{ data.endedAt.toDate() | date: 'shortTime' }}</td>
+        <td *ngIf="!data.hasEnded">No</td>
+        <td nzBreakWord nzRight="0px">
+          <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="tableMoreInfo" style="border: none; padding: 0">
+            <i nz-icon nzType="ellipsis" nzTheme="outline" color="primary" style="font-size: 20px; vertical-align: top;"></i>
+          </button>
+          <!-- <button nz-button nz-dropdown [nzDropdownMenu]="menu"><i nz-icon nzType="ellipsis"></i></button> -->
+          <nz-dropdown-menu #tableMoreInfo="nzDropdownMenu">
+            <ul nz-menu>
+              <li *ngIf="!data.hasEnded" nz-menu-item (click)="getAssignments()">
+                <i nz-icon nzType="eye" theme="outline"></i>
+                Editar
+              </li>
+              <li *ngIf="data.hasEnded" nz-menu-item>
+                Reporte detallado
+              </li>
+              <li *ngIf="!data.hasEnded" nz-menu-item>
+                <a
+        nz-popconfirm
+        nzPopconfirmTitle="¿Está seguro de eliminar este programa?"
+        (nzOnConfirm)="deleteAssignment(data.id, data.customerId)"
+        (nzOnCancel)="cancelDeleteAssignment()"
+        nzPopconfirmPlacement="topLeft"
+      >
+        Eliminar
+              </a>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>
+
+<nz-modal [(nzVisible)]="isAssignmentsModalVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  
+</nz-modal>

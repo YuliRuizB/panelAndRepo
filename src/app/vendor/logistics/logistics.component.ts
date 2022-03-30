@@ -10,9 +10,10 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { IActivityLog, ColumnDefs } from 'src/app/logistics/classes';
+import { IActivityLog, ColumnDefs, LiveProgramColumnDefs } from 'src/app/logistics/classes';
 import { LogisticsService } from 'src/app/logistics/services.service';
 import { GeoJson, FeatureCollection } from 'src/app/logistics/map';
+import { LiveService } from 'src/app/shared/services/live.service';
 
 am4core.useTheme(am4themes_animated);
 
@@ -37,12 +38,22 @@ export class LogisticsComponent implements OnInit {
   // mapData
   map: any = mapboxgl.Map;
   source: any;
+  sourceLiveVehicles: any;
   markers: any;
 
 
   columnDefs = ColumnDefs;
+  columnFleetDefs = LiveProgramColumnDefs;
+
+  defaultColDef = {
+    flex: 1,
+    cellClass: 'align-right',
+    enableCellChangeFlash: true,
+    resizable: true,
+  };
 
   rowData: IActivityLog[];
+  rowFleetData: any[];
   activityList: IActivityLog[];
   startDate: Date;
   endDate: Date;
@@ -54,6 +65,7 @@ export class LogisticsComponent implements OnInit {
 
   constructor(
     private logisticsService: LogisticsService,
+    private liveService: LiveService,
     private zone: NgZone
   ) {
     this.markers = [] as GeoJson[];
@@ -231,7 +243,7 @@ export class LogisticsComponent implements OnInit {
     (mapboxgl as any).accessToken = environment.mapbox.accessToken;
     this.map = new mapboxgl.Map({
       container: this.mapElement.nativeElement,
-      style: 'mapbox://styles/mapbox/light-v10',
+      style: 'mapbox://styles/evallgar/cjrwc5l4503z51fldgomb8udg',
       zoom: 10,
       pitch: 45,
       bearing: -17.6,
@@ -241,6 +253,7 @@ export class LogisticsComponent implements OnInit {
 
     /// Add map controls
     this.map.addControl(new mapboxgl.NavigationControl());
+    this.map.addControl(new mapboxgl.FullscreenControl());
 
     /// Add realtime firebase data on map load
     this.map.on('load', (event) => {
@@ -253,11 +266,21 @@ export class LogisticsComponent implements OnInit {
         data: {
           type: 'FeatureCollection',
           features: []
+        },
+        cluster: true
+      });
+
+      this.map.addSource('liveVehicles', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
         }
       });
 
       /// get source
       this.source = this.map.getSource('firebase')
+      this.sourceLiveVehicles = this.map.getSource('liveVehicles');
 
       /// subscribe to realtime database and set data source
       this.markers.pipe(
@@ -296,7 +319,24 @@ export class LogisticsComponent implements OnInit {
         layout: {
           'text-field': '{message}',
           'text-size': 12,
-          'icon-image': 'rocket-15',
+          'icon-image': 'pedestrians',
+          'text-offset': [0, 1.5]
+        },
+        paint: {
+          'text-color': '#f16624',
+          'text-halo-color': '#fff',
+          'text-halo-width': 2
+        }
+      });
+
+      this.map.addLayer({
+        id: 'liveVehicles',
+        source: 'liveVehicles',
+        type: 'symbol',
+        layout: {
+          'text-field': '{message}',
+          'text-size': 12,
+          'icon-image': 'marker_bus',
           'text-offset': [0, 1.5]
         },
         paint: {
@@ -418,6 +458,12 @@ export class LogisticsComponent implements OnInit {
           return { country: x.vehicle, visits: x.studentId }
         })
       });
+
+      this.liveService.getLiveProgram()
+        .subscribe((result: any[]) => {
+          console.log(result);
+          this.rowFleetData = result;
+        });
   }
 
   onGridReady(params) {

@@ -63,6 +63,13 @@ const routes: Routes = [
         }
       },
       {
+        path: 'vehicle/edit/:accountid/:vehicleid',
+        component: VehicleEditComponent,
+        data: {
+          title: 'Editar'
+        }
+      },
+      {
         path: 'logistics',
         component: LogisticsComponent,
         data: {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, take, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { of, combineLatest, Observable } from 'rxjs';
 
@@ -15,8 +15,9 @@ export class UsersService {
 
   getBoardingPassesByRoute(vendorId: string) {
     const today = new Date();
-    this.joined$ = this.afs.collection('vendors').doc(vendorId).collection('routesAccess').valueChanges({ idField: 'id'})
+    this.joined$ = this.afs.collectionGroup('routesAccess').valueChanges()
       .pipe(
+        take(1),
         switchMap((permissions:any) => {
           const routeIds = _.uniq(permissions.map(p => p.routeId));
           return routeIds.length === 0 ? of([]) :
@@ -60,5 +61,17 @@ export class UsersService {
   getBoardingPassActivityLog(userId: string, boardingPassId: string) {
     const activityLog = this.afs.collection('users').doc(userId).collection('boardingPasses').doc(boardingPassId).collection('activityLog', ref => ref.orderBy('created'));
     return activityLog.snapshotChanges();
+  }
+
+  getLastValidBoardingPass(userId: string) {
+    const activityLogRef = this.afs.collection('users').doc(userId).collection('boardingPasses');
+    return activityLogRef.stateChanges().pipe(
+      take(1),
+      map(actions => actions.map(a => {
+        const id = a.payload.doc.id;
+        const data = a.payload.doc.data() as any;
+        return {id, ...data}
+      }))
+    );
   }
 }

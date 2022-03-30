@@ -100,9 +100,12 @@ export class SharedVendorVehiclesComponent implements OnInit {
     this.vehicleForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       licensePlates: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10)]],
+      federalLicencePlates: [''],
       seats: [0, [Validators.required]],
       active: [true],
-      disabled: [false]
+      disabled: [false],
+      model: [0],
+
     })
   }
 
@@ -118,6 +121,14 @@ export class SharedVendorVehiclesComponent implements OnInit {
         this.isOkLoading = false;
         console.log(err);
       });
+  }
+
+  deletePermission(data) {
+    this.devicesService.deleteDevice(this.vendorId, data.id);
+  }
+
+  cancelDelete() {
+    console.log('do not delete device');
   }
 
   getContextMenuItems(params) {

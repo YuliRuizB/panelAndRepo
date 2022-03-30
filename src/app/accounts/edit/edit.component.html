@@ -29,6 +29,16 @@
           <app-shared-users-list [accountId]="recordId" [accountName]="record.name"></app-shared-users-list>
         </ng-template>
       </nz-tab>
+      <nz-tab nzTitle="Pases Activos">
+        <ng-template nz-tab>
+          <app-shared-qrcodes [accountId]="recordId"></app-shared-qrcodes>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Credenciales">
+        <ng-template nz-tab>
+          <app-shared-credentials-qrcodes [accountId]="recordId"></app-shared-credentials-qrcodes>
+        </ng-template>
+      </nz-tab>
       <nz-tab nzTitle="Acceso al sistema">
         <ng-template nz-tab>
           <app-shared-system-users-list [accountId]="recordId" [accountName]="record.name"></app-shared-system-users-list>

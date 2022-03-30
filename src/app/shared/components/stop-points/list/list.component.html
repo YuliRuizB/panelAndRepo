@@ -61,13 +61,22 @@
 <nz-table #basicTable [nzData]="stopPointsList" [nzLoading]="loading">
   <thead>
     <tr>
-      <th>Orden</th>
-      <th>Nombre</th>
-      <th>Descripción</th>
-      <th>Ubicación</th>
-      <th>Horario Día</th>
-      <th>Horario Tarde</th>
-      <th>Horario Noche</th>
+      <th rowspan="2">Orden</th>
+      <th rowspan="2">Nombre</th>
+      <th rowspan="2">Descripción</th>
+      <th rowspan="2">Ubicación</th>
+      <th colspan="2">Día</th>
+      <th colspan="2">Tarde</th>
+      <th colspan="2">Noche</th>
+      <th></th>
+    </tr>
+    <tr>
+      <th>Hora</th>
+      <th>Minutos</th>
+      <th>Hora</th>
+      <th>Minutos</th>
+      <th>Hora</th>
+      <th>Minutos</th>
       <th></th>
     </tr>
   </thead>
@@ -80,9 +89,15 @@
         {{ data.geopoint.longitude }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round1 }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.round1MinutesSinceStart }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round2 }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.round2MinutesSinceStart }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.rounds.round3 }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="data.rounds">{{ data.round3MinutesSinceStart }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'" *ngIf="!data.rounds">--:--</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
         <a nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight">

@@ -87,7 +87,7 @@
             <nz-dropdown-menu #projectListSetting="nzDropdownMenu">
               <ul nz-menu nzSelectable>
                 <li nz-menu-item>
-                  <a [routerLink]="['/vendor/vehicle/edit', item.id]" routerLinkActive="router-link-active">
+                  <a [routerLink]="['/vendor/vehicle/edit', user.vendorId, item.id]" routerLinkActive="router-link-active">
                     <i nz-icon nzType="edit" theme="outline"></i>
                     <span class="m-l-10">Editar</span>
                   </a>

@@ -45,6 +45,7 @@ import { LicenseManager } from 'ag-grid-enterprise';
 LicenseManager.setLicenseKey('Evaluation_License_Valid_Until_29_August_2018__MTUzNTQ5NzIwMDAwMA==00c7d5ad3b64cd638c04ea5496156d8b');
 
 import { SharedUsersListComponent } from './shared/components/users/list/list.component';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
 
 @NgModule({
     declarations: [
@@ -59,6 +60,7 @@ import { SharedUsersListComponent } from './shared/components/users/list/list.co
         AngularFireAuthModule,
         AngularFireStorageModule,
         AngularFireMessagingModule,
+        AngularFireFunctionsModule,
         AngularFirestoreModule,
         NgxPermissionsModule.forRoot(),
         NgZorroAntdModule,

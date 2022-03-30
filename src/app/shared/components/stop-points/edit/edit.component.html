@@ -67,6 +67,38 @@
       </nz-form-item>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-4 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Minutos día</nz-form-label>
+        <nz-form-control nzErrorTip="Agregue horario">
+          <nz-input-group nzPrefixIcon="edit">
+            <input type="number" formControlName="round1MinutesSinceStart" nz-input placeholder="00" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Minutos Tarde</nz-form-label>
+        <nz-form-control nzErrorTip="Agregue horario">
+          <nz-input-group nzPrefixIcon="edit">
+            <input type="number" formControlName="round2MinutesSinceStart" nz-input placeholder="00" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <nz-form-item>
+        <nz-form-label>Minutos Noche</nz-form-label>
+        <nz-form-control nzErrorTip="Agregue horario">
+          <nz-input-group nzPrefixIcon="edit">
+            <input type="number" formControlName="round3MinutesSinceStart" nz-input placeholder="00" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
   <nz-form-item>
     <nz-form-label>Orden</nz-form-label>
     <nz-form-control nzErrorTip="Orden de ejecución de la ruta">

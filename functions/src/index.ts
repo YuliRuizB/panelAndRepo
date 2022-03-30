@@ -9,13 +9,15 @@ import * as basicAuth from 'express-basic-auth';
 
 const Openpay = require('openpay');
 // const openpay = new Openpay('m2mkwvsgfxzuc0hrg8fm', 'sk_dc43597b199448588611083a15c02407'); //production
-//const openpay = new Openpay('mptiot2sftktydvpfgxj', 'sk_0038400338e04bdb9ba760ad05f8aa93'); //development
-const openpay = new Openpay('ma76iv4jwl1dmjtrqx9p', 'sk_577999058ae043c9b90e9a18e1679976'); //development
+// const openpay = new Openpay('mptiot2sftktydvpfgxj', 'sk_0038400338e04bdb9ba760ad05f8aa93'); //development
+// const openpay = new Openpay('ma76iv4jwl1dmjtrqx9p', 'sk_577999058ae043c9b90e9a18e1679976'); //development
+const openpay = new Openpay('msbxvjptsxwkbl40zaky', 'sk_fb25efc95bd54d7e901ff2ee28da20e3'); //production new account
 
-openpay.setProductionReady(false);
+openpay.setProductionReady(true);
 
 // CORS Express middleware to enable CORS Requests.
 import * as cors from "cors";
+
 
 const app = express();
 app.use(cors({ origin: true }))
@@ -557,6 +559,77 @@ exports.createUser = functions.https.onCall(async (data) => {
 
 });
 
+exports.createDriver = functions.https.onCall(async (data) => {
+  const user = data;
+  console.log(user);
+  const newUser = {
+    email: user.email,
+    emailVerified: true,
+    password: user.password,
+    displayName: `${user.firstName} ${user.lastName}`,
+    photoURL: "http://www.example.com/12345678/photo.png",
+    disabled: false
+  }
+
+  let userData = {
+    uid: 'zero',
+    email: user.email,
+    displayName: `${user.firstName} ${user.lastName}`,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    photoURL: user.photoURL || "",
+    emailVerified: true,
+    address: {
+      addressLine: '',
+      city: '',
+      postCode: '',
+      state: ''
+    },
+    occupation: 'driver',
+    phone: '',
+    refreshToken: '',
+    roles: ['driver'],
+    socialNetworks: {
+      facebook: '',
+      instagram: '',
+      apple: '',
+      google: '',
+      linkedIn: '',
+      twitter: ''
+    },
+    username: user.firstName,
+    _isEditMode: false,
+    _userId: '',
+    customerName: user.vendorName || '',
+    customerId: user.vendorId,
+    employeeId: user.employeeId,
+    vendorId: user.vendorId,
+    vendorName: user.vendorName
+  }
+
+  return admin.auth().createUser(newUser).then((userRecord: any) => {
+    const uid = userRecord.uid;
+    userData.uid = userRecord.uid;
+    userData._userId = userRecord.uid;
+    const usersCollectionRef = db.collection('drivers').doc(uid);
+
+    return usersCollectionRef.set(userData).then( () => {
+      return {
+        success: true,
+        user: userRecord,
+        message: 'Successfully created user'
+      }
+    })
+      .catch((err: any) => {
+        return {
+          success: false,
+          message: 'Error creating user:', err
+        }
+      });
+  })
+
+});
+
 exports.onBulkCreateUser = functions.firestore.document('bulkusers/{userId}').onCreate((snap, context) => {
 
   const user: any = snap.data();
@@ -603,6 +676,35 @@ exports.onDeleteUser = functions.firestore.document('users/{userId}').onDelete((
         message: 'Error deleting user:', err
       }
     });
+});
+
+exports.onDeleteDriver = functions.firestore.document('drivers/{userId}').onDelete((snap, context) => {
+
+  const uid = context.params.userId;
+  return admin.auth().deleteUser(uid).then(() => {
+    console.log('Successfully deleted driver');
+    return {
+      success: true,
+      message: 'Successfully deleted driver'
+    }
+  })
+    .catch((err: any) => {
+      console.log('Error deleting driver:', err);
+      return {
+        success: false,
+        message: 'Error deleting driver:', err
+      }
+    });
+});
+
+exports.onUpdateDriver = functions.firestore.document('drivers/{userId}').onUpdate((change, context) => {
+  const uid = context.params.userId;
+  const updated = change.after.data();
+  return admin.auth().updateUser(uid, {
+    email: updated.email,
+    password: updated.password,
+    displayName: updated.firstName + " " + updated.lastName
+  });
 });
 
 exports.onAuthenticationDeletedUser = functions.auth.user().onDelete((user) => {

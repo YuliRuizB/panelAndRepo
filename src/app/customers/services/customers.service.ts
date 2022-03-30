@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import * as firebase from 'firebase/app';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ICredential } from '../classes/customers';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +67,13 @@ export class CustomersService {
     return users.snapshotChanges();
   }
 
+  getAccountUsersWithCredential(accountId: string, userType: string) {
+    const users = this.afs.collection('users', ref =>
+      ref.where('customerId', '==', accountId).where('occupation','==',userType).where('hasCredential','==', true)
+    );
+    return users.snapshotChanges();
+  }
+
   getAccountProducts(accountId: string) {
     const products = this.afs.collection('customers').doc(accountId).collection('products', ref => ref.orderBy('date_created', 'asc'));
     return products.snapshotChanges();
@@ -98,7 +108,9 @@ export class CustomersService {
     newUser.uid = newId;
     console.log(newId);
     const user = this.afs.collection('users').doc(newId);
-    return user.set(newUser);
+    return user.set(newUser).then(() => {
+      return newId;
+    })
   }
 
   createSystemUser(newUser: any) {
@@ -123,6 +135,27 @@ export class CustomersService {
       });
     });
 
+  }
+
+  createCredential(userId: string, studentId: string, validFrom: any, validTo: any, active: boolean) {
+    const credential: ICredential = {
+      active,
+      disabled: false,
+      studentId: studentId,
+      userId,
+      validFrom,
+      validTo
+    };
+    
+    const userCredentialRef = this.afs.collection('users').doc(userId).collection('credentials');
+    return userCredentialRef.add(credential).then((response) => {
+      const userRef = this.afs.collection('users').doc(userId);
+      userRef.update({
+        hasCredential: true,
+        credentialId: response.id
+      });
+      console.log(response);
+    })
   }
 
   saveUserProductPurchase(uid: string, purchase: object) {
@@ -159,6 +192,29 @@ export class CustomersService {
       });
   }
 
+  activateCredential(uid: string, credentialId: string, active: boolean) {
+    const userCredential = this.usersCollection.doc(uid).collection('credentials').doc(credentialId);
+    return userCredential.update({
+      active,
+      disabled: !active
+    })
+      .then(() => {
+        this.sendMessage('success', '¡Listo!');
+      }).catch(err => {
+        this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`);
+      });
+  }
+
+  deleteCredential(uid: string, credentialId: string) {
+    const userCredential = this.usersCollection.doc(uid).collection('credentials').doc(credentialId);
+    return userCredential.delete()
+      .then(() => {
+        this.sendMessage('success', '¡Listo!');
+      }).catch(err => {
+        this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`);
+      });
+  }
+
   saveBoardingPassToUserPurchaseCollection(uid: string, purchase: object) {
     this.userPurchasesCollection = this.usersCollection.doc(uid).collection('boardingPasses');
     return this.userPurchasesCollection.add(purchase).then(() => {
@@ -187,6 +243,16 @@ export class CustomersService {
     return this.userBoardingPassesCollection.snapshotChanges();
   }
 
+  getLatestValidUserPurchases(uid: string, limit: number = 10) {
+    console.log('doc uid: ', uid);
+    this.userBoardingPassesCollection = this.usersCollection.doc(uid)
+      .collection('boardingPasses', ref =>
+        ref.where('validTo','<=', new Date())
+        .limit(limit).orderBy('validTo', 'desc')
+      );
+    return this.userBoardingPassesCollection.snapshotChanges();
+  }
+
   setUserPurchasePayment(uid: string, purchaseId: string, data: object) {
     const object = {
       amount: 500,
@@ -201,6 +267,22 @@ export class CustomersService {
       userModified: 'Ernesto Vallejo',
       valid: true
     };
+  }
+
+  setUserCredential(uid: string, credential: any) {
+    const userCredential = this.usersCollection.doc(uid).collection('credentials');
+    return userCredential.add(credential);
+  }
+
+  getUserCredentials(uid: string) {
+    const userCredentials = this.usersCollection.doc(uid).collection('credentials');
+    return userCredentials.snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const id = a.payload.doc.id;
+        const data = a.payload.doc.data() as any;
+        return { id, ...data }
+      }))
+    )
   }
 
   sendMessage(type: string, message: string): void {
