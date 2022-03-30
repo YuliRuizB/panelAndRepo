@@ -8,12 +8,25 @@
       <button nz-button nzNoAnimation nz-dropdown nzType="primary" [nzDropdownMenu]="menu">
         Múltiples pases de abordar
       </button>
+
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu>
           <li *ngFor="let customer of customersList" nz-menu-item [hidden]="!customer.active"
             (click)="onBulkBoardingPassSelected(customer.id)">{{customer.name}}</li>
         </ul>
       </nz-dropdown-menu>
+
+      <button nz-button nzNoAnimation nz-dropdown nzType="primary" [nzDropdownMenu]="menuCredentials">
+        Múltiples credenciales
+      </button>
+      
+      <nz-dropdown-menu #menuCredentials="nzDropdownMenu">
+        <ul nz-menu>
+          <li *ngFor="let customer of customersList" nz-menu-item [hidden]="!customer.active"
+            (click)="onBulkCredentialsSelected(customer.id)">{{customer.name}}</li>
+        </ul>
+      </nz-dropdown-menu>
+
     </nz-page-header-extra>
   </nz-page-header>
 </div>
@@ -171,9 +184,59 @@
                       nzType="plus"></i>Productos</button>
                 </ng-template>
               </nz-tab>
+              
+              <nz-tab nzTitle="Credenciales">
+                <nz-table #basicTable [nzData]="userCredentials" nzPageSize="3" [nzFooter]="credentialFooterTemplate"
+                  [nzLoading]="loadingUserCredentials" [nzLoadingDelay]="500" *ngIf="userCredentials">
+                  <thead>
+                    <tr>
+                      <th>Válida desde</th>
+                      <th>Válida hasta</th>
+                      <th>Estado</th>
+                      <th>Ultima Actividad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let data of basicTable.data" (click)="boardingPassSelected(data)">
+                      <td>{{ data.validFrom.toDate() | date: 'mediumDate' }}</td>
+                      <td>{{ data.validTo.toDate() | date: 'mediumDate' }}</td>
+                      <td>
+                        <nz-tag *ngIf="data.active" [nzColor]="'cyan'">Activa</nz-tag>
+                        <nz-tag *ngIf="!data.active" [nzColor]="'yellow'">Inactiva</nz-tag>
+                      <td>
+                        <!-- <nz-tag *ngIf="data.disabled" [nzColor]="'cyan'">Suspendida</nz-tag>
+                        <span nz-text nzType="secondary" *ngIf="data.disabled">
+                          {{ data.disabledReasons }}
+                        </span> -->
+                        <span nz-text nzType="secondary" *ngIf="!!data.passValidation && data.passValidation.lastUsed">
+                          {{ data.passValidation.lastUsed.toDate() | date: 'medium' }}
+                        </span>
+                      </td>
+                      <td>
+                        <a nz-dropdown [nzDropdownMenu]="credentials">
+                          <i nz-icon nzType="more" nzTheme="outline"></i>
+                        </a>
+                        <nz-dropdown-menu #credentials="nzDropdownMenu">
+                          <ul nz-menu>
+                            <li nz-menu-item (click)="deleteCredential(data.id)">Eliminar Credencial</li>
+                            <li nz-menu-item (click)="activateCredential(data.id, false)">Suspender Credencial</li>
+                            <li nz-menu-item (click)="activateCredential(data.id, true)">Activar Credencial</li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </td>
+                    </tr>
+                  </tbody>
+                </nz-table>
+                <ng-template #credentialFooterTemplate>
+                  <button class="m-r-10" nz-button nzType="default" (click)="showModalCredential()"><i nz-icon
+                      nzType="plus"></i>Nueva credencial</button>
+                </ng-template>
+              </nz-tab>
+
               <nz-tab nzTitle="Otras compras">
                 Otras compras
               </nz-tab>
+
             </nz-tabset>
 
             <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
@@ -624,5 +687,162 @@
         <span>Terminar</span>
       </button>
     </div>
+  </ng-template>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisibleBulkCredentials" [nzWidth]="800" [nzTitle]="'Emitir múltiples credenciales'" [nzContent]="modalContentBulkCredentials"
+  [nzFooter]="modalFooterBulkCredentials" (nzOnCancel)="handleCancel()">
+
+  <ng-template #modalTitleBulkCredentials>
+    Nuevas credenciales
+  </ng-template>
+
+  <ng-template #modalContentBulkCredentials>
+
+    <nz-steps [nzCurrent]="current" nzSize="small">
+      <nz-step nzTitle="Credencial" nzDescription="Crear la credencial."></nz-step>
+      <nz-step nzTitle="Usuarios" nzDescription="Seleccionar los usuarios."></nz-step>
+      <nz-step nzTitle="Confirmar" nzDescription="Validar la creación."></nz-step>
+    </nz-steps>
+
+    <br />
+
+    <div class="steps-content overflow-auto">
+
+      <div *ngIf="current == 0">
+        <form nz-form nzLayout="horizontal" [formGroup]="credentialForm" (ngSubmit)="createMultipleCredentials()">
+          <div class="row">
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label>Válido desde</nz-form-label>
+                <nz-date-picker formControlName="validFrom"></nz-date-picker>
+              </nz-form-item>
+            </div>
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label>Válido hasta</nz-form-label>
+                <nz-date-picker formControlName="validTo"></nz-date-picker>
+              </nz-form-item>
+            </div>
+            <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-control>
+                <label nz-checkbox formControlName="active">Activar credencial</label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="current == 1">
+        <nz-table #rowSelectionTable nzShowSizeChanger [nzData]="usersByAccount" [nzSize]="'middle'"
+          (nzCurrentPageDataChange)="currentCredentialsPageDataChange($event)">
+          <thead>
+            <tr>
+              <th nzShowCheckbox nzShowRowSelection [nzSelections]="listOfCredentialsSelection"
+                [(nzChecked)]="isCredentialsAllDisplayDataChecked" [nzIndeterminate]="isCredentialsIndeterminate"
+                (nzCheckedChange)="checkCredentialsAllData($event)"></th>
+                <th>Cliente</th>
+              <th>Id</th>
+              <th>Nombre</th>
+              <th>Email / Teléfono</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+              <td nzShowCheckbox [(nzChecked)]="mapOfCredentialsCheckedId[data.uid]" (nzCheckedChange)="refreshCredentialsStatus()"></td>
+              <td>{{ data.customerName }}</td>
+              <td>{{ data.studentId }}</td>
+              <td>{{ data.displayName }}</td>
+              <td>{{ data.email }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+
+      <div *ngIf="current == 2">
+
+        <div *ngIf="actualSelectedRows > 0">
+          Se crearán {{ actualSelectedRows }} credenciales para los usuarios seleccionados.
+        </div>
+        <div *ngIf="actualSelectedRows === 0">
+          No has seleccionado ningún usuario para crear una credencial.
+        </div>
+      </div>
+
+      <div *ngIf="current == 3">
+
+        <div>
+          Se crearon {{ actualSelectedRows }}.
+          
+        </div>
+      </div>
+    </div>
+
+  </ng-template>
+
+  <ng-template #modalFooterBulkCredentials>
+    <div class="steps-action">
+      <button nz-button nzType="default" (click)="pre()"
+        *ngIf="current > 0 && !isDone">
+        <span>Anterior</span>
+      </button>
+      <button nz-button nzType="default" [disabled]="credentialForm.invalid" (click)="next()" *ngIf="current < 2">
+        <span>Siguiente</span>
+      </button>
+      <button nz-button nzType="primary" [disabled]="actualSelectedRows === 0" [nzLoading]="isCreatingCredentials" (click)="createMultipleCredentials()"
+        *ngIf="current === 2 && !isDone">
+        <span>Crear Credenciales</span>
+      </button>
+      <button nz-button nzType="primary" (click)="done()" *ngIf="current === 3 && isDone">
+        <span>Terminar</span>
+      </button>
+    </div>
+  </ng-template>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isModalCredentialVisible" [nzWidth]="800" [nzTitle]="'Emitir credencial'" [nzContent]="modalContentCredential"
+  [nzFooter]="modalFooterCredential" (nzOnCancel)="handleCancel()">
+
+  <ng-template #modalTitleUserCredential>
+    Nueva credencial
+  </ng-template>
+
+  <ng-template #modalContentCredential>
+
+    <div class="steps-content overflow-auto">
+
+        <form nz-form nzLayout="horizontal" [formGroup]="credentialForm" (ngSubmit)="createCredential()">
+          <div class="row">
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label>Válido desde</nz-form-label>
+                <nz-date-picker formControlName="validFrom"></nz-date-picker>
+              </nz-form-item>
+            </div>
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label>Válido hasta</nz-form-label>
+                <nz-date-picker formControlName="validTo"></nz-date-picker>
+              </nz-form-item>
+            </div>
+            <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-control>
+                <label nz-checkbox formControlName="active">Activar credencial</label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          </div>
+        </form>
+    </div>
+
+  </ng-template>
+
+  <ng-template #modalFooterCredential>
+    <button nz-button nzType="primary" [disabled]="credentialForm.invalid" [nzLoading]="isCreatingCredentials" (click)="createCredential()">
+        <span>Crear Credencial</span>
+      </button>
   </ng-template>
 </nz-modal>

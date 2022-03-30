@@ -9,6 +9,8 @@ import * as _ from 'lodash';
 import { AssignmentType } from 'src/app/shared/interfaces/assignment.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { addMinutes, set } from 'date-fns';
 
 @Component({
   selector: 'app-shared-customer-vendor-assignments',
@@ -24,6 +26,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
 
 
   loading: boolean = true;
+  pageSize: number = 10;
 
   stopSubscription$: Subject<any> = new Subject();
   programsList: any = [];
@@ -34,10 +37,12 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   isCreateVisible: boolean = false;
   isEditMode: boolean = false;
   currentSelectedId: string;
+  currentSelected: any;
   programForm: FormGroup;
   assigmentType: AssignmentType
 
   constructor(
+    private notification: NzNotificationService,
     private routesService: RoutesService,
     private vendorsService: VendorService,
     private fb: FormBuilder
@@ -66,7 +71,6 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
       })))
       .subscribe((routes: IStopPoint[]) => {
         this.routesList = routes;
-        console.log(this.routesList);
         this.loading = false;
       });
 
@@ -79,6 +83,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
       })))
       .subscribe((programs: IBaseProgram[]) => {
         this.programsList = programs;
+        console.log(programs);
         this.loading = false;
       });
 
@@ -125,9 +130,11 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
       stopBeginId: ['', [Validators.required]],
       stopBeginName: ['', [Validators.required]],
       stopBeginHour: ['', [Validators.required]],
+      stopBeginHourT: [''],
       stopEndId: ['', [Validators.required]],
       stopEndName: ['', [Validators.required]],
       stopEndHour: ['', [Validators.required]],
+      stopEndHourT: [''],
       time: [new Date(), [Validators.required]],
       type: [this.assigmentType, [Validators.required]],
       customerName: ['', [Validators.required]],
@@ -139,6 +146,12 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   }
 
   patchForm(data) {
+
+    const stopBeginHourArray = data.stopBeginHour.split(':');
+    const stopEndHourArray = data.stopEndHour.split(':');
+
+    console.log(set(data.time.toDate(), { hours: stopBeginHourArray[0], minutes: stopBeginHourArray[1]}));
+
     this.programForm.patchValue({
       active: data.active,
       acRequired: data.acRequired,
@@ -154,9 +167,11 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
       stopBeginId: data.stopBeginId,
       stopBeginName: data.stopBeginName,
       stopBeginHour: data.stopBeginHour,
+      stopBeginHourT: set(data.time.toDate(), { hours: stopBeginHourArray[0], minutes: stopBeginHourArray[1]}),
       stopEndId: data.stopEndId,
       stopEndName: data.stopEndName,
       stopEndHour: data.stopEndHour,
+      stopEndHourT: set(data.time.toDate(), { hours: stopEndHourArray[0], minutes: stopEndHourArray[1]}),
       time: (data.time).toDate(),
       type: data.type,
       customerName: data.customerName,
@@ -176,8 +191,10 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   }
 
   showCreateModal() {
+    this.programForm.reset();
     this.isCreateVisible = true;
     this.currentSelectedId = null;
+    this.currentSelected = null;
   }
 
   showModalDelete(data) {
@@ -190,9 +207,14 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   }
 
   showModalEdit(data) {
-    this.patchForm(data);
     this.currentSelectedId = data.id;
-    this.isCreateVisible = true;
+    this.currentSelected = data;
+    this.patchForm(data);
+    console.log(data);
+    
+    setTimeout(() => {
+      this.isCreateVisible = true;
+    }, 100);
     this.isEditMode = true;
   }
 
@@ -203,7 +225,37 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   }
 
   createProgram() {
+
+    // console.log(this.programForm.value);
+
     this.programForm.get('customerId').setValue(this.accountId);
+    
+    // const program = this.programForm.get('program').value;
+
+    const stopBeginHourDate = new Date(this.programForm.controls['stopBeginHourT'].value);
+      const stopEndHourDate = new Date(this.programForm.controls['stopEndHourT'].value);
+      const stopBeginHour = [stopBeginHourDate.getHours(), String(stopBeginHourDate.getMinutes()).padStart(2, '0')].join(':');
+      const stopEndHour = [stopEndHourDate.getHours(), String(stopEndHourDate.getMinutes()).padStart(2, '0')].join(':');
+
+      this.programForm.controls['stopBeginHour'].setValue(stopBeginHour);
+      this.programForm.controls['stopEndHour'].setValue(stopEndHour);
+      
+      console.log(stopBeginHour, stopEndHour);
+    // if(program == 'M') {
+    //   this.onStopPointSelected(this.programForm.get('stopBeginId').value, 'stopBeginName','stopBeginHour');
+    //   this.onStopPointSelected(this.programForm.get('stopEndId').value, 'stopEndName','stopEndHour');
+    // } else {
+    //   this.onStopPointSelected(this.programForm.get('stopBeginId').value, 'stopBeginName','stopEndHour');
+    //   this.onStopPointSelected(this.programForm.get('stopEndId').value, 'stopEndName','stopBeginHour');
+    // }
+    
+    if( this.programForm.get('stopBeginHour').value == '' || this.programForm.get('stopEndHour').value == '') {
+      return this.notification.create(
+        'error',
+        'Problema con la información',
+        'No están definidos los tiempos entre paradas de esta ruta para el turno seleccionado'
+      );
+    }
 
     if (!this.isEditMode) {
       this.routesService.setRouteAssignments(this.accountId, this.programForm.get('routeId').value, this.programForm.value).then(() => {
@@ -211,6 +263,9 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
         this.isEditMode = false;
       })
         .catch(err => console.log(err));
+      console.log(this.programForm.value);
+      
+      
     } else {
       this.routesService.updateRouteAssignment(this.accountId, this.programForm.get('routeId').value, this.currentSelectedId, this.programForm.value).then(() => {
         this.isCreateVisible = false;
@@ -218,6 +273,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
         this.currentSelectedId = null;
       })
         .catch(err => console.log(err));
+      console.log(this.programForm.value);
     }
 
   }
@@ -241,28 +297,61 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     });
   }
 
-  onStopPointSelected(event, field, time) {
+  onStopPointSelected(event, field, timeSelection) {
+
+    console.log(this.currentSelected);
+    const commitmentTime = this.programForm.controls['time'].value;
+    console.log(commitmentTime);
+    const program = this.programForm.controls['program'].value;
+    const selector = field;
+    let time = '';
+    if(program == 'M') {
+      if(selector == 'stopBeginName') {
+        time = 'stopBeginHourT';
+      } else {
+        time = 'stopEndHourT';
+      }
+    } else {
+      if(selector == 'stopEndName') {
+        time = 'stopBeginHourT';
+      } else {
+        time = 'stopEndHourT';
+      }
+    }
+    
+    console.log(commitmentTime, program, event, field, time);
+    
     if (event) {
       const recordArray = _.filter(this.stopPointsList, s => {
         return s.id == event;
       });
       const record = recordArray[0];
+      
       console.log(record);
       let round = this.programForm.controls['round'].value;
       console.log(round);
       this.programForm.controls[field].setValue(record.name);
+
+      // if( this.programForm.get('stopBeginHour').value == '' || this.programForm.get('stopEndHour').value == '') {
+      //   return this.notification.create(
+      //     'error',
+      //     'Problema con la información',
+      //     'No están definidos los tiempos entre paradas de esta ruta para el turno seleccionado'
+      //   );
+      // }
+
       switch (round) {
         case 'Día':
-          this.programForm.controls[time].setValue(record.round1);
+          this.programForm.controls[time].setValue(addMinutes(commitmentTime, record.round1MinutesSinceStart));
           break;
         case 'Tarde':
-          this.programForm.controls[time].setValue(record.round2);
+          this.programForm.controls[time].setValue(addMinutes(commitmentTime, record.round2MinutesSinceStart));
           break;
         case 'Noche':
-          this.programForm.controls[time].setValue(record.round3);
+          this.programForm.controls[time].setValue(addMinutes(commitmentTime, record.round3MinutesSinceStart));
           break;
         default:
-          this.programForm.controls[time].setValue(record.round1);
+          this.programForm.controls[time].setValue(addMinutes(commitmentTime, record.round1MinutesSinceStart));
           break;
       }
     }

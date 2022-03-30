@@ -35,7 +35,10 @@ export class SharedStopPointsNewComponent implements OnInit {
       order: [0, [Validators.required]],
       round1: ['', [Validators.required]],
       round2: ['', [Validators.required]],
-      round3: ['', [Validators.required]]
+      round3: ['', [Validators.required]],
+      round1MinutesSinceStart: ['', [Validators.required]],
+      round2MinutesSinceStart: ['', [Validators.required]],
+      round3MinutesSinceStart: ['', [Validators.required]]
     });
   }
 

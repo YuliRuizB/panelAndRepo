@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireFunctions } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DriversService {
 
-  constructor( private afs: AngularFirestore) { }
+  constructor( 
+    private afs: AngularFirestore,
+    private aff: AngularFireFunctions
+    ) { }
 
   getDriver(driverId: string) {
     const driver = this.afs.collection('drivers').doc(driverId);
@@ -23,6 +27,11 @@ export class DriversService {
     return drivers.snapshotChanges();
   }
 
+  updateDriver(driverId: string, driver: any) {
+    const driverRef = this.afs.collection('drivers').doc(driverId);
+    return driverRef.update({ ...driver});
+  }
+
   toggleActiveDriver(driverId: string, state: boolean) {
     const status = !state;
     console.log('status to set: ', status);
@@ -32,8 +41,16 @@ export class DriversService {
   }
 
   deleteDriver(driverId: string) {
-    const driver = this.afs.collection('drivers').doc(driverId);
-    return driver.update({ deleted: true }); //TODO: Delete user from DB and remove user from Auth
+    const driverRef = this.afs.collection('drivers').doc(driverId);
+    return driverRef.delete();
+  }
+
+  async createDriver(driver: any): Promise<any> {
+    console.log(driver);
+    const createNewDriver = this.aff.httpsCallable('createDriver');
+    return createNewDriver(driver).toPromise().then((response:any) => {
+      console.log(response);
+    });
   }
 
 }

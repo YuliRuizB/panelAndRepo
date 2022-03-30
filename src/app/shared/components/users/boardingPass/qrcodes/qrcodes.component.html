@@ -1,0 +1,37 @@
+<nz-timeline nzMode="alternate">
+    <nz-timeline-item *ngFor="let item of activityLogList" [nzColor]="item.allowedOnBoard ? 'green' : 'red'">
+        {{ (item.created).toDate() | date: 'medium' }}
+        <p>Programa: {{ item.program === 'S' ? 'Salida':'Entrada' }}</p>
+        <p>Turno: {{ item.round }}</p>
+        <p>Unidad: {{ item.vehicle }}</p>
+        <p>Conductor: {{ item.driver }}</p>
+        <p>Mensaje: {{ item.description }}</p>
+    </nz-timeline-item>
+  </nz-timeline>
+
+  <table class="table table-bordered" *ngIf="!!userBoardingPass && userBoardingPass.length > 0">
+    <thead>
+        <th>#</th>
+        <th>QRCode</th>
+        <th>Matrícula / ID Empleado</th>
+        <th>Usuario</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let qrcode of userBoardingPass; let index=index">
+            <td>{{ index + 1 }}</td>
+            <td *ngIf="!!qrcode && qrcode.user && qrcode.user.id && qrcode.boardingPass && qrcode.boardingPass.id">
+                <ngx-qrcode [qrc-element-type]="elementType" qrc-version="10"
+                qrc-value="{{qrcode.user.id}},{{qrcode.boardingPass.id}}" qrc-class="qrCode-size"
+                qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+            </td>
+            <!-- <td *ngIf="!!qrcode && qrcode.user && qrcode.user.id && qrcode.boardingPass && qrcode.boardingPass.id">
+                DATA {{ qrcode.user.id }} {{ qrcode.boardingPass.id }}
+            </td> -->
+            <td *ngIf="!!qrcode && !!!qrcode.user || !!!qrcode.boardingPass">
+                No qrCode available
+            </td>
+            <td>{{ qrcode.user.studentId }}</td>
+            <td>{{ qrcode.user.displayName }}</td>
+        </tr>
+    </tbody>
+  </table>

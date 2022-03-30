@@ -53,6 +53,15 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                   <nz-form-item>
+                    <nz-form-control nzErrorTip="Por favor escriba las placas del vehículo">
+                      <nz-input-group nzPrefixIcon="lock">
+                        <input type="text" nz-input formControlName="federalLicensePlates" placeholder="Placas federales" />
+                      </nz-input-group>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <nz-form-item>
                     <nz-form-control nzErrorTip="Por favor escriba la cantidad de asientos de este vehículo">
                       <nz-input-group nzPrefixIcon="lock">
                         <input type="number" nz-input formControlName="seats" placeholder="Número de asientos" />
@@ -87,17 +96,18 @@
               <nz-dropdown-menu #projectListSetting="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
                   <li nz-menu-item>
-                    <a [routerLink]="['/vendor/vehicle/edit', item.id]" routerLinkActive="router-link-active">
+                    <a [routerLink]="['/vendor/vehicle/edit', vendorId, item.id]" routerLinkActive="router-link-active">
                       <i nz-icon nzType="edit" theme="outline"></i>
                       <span class="m-l-10">Editar</span>
                     </a>
                   </li>
                   <li nz-menu-divider></li>
-                  <li nz-menu-item>
-                    <a>
+                  <li nz-menu-item
+                  nz-menu-item nz-popconfirm nzPopconfirmTitle="Está seguro de eliminar este registro?"
+                    (nzOnConfirm)="deletePermission(item)" (nzOnCancel)="cancelDelete()" nzPopconfirmPlacement="bottom"
+                  >
                       <i nz-icon nzType="delete" theme="outline"></i>
                       <span class="m-l-10">Eliminar</span>
-                    </a>
                   </li>
                 </ul>
               </nz-dropdown-menu>

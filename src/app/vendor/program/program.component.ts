@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core'
 import { ThemeConstantService } from '../../shared/services/theme-constant.service';
 import { environment } from 'src/environments/environment';
-import { map, takeUntil, tap } from 'rxjs/operators';
-import { startOfToday, endOfToday, format, fromUnixTime } from 'date-fns';
+import { map, take, takeUntil, tap } from 'rxjs/operators';
+import { startOfToday, endOfToday, format, fromUnixTime, startOfDay } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
 import * as _ from 'lodash';
 
@@ -15,6 +15,8 @@ import { LogisticsService } from 'src/app/logistics/services.service';
 import { GeoJson, FeatureCollection } from 'src/app/logistics/map';
 import { Subject } from 'rxjs';
 import { LiveService } from 'src/app/shared/services/live.service';
+import { ProgramService } from 'src/app/shared/services/program.service';
+import { RoutesService } from 'src/app/shared/services/routes.service';
 
 am4core.useTheme(am4themes_animated);
 
@@ -37,6 +39,26 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   @ViewChild('map', { static: true }) mapElement: ElementRef;
 
+
+  date = startOfToday();
+  mode = 'month';
+
+  panelChange(change: { date: Date; mode: string }): void {
+    console.log(change.date, change.mode);
+  }
+
+  onValueChange(value: Date): void {
+    console.log(`Current value: ${value}`);
+    this.date = startOfDay(new Date(value));
+    this.searchData();
+  }
+
+  getMonthData(date: Date): number | null {
+    if (date.getMonth() === 8) {
+      return 1394;
+    }
+    return null;
+  }
 
   visible = false;
 
@@ -65,19 +87,28 @@ export class ProgramComponent implements OnInit, OnDestroy {
   gridApi: any;
   gridColumnApi: any;
 
+  isSpinning: boolean = true;
+  isAssignmentsModalVisible: boolean = false;
+
   constructor(
     private logisticsService: LogisticsService,
     private liveService: LiveService,
+    private programService: ProgramService,
+    private routesService: RoutesService,
     private zone: NgZone
   ) {
     this.markers = [] as GeoJson[];
-    this.startDate = startOfToday()
+    this.startDate = startOfToday();
     this.endDate = endOfToday();
   }
 
   ngOnInit() {
     this.markers = this.logisticsService.getMarkers(this.startDate, this.endDate);
-    this.loadData();
+    setTimeout(() => {
+      this.loadData();
+      this.searchData();
+      this.isSpinning = false
+    }, 500);
     this.initializeMap();
   }
 
@@ -87,6 +118,56 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   close(): void {
     this.visible = false;
+  }
+
+
+  pageIndex = 1;
+  pageSize = 50;
+  total = 1;
+  listOfData: any[] = [];
+  sortValue: string | null = null;
+  sortKey: string | null = null;
+  filterGender = [{ text: 'male', value: 'male' }, { text: 'female', value: 'female' }];
+  searchGenderList: string[] = [];
+
+  sort(sort: { key: string; value: string }): void {
+    this.sortKey = sort.key;
+    this.sortValue = sort.value;
+    this.searchData();
+  }
+
+  searchData(reset: boolean = false): void {
+    if (reset) {
+      this.pageIndex = 1;
+    }
+    this.loading = true;
+    this.programService.getProgramsByDay(this.date).pipe(
+      take(1),
+      map(actions => actions.map(a => {
+        const id = a.payload.doc.id;
+        const data = a.payload.doc.data() as any;
+        return { id, ...data }
+      })),
+      tap(data => {
+        this.loading = false;
+        this.total = data.length;
+        console.log(data);
+        
+        this.listOfData = data;
+      })
+    ).subscribe();
+    // this.randomUserService
+    //   .getUsers(this.pageIndex, this.pageSize, this.sortKey!, this.sortValue!, this.searchGenderList)
+    //   .subscribe(data => {
+    //     this.loading = false;
+    //     this.total = 200;
+    //     this.listOfData = data.results;
+    //   });
+  }
+
+  updateFilter(value: string[]): void {
+    this.searchGenderList = value;
+    this.searchData(true);
   }
 
   ngAfterViewInit() {
@@ -108,7 +189,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
       })
     )
       .subscribe((result: any) => {
-        console.log(result);
+        // console.log(result);
         // this.chartData = _.countBy(result, 'country');
 
         this.zone.runOutsideAngular(() => {
@@ -188,7 +269,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
           chart.data = groupA.concat(groupB, groupC, groupD);
 
-          console.log(chart.data);
+          // console.log(chart.data);
           let hoverState = chart.links.template.states.create("hover");
           hoverState.properties.fillOpacity = 0.6;
 
@@ -223,6 +304,42 @@ export class ProgramComponent implements OnInit, OnDestroy {
     });
     this.stopSubscription$.next();
     this.stopSubscription$.complete();
+  }
+
+  getAssignments() {
+    console.log('date of assignments: ', this.date);
+    this.isAssignmentsModalVisible = true;
+    this.routesService.getCustomerVendorAssignmentsByDay(this.date).pipe(
+      takeUntil(this.stopSubscription$),
+      map(actions => actions.map(a => {
+        const id = a.payload.doc.id;
+        const data = a.payload.doc.data() as any;
+        return { id, ...data }
+      })),
+      tap((assignments: any) => {
+        console.log(assignments);
+      })
+    ).subscribe();
+  }
+
+  deleteAssignment(assignmentId: string, customerId: string ) {
+    this.routesService.deleteCustomerVendorAssignment(assignmentId, customerId);
+  }
+
+  cancelDeleteAssignment(): void {
+    console.log('delete cancelled');
+  }
+
+  onPanelChange(event) {
+
+  }
+
+  handleCancel() {
+    this.isAssignmentsModalVisible = false;
+  }
+
+  handleOk() {
+    this.isAssignmentsModalVisible = false;
   }
 
   initializeMap() {
@@ -288,7 +405,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
         })
       )
         .subscribe(markers => {
-          console.log(markers);
+          // console.log(markers);
           let data = new FeatureCollection(markers)
           this.source.setData(data)
         })
@@ -428,7 +545,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
       })
     )
       .subscribe((result: IActivityLog[]) => {
-        console.log(result);
         this.rowData = result;
         this.activityList = this.rowData.slice(0, 5);
         this.chartData = _.map(x => {

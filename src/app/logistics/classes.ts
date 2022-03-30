@@ -1,5 +1,6 @@
 import { format, fromUnixTime } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
+import * as firebase from 'firebase/app';
 
 export interface IActivityLog {
     actualKey?: string;
@@ -44,21 +45,53 @@ export interface IActivityLog {
   ];
 
   export var LiveProgramColumnDefs = [
-    { headerName: 'Fecha', field: 'created', cellRenderer: (params) => { 
+    { headerName: 'Conductor', field: 'driver', sortable: true, enableCellChangeFlash:true },
+    { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
+    { headerName: 'Cliente', field: 'customerName', sortable: true, enableRowGroup: true },
+    { headerName: 'Fecha Inicio', field: 'startAt',
+      valueGetter: (params) => {
+        if(params && params.node && params.node.data.startAt) {
+          return format( fromUnixTime(params.node.data.startAt.seconds), 'MM/dd/yyyy HH:mm', { locale: esLocale })
+        }
+      }
+    },
+    { headerName: 'Fecha Fin', field: 'endAt', valueGetter: (params) => {
+      if(params && params.node && params.node.data.endAt) {
+        return format( fromUnixTime(params.node.data.endAt.seconds), 'MM/dd/yyyy HH:mm', { locale: esLocale })
+      }
+    }},
+    { headerName: '¿Inició?', field: 'started', enableRowGroup: true, enableCellChangeFlash:true, cellRenderer: (params) => { 
       if (params && params.value) {
-        return format( fromUnixTime(params.value.seconds), 'MM/dd/yyyy HH:mm', { locale: esLocale })
+        return !!params.value ? 'Si':'No'
+      }
+    }},
+    { headerName: 'Inició el', field: 'startedAt', enableCellChangeFlash:true, valueGetter: (params) => {
+      if(params && params.node && params.node.data.startedAt) {
+        return format( fromUnixTime(params.node.data.startedAt.seconds), 'MM/dd/yyyy HH:mm', { locale: esLocale })
+      }
+    }},
+    { headerName: '¿Finalizó?', field: 'hasEnded', enableCellChangeFlash:true, enableRowGroup: true, cellRenderer: (params) => { 
+      if (params && params.value) {
+        return !!params.value ? 'Si':'No'
+      }
+    }},
+    { headerName: 'Finalizó el', field: 'endedAt', enableCellChangeFlash:true, valueGetter: (params) => {
+      if(params && params.node && params.node.data.endedAt) {
+        return format( fromUnixTime(params.node.data.endedAt.seconds), 'MM/dd/yyyy HH:mm', { locale: esLocale })
       }
     }},
     // { headerName: 'Fecha', field: 'created' },
-    { headerName: 'Conductor', field: 'driver', sortable: true },
-    { headerName: 'Vehículo', field: 'vehicleName', sortable: true },
-    { headerName: 'Programa', field: 'program', sortable: true, enableValue: true },
-    { headerName: 'Turno', field: 'round', sortable: true, enableRowGroup: true },
-    { headerName: 'Ruta', field: 'routeName', sortable: true, enableRowGroup: true },
-    { headerName: 'Descripción', field: 'description', sortable: true },
-    { headerName: 'Ruta', field: 'route', enableRowGroup: true },
-    { headerName: 'Tipo', field: 'type', enableRowGroup: true },
+    { headerName: 'Problemas?', field: 'isWithTrouble', enableCellChangeFlash:true, enableRowGroup: true, cellRenderer: (params) => { 
+      if (params && params.value) {
+        return !!params.value ? 'Si':'No'
+      }
+    }},
+    { headerName: 'Problema', field: 'troubleMessage', sortable: true, enableValue: true, enableCellChangeFlash:true },
+    { headerName: 'Tipo de problema', field: 'troubleType', sortable: true, enableValue: true, enableCellChangeFlash:true },
+    { headerName: 'Programa', field: 'program', sortable: true, enableValue: true, enableCellChangeFlash:true },
+    { headerName: 'Turno', field: 'round', sortable: true, enableRowGroup: true, enableCellChangeFlash:true },
+    { headerName: 'Ruta', field: 'routeName', sortable: true, enableRowGroup: true, enableCellChangeFlash:true },
+    { headerName: 'Tipo', field: 'type', enableRowGroup: true, enableCellChangeFlash:true },
     { headerName: 'Capacidad', field: 'capacity', enableRowGroup: true },
-    { headerName: 'Usuarios', field: 'count', enableRowGroup: true },
-    { headerName: 'Arrancó?', field: 'isLice', enableRowGroup: true }
+    { headerName: 'Usuarios', field: 'count', enableRowGroup: true, enableCellChangeFlash:true }
   ]

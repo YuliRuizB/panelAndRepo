@@ -20,6 +20,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
   objectForm: FormGroup;
   objectSubscription: Subscription;
   recordId: any;
+  vendorId: any;
   driversList: any = [];
   selectedIndex: number = 0;
   record: any = {};
@@ -57,22 +58,18 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authService.user.pipe(
-      takeUntil(this.stopSubscriptions$),
-      tap((user: any) => {
-        this.getSubscriptions(user.vendorId);
-        this.createForm();
-      })
+      takeUntil(this.stopSubscriptions$)
     ).subscribe(user => {
       this.user = user;
-      console.log(user);
     });
 
     this.objectSubscription = this.route.params.pipe(
       takeUntil(this.stopSubscriptions$)
     ).subscribe(params => {
-      this.recordId = params['id']; // (+) converts string 'id' to a number
+      this.recordId = params['vehicleid']; // (+) converts string 'id' to a number
+      this.vendorId = params['accountid']; 
       this.bucketPath += this.recordId;
-      console.log(this.bucketPath);
+      this.getSubscriptions(this.vendorId);
     });
     this.createForm();
 
@@ -92,7 +89,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     ).subscribe((values) => {
       if (this.objectForm.valid) {
         console.log('update values', values);
-        this.vehicleService.updateVehicle(this.user.vendorId, this.recordId, this.objectForm.value);
+        this.vehicleService.updateVehicle(this.vendorId, this.recordId, this.objectForm.value);
       }
     })
   }
@@ -131,34 +128,34 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
 
   patchForm(record: IVehicle) {
     this.objectForm.patchValue({
-      active: record.active,
-      ac: record.ac,
+      active: record.active || false,
+      ac: record.ac || false,
       name: record.name,
-      avatar: record.avatar,
-      carMaker: record.carMaker,
-      chassis: record.chassis,
-      deviceId: record.deviceId,
-      disabled: record.disabled,
-      doors: record.doors,
-      driver: record.driver,
-      driverId: record.driverId,
-      emissions: record.emissions,
-      engineType: record.engineType,
-      fuelTankCapacity: record.fuelTankCapacity,
-      fuelType: record.fuelType,
-      horsePower: record.horsePower,
-      insuranceAgent: record.insuranceAgent,
-      insuranceValidFrom: record.insuranceValidFrom,
-      insuranceValidTo: record.insuranceValidTo,
-      insuranceId: record.insuranceId,
-      insuranceAgentPhone: record.insuranceAgentPhone,
-      lastService: record.lastService,
-      licensePlate: record.licensePlate,
-      model: record.model,
-      seats: record.seats,
-      type: record.type,
-      vendor: record.vendor,
-      year: record.year,
+      avatar: record.avatar || '',
+      carMaker: record.carMaker || '',
+      chassis: record.chassis || '',
+      deviceId: record.deviceId || '',
+      disabled: record.disabled || false,
+      doors: record.doors || 1,
+      driver: record.driver || '',
+      driverId: record.driverId || '',
+      emissions: record.emissions || '',
+      engineType: record.engineType || '',
+      fuelTankCapacity: record.fuelTankCapacity || '',
+      fuelType: record.fuelType || '',
+      horsePower: record.horsePower || '',
+      insuranceAgent: record.insuranceAgent || '',
+      insuranceValidFrom: record.insuranceValidFrom || '',
+      insuranceValidTo: record.insuranceValidTo || '',
+      insuranceId: record.insuranceId || '',
+      insuranceAgentPhone: record.insuranceAgentPhone || '',
+      lastService: record.lastService || '',
+      licensePlate: record.licensePlate || '',
+      model: record.model || '',
+      seats: record.seats || '',
+      type: record.type || '',
+      vendor: record.vendor || '',
+      year: record.year || ''
     });
   }
 
@@ -195,7 +192,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     }
 
     if(this.objectForm.valid) {
-      this.vehicleService.updateVehicle(this.user.vendorId, this.recordId, this.objectForm.value);
+      this.vehicleService.updateVehicle(this.vendorId, this.recordId, this.objectForm.value);
     } else {
       
     }
@@ -248,7 +245,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     
     console.log("started updatePhotoURL with url: ", url);
     this.objectForm.controls['avatar'].patchValue(url);
-    this.vehicleService.updateVehicleAvatar(this.user.vendorId, this.recordId, url);
+    this.vehicleService.updateVehicleAvatar(this.vendorId, this.recordId, url);
   }
 
 }

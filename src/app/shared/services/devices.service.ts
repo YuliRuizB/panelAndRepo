@@ -17,4 +17,9 @@ export class DevicesService {
     const devicesRef = this.afs.collection('vendors').doc(vendorId).collection('fleet');
     return devicesRef.add(device);
   }
+
+  deleteDevice(vendorId: string, deviceId: string) {
+    const deviceRef = this.afs.collection('vendors').doc(vendorId).collection('fleet').doc(deviceId);
+    return deviceRef.delete();
+  }
 }

@@ -236,7 +236,45 @@ export class RoutesService {
   }
 
   getCustomerVendorAssignments(accountId: string) {
-    const routeAssignments = this.afs.collectionGroup('assignments', ref => ref.where('customerId','==',accountId));
+    const routeAssignments = this.afs.collectionGroup('assignments', ref => ref.where('customerId','==',accountId).orderBy('time'));
+    return routeAssignments.snapshotChanges();
+  }
+
+  deleteCustomerVendorAssignment(assignmentId: string, accountId: string) {
+    const assignment = this.afs.collection('customers').doc(accountId).collection('program').doc(assignmentId);
+    return assignment.delete();
+  }
+
+  getCustomerVendorAssignmentsByDay(date: Date) {
+    let searchField = '';
+    const dayNumber = date.getDay();
+
+    switch (dayNumber) {
+      case 0:
+        searchField = 'isSunday';
+        break;
+      case 1:
+        searchField = 'isMonday';
+        break;
+      case 2:
+        searchField = 'isTuesday';
+        break;
+      case 3:
+        searchField = 'isWednesday';
+        break;
+      case 4:
+        searchField = 'isThursday';
+        break;
+      case 5:
+        searchField = 'isFriday';
+        break;
+      case 6:
+        searchField = 'isSaturday';
+        break;
+      default:
+        break;
+    }
+    const routeAssignments = this.afs.collectionGroup('assignments', ref => ref.where(searchField,'==',true).where('active','==',true));
     return routeAssignments.snapshotChanges();
   }
 
@@ -288,7 +326,10 @@ export class RoutesService {
     wrappedData.rounds = {
       round1: object.round1,
       round2: object.round2,
-      round3: object.round3
+      round3: object.round3,
+      round1MinutesSinceStart: object.round1MinutesSinceStart,
+      round2MinutesSinceStart: object.round2MinutesSinceStart,
+      round3MinutesSinceStart: object.round3MinutesSinceStart
     };
     wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
     console.log(wrappedData);

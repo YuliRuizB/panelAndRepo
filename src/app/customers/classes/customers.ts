@@ -203,3 +203,19 @@ export interface IBoardingPass {
   paidApp?: string;
   id?: string;
 }
+
+export interface ICredential {
+  active: boolean;
+  disabled?: boolean;
+  disabledAt?: string | firebase.firestore.Timestamp;
+  disabledInstructions?: string;
+  disabledResons?: string;
+  disabledType?: string;
+  imageUrl?: string;
+  passValidation?: Object;
+  path?: string;
+  studentId: string;
+  userId: string;
+  validFrom: string | firebase.firestore.Timestamp;
+  validTo: string | firebase.firestore.Timestamp;
+}

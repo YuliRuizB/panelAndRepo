@@ -48,7 +48,7 @@
 <!-- Modal -->
 
 
-<nz-modal [(nzVisible)]="isVisible" [nzWidth]="620" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="1020" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
   (nzOnCancel)="handleCancel()">
   <ng-template #modalTitle>
     Importar Usuarios desde archivo
@@ -87,6 +87,11 @@
               <th>Teléfono</th>
               <th>Email</th>
               <th>No Empleado</th>
+              <th>Servicio</th>
+              <th>Ruta</th>
+              <th>Turno</th>
+              <th>Parada</th>
+              <th>Crear Pase</th>
             </tr>
           </thead>
           <tbody>
@@ -96,6 +101,11 @@
               <td>{{data.phone}}</td>
               <td>{{data.email}}</td>
               <td>{{ data.employeeId }}</td>
+              <td>{{ data.service }}</td>
+              <td>{{ data.routeName }}</td>
+              <td>{{ data.round }}</td>
+              <td>{{ data.stop }}</td>
+              <td>{{ data.createBoardingPass? 'Si' : 'No' }}</td>
             </tr>
           </tbody>
         </nz-table>
@@ -112,7 +122,11 @@
               <th>Teléfono</th>
               <th>Email</th>
               <th>No Empleado</th>
-              <th>Resultado</th>
+              <th>Ruta</th>
+              <th>Turno</th>
+              <th>Parada</th>
+              <th>Servicio</th>
+              <th>Crear Pase</th>
             </tr>
           </thead>
           <tbody>
@@ -122,7 +136,11 @@
               <td>{{data.phone}}</td>
               <td>{{data.email}}</td>
               <td>{{ data.employeeId }}</td>
-              <td>{{ data.result }}</td>
+              <td>{{ data.routeName }}</td>
+              <td>{{ data.round }}</td>
+              <td>{{ data.stop }}</td>
+              <td>{{ data.service }}</td>
+              <td>{{ data.createBoardingPass }}</td>
             </tr>
           </tbody>
         </nz-table>

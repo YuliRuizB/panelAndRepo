@@ -1,147 +1,144 @@
-<nz-drawer
-      [nzClosable]="false"
-      [nzVisible]="visible"
-      nzPlacement="right"
-      nzTitle="Alertas"
-      (nzOnClose)="close()"
-    >
-    <div class="m-t-40">
-      <div class="overflow-y-auto p-l-10 p-t-15">
-        <nz-timeline>
-          <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
-            <div class="m-l-20">
-              <h5 class="m-b-5">{{item.studentName}}</h5>
-              <p class="m-b-0">
-                <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
-                <span class="m-l-5"> {{item.studentId}}</span>
-              </p>
-              <span class="text-muted font-size-13">
-                <i nz-icon nzType="clock-circle" theme="outline"></i>
-                <span class="m-l-5">{{formatDate(item.created)}}</span>
-              </span>
-            </div>
-            <ng-template #dotTemplate>
-              <div class="font-size-20 p-5">
-                <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
-                <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip"
-                  theme="outline"></i>
-                <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message"
-                  theme="outline"></i>
-                <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle"
-                  theme="outline"></i>
-              </div>
-            </ng-template>
-          </nz-timeline-item>
-        </nz-timeline>
-      </div>
-    </div>
-    </nz-drawer>
-<nz-tabset>
-  
-  <nz-tab nzTitle="Diagrama">
-    <div class="row">
-      <button nz-button nzType="primary" (click)="open()">Excepciones</button>
-    </div>
-      <div class="row">
-      <div class="col-lg-6 col-sm-12">
-        <nz-card>
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Diagrama de actividad </h5>
-            <div>
-              <a class="text-dark font-size-20" nz-dropdown [nzTrigger]="'click'" [nzPlacement]="'bottomRight'"
-                [nzDropdownMenu]="projectCompletionDropDown">
-                <i nz-icon nzType="ellipsis" theme="outline"></i>
-              </a>
-              <nz-dropdown-menu #projectCompletionDropDown="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Matutino</span>
-                  </li>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Vespertino</span>
-                  </li>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Ayer</span>
-                  </li>
-                  <li nz-menu-item>
-                    <i nz-icon nzType="clock-circle" theme="outline"></i>
-                    <span class="m-l-5">Antiér</span>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" nzTitle="Alertas" (nzOnClose)="close()">
+  <div class="m-t-40">
+    <div class="overflow-y-auto p-l-10 p-t-15">
+      <nz-timeline>
+        <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
+          <div class="m-l-20">
+            <h5 class="m-b-5">{{item.studentName}}</h5>
+            <p class="m-b-0">
+              <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
+              <span class="m-l-5"> {{item.studentId}}</span>
+            </p>
+            <span class="text-muted font-size-13">
+              <i nz-icon nzType="clock-circle" theme="outline"></i>
+              <span class="m-l-5">{{formatDate(item.created)}}</span>
+            </span>
           </div>
-          <div class="d-md-flex justify-content-space m-t-50">
-            <div id="chartdiv" style="width: 100%; height: 500px"></div>
-          </div>
-        </nz-card>
-      </div>
-      <div class="col-lg-6">
-        <nz-card>
-          <!-- <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Excepciones</h5>
-          </div>
-          <div class="m-t-40">
-            <div class="overflow-y-auto p-l-10 p-t-15">
-              <nz-timeline>
-                <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
-                  <div class="m-l-20">
-                    <h5 class="m-b-5">{{item.studentName}}</h5>
-                    <p class="m-b-0">
-                      <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
-                      <span class="m-l-5"> {{item.studentId}}</span>
-                    </p>
-                    <span class="text-muted font-size-13">
-                      <i nz-icon nzType="clock-circle" theme="outline"></i>
-                      <span class="m-l-5">{{formatDate(item.created)}}</span>
-                    </span>
-                  </div>
-                  <ng-template #dotTemplate>
-                    <div class="font-size-20 p-5">
-                      <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
-                      <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip"
-                        theme="outline"></i>
-                      <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message"
-                        theme="outline"></i>
-                      <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle"
-                        theme="outline"></i>
-                    </div>
-                  </ng-template>
-                </nz-timeline-item>
-              </nz-timeline>
+          <ng-template #dotTemplate>
+            <div class="font-size-20 p-5">
+              <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
+              <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip" theme="outline"></i>
+              <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message" theme="outline"></i>
+              <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle" theme="outline"></i>
             </div>
-          </div> -->
-          <div class="map" #map id="map" class="match-parent"></div>
-        </nz-card>
-      </div>
+          </ng-template>
+        </nz-timeline-item>
+      </nz-timeline>
     </div>
-  </nz-tab>
-  <nz-tab nzTitle="Mapa">
-    <div class="row">
-      <button nz-button nzType="primary" (click)="open()">Excepciones</button>
-      <div class="col-lg-12">
-        <nz-card>
-            <div class="map" #map id="map" class="match-parent"></div>
-        </nz-card>
-      </div>
+  </div>
+</nz-drawer>
 
-    </div>
-  </nz-tab>
-</nz-tabset>
+<button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="open()">Alertas</button>
+
 <div class="row">
-  <div class="col-lg-12">
+  <div class="col-lg-6 col-sm-12">
     <nz-card>
       <div class="d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Información detallada</h5>
+        <h5 class="mb-0">Diagrama de actividad </h5>
+        <div>
+          <a class="text-dark font-size-20" nz-dropdown [nzTrigger]="'click'" [nzPlacement]="'bottomRight'"
+            [nzDropdownMenu]="projectCompletionDropDown">
+            <i nz-icon nzType="ellipsis" theme="outline"></i>
+          </a>
+          <nz-dropdown-menu #projectCompletionDropDown="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item>
+                <i nz-icon nzType="clock-circle" theme="outline"></i>
+                <span class="m-l-5">Matutino</span>
+              </li>
+              <li nz-menu-item>
+                <i nz-icon nzType="clock-circle" theme="outline"></i>
+                <span class="m-l-5">Vespertino</span>
+              </li>
+              <li nz-menu-item>
+                <i nz-icon nzType="clock-circle" theme="outline"></i>
+                <span class="m-l-5">Ayer</span>
+              </li>
+              <li nz-menu-item>
+                <i nz-icon nzType="clock-circle" theme="outline"></i>
+                <span class="m-l-5">Antiér</span>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
       </div>
-      <div class="m-t-30">
-        <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowData"
-          [onGridReady]='onGridReady' [columnDefs]="columnDefs" [groupIncludeFooter]="true" [sideBar]="true">
-        </ag-grid-angular>
+      <div class="d-md-flex justify-content-space m-t-50">
+        <div id="chartdiv" style="width: 100%; height: 500px"></div>
       </div>
     </nz-card>
   </div>
+  <div class="col-lg-6">
+    <nz-card>
+      <!-- <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Excepciones</h5>
+      </div>
+      <div class="m-t-40">
+        <div class="overflow-y-auto p-l-10 p-t-15">
+          <nz-timeline>
+            <nz-timeline-item *ngFor="let item of activityList" [nzDot]="dotTemplate">
+              <div class="m-l-20">
+                <h5 class="m-b-5">{{item.studentName}}</h5>
+                <p class="m-b-0">
+                  <span class="font-weight-semibold">{{ item.vehicle }} - {{ item.route }}</span>
+                  <span class="m-l-5"> {{item.studentId}}</span>
+                </p>
+                <span class="text-muted font-size-13">
+                  <i nz-icon nzType="clock-circle" theme="outline"></i>
+                  <span class="m-l-5">{{formatDate(item.created)}}</span>
+                </span>
+              </div>
+              <ng-template #dotTemplate>
+                <div class="font-size-20 p-5">
+                  <i *ngIf="item.type == 'access'" class="text-success" nz-icon nzType="check" theme="outline"></i>
+                  <i *ngIf="item.type == 'Attached file'" class="text-info" nz-icon nzType="paper-clip"
+                    theme="outline"></i>
+                  <i *ngIf="item.type == 'Commented'" class="text-info" nz-icon nzType="message"
+                    theme="outline"></i>
+                  <i *ngIf="item.type == 'duplicate'" class="text-danger" nz-icon nzType="close-circle"
+                    theme="outline"></i>
+                </div>
+              </ng-template>
+            </nz-timeline-item>
+          </nz-timeline>
+        </div>
+      </div> -->
+      <div class="map" #map id="map" class="match-parent"></div>
+    </nz-card>
+  </div>
 </div>
+
+<nz-tabset>
+
+  <nz-tab nzTitle="Vehículos">
+    <div class="row">
+      <div class="col-lg-12">
+        <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Ejecución del Programa</h5>
+          </div>
+          <div class="m-t-30">
+            <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowFleetData"
+              [onGridReady]='onGridReady' [columnDefs]="columnFleetDefs" [defaultColDef]="defaultColDef" [groupIncludeFooter]="true" [sideBar]="true">
+            </ag-grid-angular>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </nz-tab>
+  <nz-tab nzTitle="Usuarios">
+    <div class="row">
+      <div class="col-lg-12">
+        <nz-card>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Actividad de los usuarios</h5>
+          </div>
+          <div class="m-t-30">
+            <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowData"
+              [onGridReady]='onGridReady' [columnDefs]="columnDefs" [groupIncludeFooter]="true" [sideBar]="true">
+            </ag-grid-angular>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </nz-tab>
+</nz-tabset>

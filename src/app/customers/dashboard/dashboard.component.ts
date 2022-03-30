@@ -4,10 +4,10 @@ import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { NzModalService } from 'ng-zorro-antd';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Subscription, Subject } from 'rxjs';
 import { ProductsService } from 'src/app/shared/services/products.service';
-import { IBoardingPass } from '../classes/customers';
+import { IBoardingPass, ICredential } from '../classes/customers';
 import * as firebase from 'firebase/app';
 
 export const months = {
@@ -48,6 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   current = 0;
   isDone: boolean = false;
   isCreatingBoardingPasses: boolean = false;
+  isCreatingCredentials: boolean = false;
   
   //Modal Bulk table
   listOfSelection = [
@@ -65,12 +66,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }
   ];
+
+  listOfCredentialsSelection = [
+    {
+      text: 'Seleccionar todas las páginas',
+      onSelect: () => {
+        this.checkCredentialsAllData(true); 
+      }
+    },
+    {
+      text: 'Deseleccionar todas las páginas',
+      onSelect: () => {
+        this.checkCredentialsAllData(false); 
+        this.refreshCredentialsStatus();
+      }
+    }
+  ];
   isAllDisplayDataChecked = false;
   isIndeterminate = false;
   listOfDisplayData = [];
   listOfAllData = [];
   mapOfCheckedId: { [key: string]: boolean } = {};
 
+  isCredentialsAllDisplayDataChecked = false;
+  isCredentialsIndeterminate = false;
+  listOfCredentialsDisplayData = [];
+  listOfCredentialsAllData = [];
+  mapOfCredentialsCheckedId: { [key: string]: boolean } = {};
 
   isContentOpen = false;
   isUserSelected = false;
@@ -80,6 +102,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loadingLastPurchase = false;
   lastPurchase: IBoardingPass;
   isBoardingPassSelected = false;
+  isCredentialSelected = false;
   isLoadingPayments = false;
   payments;
   hasBeenLoaded = false;
@@ -89,17 +112,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   latestUserPurchasesCollection: AngularFirestoreCollection<any>;
   latestPurchases;
+  userCredentials;
+  loadingUserCredentials = false;
   loadingLatestPurchases = false;
 
   isVisible = false;
   isProductVisible = false;
+  isModalCredentialVisible = false;
   isConfirmLoading = false;
 
   validateForm: FormGroup;
+  credentialForm: FormGroup;
   checked = false;
   routes: any = [];
   products: any = [];
   stopPoints: any = [];
+  usersByAccount: any = [];
 
   routesSubscription: Subscription;
   productsSubscription: Subscription;
@@ -120,11 +148,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoadingBulk: boolean = false;
   isConfirmLoadingBulk: boolean = false;
 
+  isVisibleBulkCredentials: boolean = false;
+  isLoadingBulkCredentials: boolean = false;
+  isConfirmLoadingBulkCredentials: boolean = false;
+
   formatterPercent = (value: number) => `${value} %`;
   parserPercent = (value: string) => value.replace(' %', '');
   formatterDollar = (value: number) => `$ ${value}`;
   parserDollar = (value: string) => value.replace('$ ', '');
   actualSelectedRows: number;
+  selectedUsersForCredentials = [];
 
   constructor(
     private afs: AngularFirestore,
@@ -149,6 +182,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('products', ref => ref.where('active', '==', true)).valueChanges({ idField: 'productId' })
     ));
 
+    const usersObservable = this.accountId$.pipe(
+      switchMap(accountId => this.afs.collection('users', ref => ref.where('customerId','==',accountId).orderBy('studentId')).valueChanges({ idField: 'uid'})
+    ));
+
     const stopPointsObservable = this.routeId$.pipe(
       switchMap(routeId => this.afs.collection('customers').doc(this.currentSelectedCustomerId).collection('routes').doc(routeId).collection('stops', ref => ref.orderBy('order','asc').where('active', '==', true)).valueChanges({ idField: 'stopPointId' })
     ));
@@ -162,8 +199,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.stopPoints = stopPoints;
     });
 
+    usersObservable.subscribe((usersByAccount:any) => {
+      this.usersByAccount = usersByAccount;
+    })
+
     this.getUsersList();
     this.getCustomersList();
+
+    this.credentialForm = this.fb.group({
+      active: [true, [Validators.required]],
+      validFrom: [new Date(),[Validators.required]],
+      validTo: [new Date(),[Validators.required]]
+    });
 
     this.validateForm = this.fb.group({
       active: [true,[Validators.required]],
@@ -244,6 +291,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isVisible = true;
   }
 
+  showModalCredential(): void {
+    this.isModalCredentialVisible = true;
+  }
+
   showModalProduct(): void {
     this.isProductVisible = true;
   }
@@ -252,6 +303,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.accountId$.next(customerId);
     this.currentSelectedCustomerId = customerId;
     this.isVisibleBulk = true;
+  }
+
+  onBulkCredentialsSelected(customerId) {
+    this.accountId$.next(customerId);
+    this.currentSelectedCustomerId = customerId;
+    this.isVisibleBulkCredentials = true;
   }
 
   onProductSelected(event, products) {
@@ -339,6 +396,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
     console.log(this.lastPurchase);
     this.canUpdateValidTo = false;
+  }
+
+  createCredential() {
+    if(this.credentialForm.valid) {
+    const validFrom = this.credentialForm.controls['validFrom'].value || new Date();
+    const validTo = this.credentialForm.controls['validTo'].value || new Date();
+    const active = this.credentialForm.controls['active'].value || false;
+
+    console.log(validFrom, validTo, active);
+    
+    this.isCreatingCredentials = true;
+    
+    this.customersService.createCredential(this.currentUserSelected.uid, this.currentUserSelected.studentId, validFrom, validTo, active).then((response:any) => {
+      console.log(response);
+      this.isModalCredentialVisible = false;
+    });
+    this.isCreatingCredentials = false;
+    this.isDone = true;
+    }
   }
 
   submitForm(): void {
@@ -444,6 +520,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   handleCancel(): void {
     this.isVisible = false;
     this.isVisibleBulk = false;
+    this.isVisibleBulkCredentials = false;
+    this.isModalCredentialVisible = false;
   }
 
   handleCancelProduct(): void {
@@ -528,6 +606,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isUserSelected = true;
     this.isBoardingPassSelected = false;
     this.getLatestPurchases(data.uid);
+    this.getUserCredentials(data.uid);
     this.lastPurchase = null;
     
   }
@@ -584,6 +663,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isBoardingPassSelected = false;
   }
 
+  activateCredential(credentialId, paid) {
+    
+    this.customersService.activateCredential(this.currentUserSelected.uid, credentialId, paid);
+    this.currentUserSelected.paymentId = credentialId;
+  }
+
+  deleteCredential(credentialId) {
+    console.log(this.currentUserSelected.uid, credentialId);
+    this.customersService.deleteCredential(this.currentUserSelected.uid, credentialId);
+    this.isBoardingPassSelected = false;
+  }
+
   setUserDisabled(disabled) {
     this.customersService.setUserDisabled(this.currentUserSelected.uid, disabled);
     this.currentUserSelected.disabled = disabled;
@@ -608,6 +699,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  getUserCredentials(userId) {
+    this.loadingUserCredentials = true;
+    this.customersService.getUserCredentials(userId)
+    .subscribe( userCredentials => {
+      console.log(userCredentials);
+      this.userCredentials = userCredentials;
+      this.loadingUserCredentials = false;
+    }, err => {
+      this.userCredentials = null;
+      this.loadingUserCredentials = false;
+    });
+  }
+
   //Wizard
   pre(): void {
     this.current -= 1;
@@ -616,11 +720,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   next(): void {
     this.current += 1;
     console.log(Object.keys(this.mapOfCheckedId).length);
-    this.actualSelectedRows = Object.keys(this.mapOfCheckedId).length;
+    if(this.current === 2) {
+      let selectedUsersCredentials = [];
+      this.usersByAccount.forEach( user => {
+        if(this.mapOfCredentialsCheckedId[user.uid] === true) {
+          console.log('selected user, ', user.firstName, ' ', user.uid);
+          selectedUsersCredentials.push(user);
+        }
+      });
+      this.actualSelectedRows = selectedUsersCredentials.length;
+      this.selectedUsersForCredentials = selectedUsersCredentials;
+    }
   }
 
   done(): void {
     this.isVisibleBulk = false;
+    this.isVisibleBulkCredentials = false;
     setTimeout(() => {
       this.current = 0;
     this.isDone = true;
@@ -648,6 +763,59 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   checkAllData(value: boolean): void {
     this.devicesList.forEach(item => (this.mapOfCheckedId[item.id] = value));
+  }
+
+  currentCredentialsPageDataChange($event:[]): void {
+    this.listOfCredentialsDisplayData = $event;
+    this.refreshCredentialsStatus();
+  }
+
+  refreshCredentialsStatus(): void {
+    this.isCredentialsAllDisplayDataChecked = this.usersByAccount.every(item => this.mapOfCredentialsCheckedId[item.uid]);
+    this.isCredentialsIndeterminate =
+      this.usersByAccount.some(item => this.mapOfCredentialsCheckedId[item.uid]) && !this.usersByAccount;
+  }
+
+  checkCredentialsAllData(value: boolean): void {
+    this.usersByAccount.forEach(item => (this.mapOfCredentialsCheckedId[item.uid] = value));
+  }
+
+  checkCredentialsValidBoardingPass(value: boolean): void {
+    this.usersByAccount.forEach(item => {
+      this.customersService.getLatestValidUserPurchases(item.uid).pipe(
+        take(1),
+        map(actions => actions.map(a => {
+          const id = a.payload.doc.id;
+          const data = a.payload.doc.data() as any;
+          return { id, ...data }
+        })),
+        tap((boardingPasses) => {
+          console.log(item.displayName, ' has a valid BPass ?', boardingPasses.length);
+          
+          this.mapOfCredentialsCheckedId[item.uid] = boardingPasses.length > 0;
+        })
+      ).subscribe();
+    });
+  } 
+
+
+  createMultipleCredentials() {
+    this.current++;
+    console.log(this.credentialForm.valid, this.credentialForm.value);
+    const validFrom = this.credentialForm.controls['validFrom'].value || new Date();
+    const validTo = this.credentialForm.controls['validTo'].value || new Date();
+    const active = this.credentialForm.controls['active'].value || false;
+
+    console.log(validFrom, validTo, active);
+    
+    this.isCreatingCredentials = true;
+    this.selectedUsersForCredentials.forEach( user => {
+      this.customersService.createCredential(user.uid, user.studentId, validFrom, validTo, active).then((response:any) => {
+        console.log(response);
+      });
+    });
+    this.isCreatingCredentials = false;
+    this.isDone = true;
   }
 
 

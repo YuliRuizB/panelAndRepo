@@ -6,7 +6,7 @@
   </nz-page-header>
 </div>
 
-<nz-table *ngIf="routesList.length > 0" #programsListTable [nzData]="programsList" [nzLoading]="loading">
+<nz-table *ngIf="routesList.length > 0" #programsListTable [nzData]="programsList" [nzLoading]="loading" nzShowSizeChanger [(nzPageSize)]="pageSize">
   <thead>
     <tr>
       <th>Asignado A</th>
@@ -26,23 +26,26 @@
     <tr *ngFor="let data of programsListTable.data">
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.vendorName }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ getRouteName(data.routeId) }}</td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.program == 'M' ? 'Mete' : 'Saca' }}
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'"><nz-tag [nzColor]="data.program == 'M' ? 'green' : 'red'">{{ data.program == 'M' ? 'Mete' : 'Saca' }}</nz-tag>
       </td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
-        <nz-tag [nzColor]="data.isSunday ? 'blue':''">Dom</nz-tag>
-        <nz-tag [nzColor]="data.isMonday ? 'blue':''">Lun</nz-tag>
-        <nz-tag [nzColor]="data.isTuesday ? 'blue':''">Mar</nz-tag>
-        <nz-tag [nzColor]="data.isWednesday ? 'blue':''">Mié</nz-tag>
-        <nz-tag [nzColor]="data.isThursday ? 'blue':''">Jue</nz-tag>
-        <nz-tag [nzColor]="data.isFriday ? 'blue':''">Vie</nz-tag>
-        <nz-tag [nzColor]="data.isSaturday ? 'blue':''">Sáb</nz-tag>
+        <nz-tag *ngIf="data.isSunday" [nzColor]="data.isSunday ? 'geekblue':''">Dom</nz-tag>
+        <nz-tag *ngIf="data.isMonday" [nzColor]="data.isMonday ? 'geekblue':''">Lun</nz-tag>
+        <nz-tag *ngIf="data.isTuesday" [nzColor]="data.isTuesday ? 'geekblue':''">Mar</nz-tag>
+        <nz-tag *ngIf="data.isWednesday" [nzColor]="data.isWednesday ? 'geekblue':''">Mié</nz-tag>
+        <nz-tag *ngIf="data.isThursday" [nzColor]="data.isThursday ? 'geekblue':''">Jue</nz-tag>
+        <nz-tag *ngIf="data.isFriday" [nzColor]="data.isFriday ? 'geekblue':''">Vie</nz-tag>
+        <nz-tag *ngIf="data.isSaturday" [nzColor]="data.isSaturday ? 'geekblue':''">Sáb</nz-tag>
       </td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.round }}</td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ (data.time).toDate() | date: 'shortTime' }}
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ (data.time).toDate() | date: 'HH:mm' }}
       </td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.acRequired ? 'Si':'No' }}</td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.stopBeginName }}</td>
-      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.stopEndName }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'"><nz-tag [nzColor]="data.acRequired ? 'blue': ''">
+        <i *ngIf="data.acRequired" nz-icon nzType="deployment-unit"></i>
+        <span>{{ data.acRequired ? '':'No' }}</span>
+      </nz-tag></td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'"><nz-tag nzColor="green">{{ data.stopBeginHour}}</nz-tag> {{ data.stopBeginName }}</td>
+      <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'"><nz-tag nzColor="orange">{{ data.stopEndHour}}</nz-tag> {{ data.stopEndName }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">{{ data.type }}</td>
       <td [class]="data.active ? 'text-dark' : 'text-muted font-italic'">
         <a nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomRight">
@@ -75,7 +78,7 @@
   </tbody>
 </nz-table>
 
-<nz-modal [(nzVisible)]="isCreateVisible" nzTitle="Agregar asignación" (nzOnCancel)="handleCancel()"
+<nz-modal [(nzVisible)]="isCreateVisible" nzTitle="Agregar asignación" nzWidth="600" (nzOnCancel)="handleCancel()"
   (nzOnOk)="createProgram()">
   <form nz-form [formGroup]="programForm" (ngSubmit)="createProgram()">
     <nz-form-item>
@@ -139,7 +142,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-8 col-sm-12">
+      <div class="col-md-4 col-sm-12">
         <nz-form-item>
           <nz-form-label>Hora Compromiso</nz-form-label>
           <nz-form-control>
@@ -147,6 +150,25 @@
           </nz-form-control>
         </nz-form-item>
       </div>
+      <div class="col-md-4 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Hora Inicio</nz-form-label>
+          <nz-form-control>
+            <nz-time-picker formControlName="stopBeginHourT" nzFormat="HH:mm"></nz-time-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <nz-form-item>
+          <nz-form-label>Hora fin</nz-form-label>
+          <nz-form-control>
+            <nz-time-picker formControlName="stopEndHourT" nzFormat="HH:mm"></nz-time-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      
+    </div>
+    <div class="row">
       <div class="col-md-4 col-sm-12">
         <nz-form-item>
           <nz-form-label>Aire acondicionado</nz-form-label>
@@ -181,7 +203,7 @@
           <nz-form-label>Inicia en</nz-form-label>
           <nz-form-control>
             <nz-select formControlName="stopBeginId" nzAllowClear nzPlaceHolder="Selecciona la parada"
-              (ngModelChange)="onStopPointSelected($event, 'stopBeginName','stopBeginHour')">
+              (ngModelChange)="onStopPointSelected($event, 'stopBeginName','stopBeginHourT')">
               <nz-option *ngFor="let o of stopPointsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
                   nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
             </nz-select>
@@ -193,7 +215,7 @@
           <nz-form-label>Termina en</nz-form-label>
           <nz-form-control>
             <nz-select formControlName="stopEndId" nzAllowClear nzPlaceHolder="Selecciona la parada"
-              (ngModelChange)="onStopPointSelected($event, 'stopEndName','stopEndHour')">
+              (ngModelChange)="onStopPointSelected($event, 'stopEndName','stopEndHourT')">
               <nz-option *ngFor="let o of stopPointsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
                   nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
             </nz-select>

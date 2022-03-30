@@ -33,6 +33,8 @@ import { SharedAccountEditComponent } from './components/accounts/edit/edit.comp
 import { SharedAccountPaymentMethodsComponent } from './components/accounts/payment-methods/payment-methods.component';
 import { SharedSystemUsersListComponent } from './components/system/users/users.component';
 import { SharedVendorUsersListComponent } from './components/vendor/system/users/users.component';
+import { SharedUsersQRCodesComponent } from './components/users/boardingPass/qrcodes/qrcodes.component';
+import { SharedUsersCredentialsQRCodesComponent } from './components/users/credentials/qrcodes/qrcodes.component';
 
 @NgModule({ 
     exports: [
@@ -64,13 +66,16 @@ import { SharedVendorUsersListComponent } from './components/vendor/system/users
         SharedAccountEditComponent,
         SharedAccountPaymentMethodsComponent,
         SharedSystemUsersListComponent,
-        SharedVendorUsersListComponent
+        SharedVendorUsersListComponent,
+        SharedUsersQRCodesComponent,
+        SharedUsersCredentialsQRCodesComponent
     ],
     imports: [
         RouterModule,
         CommonModule,
         NgZorroAntdModule,
         FormsModule,
+        NgxQRCodeModule,
         ReactiveFormsModule,
         AgGridModule,
         PerfectScrollbarModule,
@@ -97,7 +102,9 @@ import { SharedVendorUsersListComponent } from './components/vendor/system/users
         SharedAccountEditComponent,
         SharedAccountPaymentMethodsComponent,
         SharedSystemUsersListComponent,
-        SharedVendorUsersListComponent
+        SharedVendorUsersListComponent,
+        SharedUsersQRCodesComponent,
+        SharedUsersCredentialsQRCodesComponent
     ],
     providers: [
         ThemeConstantService,

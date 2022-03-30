@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase';
 import { take, map } from 'rxjs/operators';
-import { addMinutes } from 'date-fns';
+import { addDays, addMinutes } from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -91,5 +91,20 @@ export class ProgramService {
       return programRef.add(assignment);
       // return true;
     });
+  }
+
+  getProgramsByDay(date: Date) {
+
+    let start = date;
+    let end = addDays(start, 1);
+    console.log(start, end);
+    
+    const programmedAssignments = this.afs.collectionGroup('program', ref => 
+    ref.where('startAt','>=', start)
+       .where('startAt','<=', end)
+      .where('active','==',true)
+      .orderBy('startAt','asc')
+    );
+    return programmedAssignments.snapshotChanges();
   }
 }
