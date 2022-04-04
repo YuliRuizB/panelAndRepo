@@ -43,6 +43,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
       employeeId: ['', Validators.compose([Validators.minLength(7), Validators.maxLength(7), Validators.required])],
       vendorId: [this.vendorId, Validators.compose([Validators.required])],
       vendorName: [''],
+      displayName: [''],
       password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
       verifyPassword: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
     });
@@ -93,7 +94,9 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
     if(this.signupForm.valid) {
       console.log(this.signupForm.value);
       if(this.isEditMode) {
-        this.driversService.updateDriver(this.signupForm.controls['id'].value, this.signupForm.value).then( () => {
+        let CurrSingFrom = this.signupForm.value;
+        CurrSingFrom.displayName = CurrSingFrom.firstName + ' ' + CurrSingFrom.lastName;
+       this.driversService.updateDriver(CurrSingFrom.id, CurrSingFrom).then( () => {
           this.isVisibleNewDriver = false;
           this.isCreatingDriver = false;
           this.isEditMode = false;
