@@ -94,9 +94,9 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
     if(this.signupForm.valid) {
       console.log(this.signupForm.value);
       if(this.isEditMode) {
-        let CurrSingFrom = this.signupForm.value;
-        CurrSingFrom.displayName = CurrSingFrom.firstName + ' ' + CurrSingFrom.lastName;
-       this.driversService.updateDriver(CurrSingFrom.id, CurrSingFrom).then( () => {
+        let currSignForm = this.signupForm.value;
+        currSignForm.displayName = currSignForm.firstName + ' ' + currSignForm.lastName;
+       this.driversService.updateDriver(currSignForm.id, currSignForm).then( () => {
           this.isVisibleNewDriver = false;
           this.isCreatingDriver = false;
           this.isEditMode = false;

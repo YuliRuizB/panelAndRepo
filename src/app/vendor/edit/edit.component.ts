@@ -7,8 +7,6 @@ import { map, takeWhile, debounceTime, finalize } from 'rxjs/operators';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { ThrowStmt } from '@angular/compiler';
-
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
