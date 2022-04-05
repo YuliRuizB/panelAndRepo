@@ -75,7 +75,6 @@ export class EditComponent implements OnInit {
       takeWhile(() => this.autosave)
     ).subscribe((values) => {
       if (this.objectForm.valid) {
-        console.log('update values', values);
         this.vendorService.updateVendor(this.recordId, this.objectForm.value);
       }
     })
@@ -107,7 +106,23 @@ export class EditComponent implements OnInit {
   }
 
   patchForm(record: IVendor) {
-    this.objectForm.patchValue({
+     if (record.address === undefined){
+      this.objectForm.patchValue({
+        active: record.active,
+        name: record.name,
+        avatar: record.avatar,
+        deleted: record.deleted,
+        legalName: record.legalName,
+        primaryContact: record.primaryContact,
+        rfc: record.rfc,
+        status: record.status,
+        website: record.website,
+        primaryEmail: record.primaryEmail,
+        primaryPhone: record.primaryPhone
+      });
+     }
+     else {
+      this.objectForm.patchValue({
       active: record.active,
       address: {
         street: record.address.street,
@@ -130,6 +145,7 @@ export class EditComponent implements OnInit {
       primaryPhone: record.primaryPhone
     });
   }
+  }
 
   getSubscriptions() {
     this.vendorService.getVendor(this.recordId).pipe(
@@ -141,7 +157,6 @@ export class EditComponent implements OnInit {
     ).subscribe((vendor: IVendor) => {
       this.record = vendor;
       this.patchForm(vendor);
-      console.log(this.record);
     })
   }
 
