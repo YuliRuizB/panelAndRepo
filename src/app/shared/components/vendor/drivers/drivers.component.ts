@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -20,8 +20,13 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   isVisibleNewDriver: boolean = false;
   isCreatingDriver: boolean = false;
   isEditMode: boolean = false;
+  isEditContrasena: boolean = false;
+  responseUpdate:string = "";
+  modalName: string = "Agregar conductor";
 
   signupForm: FormGroup;
+  signupFormEdit: FormGroup;
+  signupFormContrasena: FormGroup;
 
   constructor(
     private driversService: DriversService,
@@ -35,7 +40,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   }
 
   createForm() {
-    this.signupForm = this.fb.group({
+      this.signupForm = this.fb.group({
       id: [],
       firstName: ['', Validators.compose([Validators.required, Validators.maxLength(30), Validators.minLength(5)])],
       lastName: ['', Validators.compose([Validators.required, Validators.maxLength(30), Validators.minLength(5)])],
@@ -44,8 +49,25 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
       vendorId: [this.vendorId, Validators.compose([Validators.required])],
       vendorName: [''],
       displayName: [''],
-      password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
-      verifyPassword: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
+      password: ['',Validators.compose([Validators.required])],
+      verifyPassword: ['', [this.confirmValidator]]
+    });
+
+    this.signupFormEdit = this.fb.group({
+      id: [],
+      firstName: ['', Validators.compose([Validators.required, Validators.maxLength(30), Validators.minLength(5)])],
+      lastName: ['', Validators.compose([Validators.required, Validators.maxLength(30), Validators.minLength(5)])],
+      email: ['', Validators.compose([Validators.required, Validators.email])],
+      employeeId: ['', Validators.compose([Validators.minLength(7), Validators.maxLength(7), Validators.required])],
+      vendorId: [this.vendorId, Validators.compose([Validators.required])],
+      vendorName: [''],
+      displayName: ['']
+    });
+
+    this.signupFormContrasena = this.fb.group({
+      id: [],
+      password: ['',Validators.compose([Validators.required])],
+      verifyPasswordContra: ['', [this.confirmValidatorContra]]
     });
   }
 
@@ -81,44 +103,98 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   }
 
   editRecord(data) {
-   this.patchForm(data);
+  this.isEditMode = true;
+  this.isEditContrasena = false;
+  this.modalName = "Editar Conductor";
+  this.patchForm(data);
+  }
+
+  editRecordContrasena(data){
+    this.isEditMode = true;
+    this.isEditContrasena = true;
+    this.modalName = "Restablecer Contraseña";
+    this.patchFormContrasena(data);
   }
 
   patchForm(data: any) {
-    this.signupForm.patchValue({ ...data });
-    this.isEditMode = true;
+    this.signupFormEdit.patchValue({ ...data });
+    this.openCreateDriverModal();
+  }
+  patchFormContrasena(data: any) {
+    this.signupFormContrasena.patchValue({ ...data });
     this.openCreateDriverModal();
   }
 
   createDriver() {
-    if(this.signupForm.valid) {
-      console.log(this.signupForm.value);
-      if(this.isEditMode) {
-        let currSignForm = this.signupForm.value;
+    const isValid: boolean =  true;
+     if (this.isEditMode && !this.isEditContrasena) {
+       //is edit contact
+       if (this.signupFormEdit.valid) {
+        let currSignForm = this.signupFormEdit.value;
         currSignForm.displayName = currSignForm.firstName + ' ' + currSignForm.lastName;
-       this.driversService.updateDriver(currSignForm.id, currSignForm).then( () => {
+          this.driversService.updateDriver(currSignForm.id, currSignForm).then( () => {
           this.isVisibleNewDriver = false;
           this.isCreatingDriver = false;
           this.isEditMode = false;
+          this.modalName ="Agregar conductor";
         });
-      } else {
-        this.driversService.createDriver(this.signupForm.value).then((response) => {
-          this.isVisibleNewDriver = false;
-          this.isCreatingDriver = false;
-          this.isEditMode = false;
+        this.nzMessageService.success("Se editó el contacto con éxito");
+      }else {
+        console.log('singnup Edit no es valido');
+        Object.values(this.signupFormEdit.controls).forEach(control => {
+          if (control.invalid) {
+            control.markAsDirty();
+            control.updateValueAndValidity({ onlySelf: true });
+          }
         });
       }
-      
-    } else {
-      console.log('la forma no es válida');
-      
-    }
-    
+     } else {
+       if (!this.isEditMode && !this.isEditContrasena) {
+         // is Adding
+          if (this.signupForm.valid) {
+          this.driversService.createDriver(this.signupForm.value).then((response) => {
+            this.isVisibleNewDriver = false;
+            this.isCreatingDriver = false;
+            this.isEditMode = false;
+          }); 
+          this.nzMessageService.success("Se agregó con exito el conductor");
+          } else {
+            console.log('singnup  no es valido');
+            Object.values(this.signupForm.controls).forEach(control => {
+              if (control.invalid) {
+                control.markAsDirty();
+                control.updateValueAndValidity({ onlySelf: true });
+              }
+            });
+          }
+       } else {
+         // is update contraseña
+         console.log(this.signupFormContrasena.value);
+         if (this.signupFormContrasena.valid) {
+         this.driversService.resetPassword(this.signupFormContrasena.controls['id'].value , this.signupFormContrasena.controls['password'].value).then((response) => {
+          this.isEditContrasena = false;
+          this.isEditMode = false;
+          this.isVisibleNewDriver = false;
+        });
+        this.nzMessageService.success('Se actualizó la contraseña con éxito'); 
+        } else {
+          console.log('singnup Contraseña no es valido');
+          Object.values(this.signupFormContrasena.controls).forEach(control => {
+            if (control.invalid) {
+              control.markAsDirty();
+              control.updateValueAndValidity({ onlySelf: true });
+            }
+          });
+        }
+       }
+     }
   }
 
   createDriverModal() {
     this.isEditMode = false;
-    this.signupForm.reset();
+    this.isEditContrasena = false;
+    this.signupForm.pristine;
+    this.modalName ="Agregar conductor";
     this.openCreateDriverModal();
   }
 
@@ -129,5 +205,26 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   closeNewDriverModal() {
     this.isVisibleNewDriver = false;
   }
+
+  validateConfirmPassword(): void {
+    setTimeout(() => this.isEditContrasena? this.signupFormContrasena.controls.verifyPasswordContra.updateValueAndValidity() : this.signupForm.controls.verifyPassword.updateValueAndValidity());
+  }
+
+  confirmValidatorContra = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { error: true, required: true };
+    } else if (control.value !== this.signupFormContrasena.controls.password.value) {
+      return { verifyPasswordContra: true, error: true };
+    }
+    return {};
+  };
+  confirmValidator = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { error: true, required: true };
+    } else if (control.value  !== this.signupFormContrasena.controls.password.value) {
+      return { verifyPassword: true, error: true };
+    }
+    return {};
+  };
 
 }

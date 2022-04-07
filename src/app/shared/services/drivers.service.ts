@@ -31,6 +31,14 @@ export class DriversService {
     const driverRef = this.afs.collection('drivers').doc(driverId);
     return driverRef.update({ ...driver});
   }
+  
+  resetPassword(uid:string, password:string){
+    const data = {uid, password}
+    const driverResetPassword = this.aff.httpsCallable('onDriverResetPassword');
+    return driverResetPassword(data).toPromise().then((respone:any) => {
+      console.log(respone);
+    });
+  }
 
   toggleActiveDriver(driverId: string, state: boolean) {
     const status = !state;

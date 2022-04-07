@@ -697,6 +697,20 @@ exports.onDeleteDriver = functions.firestore.document('drivers/{userId}').onDele
     });
 });
 
+exports.onDriverResetPassword = functions.https.onCall((data) => {
+ admin.auth().updateUser(
+   data.uid,{
+     password: data.password
+   })
+   .then((userRecord:any) => {
+    // See the UserRecord reference doc for the contents of userRecord.
+    console.log('Successfully updated user', userRecord.toJSON());
+  })
+  .catch((error:any) => {
+    console.log('Error updating user:', error);
+  });
+});
+
 exports.onUpdateDriver = functions.firestore.document('drivers/{userId}').onUpdate((change, context) => {
   const uid = context.params.userId;
   const updated = change.after.data();

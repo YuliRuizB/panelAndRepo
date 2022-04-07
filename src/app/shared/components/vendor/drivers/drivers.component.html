@@ -58,6 +58,10 @@
                   <i nz-icon nzType="edit"></i>
                   Editar
                 </li>
+                <li *ngIf="item.active" nz-menu-item (click)="editRecordContrasena(item)">
+                  <i nz-icon nzType="edit"></i>
+                  Reestablecer Contraseña
+                </li>
                 <li nz-menu-divider></li>
                 <li nz-menu-item nz-popconfirm nzPopconfirmTitle="Está seguro de eliminar este registro?"
                   (nzOnConfirm)="deletePermission(item)" (nzOnCancel)="cancelDelete()" nzPopconfirmPlacement="bottom">
@@ -153,50 +157,99 @@
   </nz-card>
 </div>
 
-<nz-modal [(nzVisible)]="isVisibleNewDriver" nzTitle="Agregar conductor" (nzOnCancel)="closeNewDriverModal()"
+<nz-modal [(nzVisible)]="isVisibleNewDriver" nzTitle={{modalName}} (nzOnCancel)="closeNewDriverModal()"
   (nzOnOk)="createDriver()" [nzOkLoading]="isCreatingDriver">
-  <form nz-form [formGroup]="signupForm" (ngSubmit)="createDriver()">
+  <form *ngIf="!isEditMode && !isEditContrasena" nz-form [formGroup]="signupForm" (ngSubmit)="createDriver()">
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">Nombre</nz-form-label>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="firstName">Nombre</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 5 y 30 caracteres.">
-        <input type="text" nz-input formControlName="firstName" id="firstName" />
+        <input type="text" nz-input formControlName="firstName" id="firstName" placeholder="Nombre" />
       </nz-form-control>
     </nz-form-item>
-
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Apellido(s)</nz-form-label>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="lastName">Apellido(s)</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 5 y 30 caracteres.">
-        <input type="text" nz-input formControlName="lastName" id="lastName" />
+        <input type="text" nz-input formControlName="lastName" id="lastName" placeholder="Apellido(s)" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Correo electrónico</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input type="email" nz-input formControlName="email" id="email" />
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="email">Correo electrónico</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="No es un correo válido!">
+        <input type="email" nz-input autocomplete="off" formControlName="email" id="email" placeholder="Correo electrónico" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item >
+      <nz-form-label nzRequired id="contrasena"  [nzSm]="8" [nzXs]="24" nzFor="password">Contraseña</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzHasFeedback nzErrorTip="Ingresar mínimo 7 caracteres">
+        <input type="password" nz-input formControlName="password" minlength="7"
+        placeholder="Contraseña" (ngModelChange)="validateConfirmPassword()"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item >
+      <nz-form-label nzRequired id="repContrasena" [nzSm]="8" [nzXs]="24" nzFor="verifyPassword">Repetir Contraseña</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24"nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+        <input type="password" nz-input formControlName="verifyPassword"
+        placeholder="Repetir Contraseña" />
+        <ng-template #passwordErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Por favor confirmar contraseña!</ng-container>
+          <ng-container *ngIf="control.hasError('verifyPassword')">La contraseña es inconsistente!</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+</form>
+
+  <form nz-form *ngIf="isEditMode && !isEditContrasena" [formGroup]="signupFormEdit" (ngSubmit)="createDriver()">
+    <nz-form-item>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="firstName">Nombre</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 5 y 30 caracteres.">
+        <input type="text" nz-input formControlName="firstName" id="firstName" placeholder="Nombre" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="employeeId">Id Empleado</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input type="text" nz-input formControlName="employeeId" id="employeeId" />
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="lastName">Apellido(s)</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 5 y 30 caracteres.">
+        <input type="text" nz-input formControlName="lastName" id="lastName" placeholder="Apellido(s)" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">Contraseña</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input type="password" nz-input formControlName="password" id="password" />
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="email">Correo electrónico</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="No es un correo válido!">
+        <input type="email" nz-input formControlName="email" id="email" placeholder="Correo electrónico" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="verifyPassword">Repetir contraseña</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input type="password" nz-input formControlName="verifyPassword" id="verifyPassword" />
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="employeeId">Id Empleado</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 7 caracteres.">
+        <input type="text" nz-input formControlName="employeeId" id="employeeId" placeholder="Id Empleado"/>
       </nz-form-control>
     </nz-form-item>
+ </form>
 
-  </form>
+ <form *ngIf="isEditMode && isEditContrasena" nz-form [formGroup]="signupFormContrasena" (ngSubmit)="createDriver()">
+  <nz-form-item >
+    <nz-form-label nzRequired id="contrasena"  [nzSm]="8" [nzXs]="24" nzFor="password">Contraseña</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzHasFeedback nzErrorTip="Ingresar mínimo 7 caracteres">
+      <input type="password" nz-input formControlName="password" minlength="7"
+      placeholder="Contraseña" (ngModelChange)="validateConfirmPassword()"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item >
+    <nz-form-label nzRequired id="repContrasena1" [nzSm]="8" [nzXs]="24" nzFor="verifyPasswordContra">Repetir Contraseña</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzHasFeedback [nzErrorTip]="passwordErrorTplContra">
+      <input type="password" nz-input formControlName="verifyPasswordContra"
+      placeholder="Repetir Contraseña" />
+      <ng-template #passwordErrorTplContra let-control>
+        <ng-container *ngIf="control.hasError('required')">Por favor confirmar contraseña!</ng-container>
+        <ng-container *ngIf="control.hasError('verifyPasswordContra')">La contraseña es inconsistente!</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>
 </nz-modal>

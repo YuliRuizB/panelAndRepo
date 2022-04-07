@@ -106,45 +106,7 @@ export class EditComponent implements OnInit {
   }
 
   patchForm(record: IVendor) {
-     if (record.address === undefined){
-      this.objectForm.patchValue({
-        active: record.active,
-        name: record.name,
-        avatar: record.avatar,
-        deleted: record.deleted,
-        legalName: record.legalName,
-        primaryContact: record.primaryContact,
-        rfc: record.rfc,
-        status: record.status,
-        website: record.website,
-        primaryEmail: record.primaryEmail,
-        primaryPhone: record.primaryPhone
-      });
-     }
-     else {
-      this.objectForm.patchValue({
-      active: record.active,
-      address: {
-        street: record.address.street,
-        number: record.address.number,
-        address2: record.address.address2,
-        address3: record.address.address3,
-        city: record.address.city,
-        state: record.address.state,
-        zipcode: record.address.zipcode,
-      },
-      name: record.name,
-      avatar: record.avatar,
-      deleted: record.deleted,
-      legalName: record.legalName,
-      primaryContact: record.primaryContact,
-      rfc: record.rfc,
-      status: record.status,
-      website: record.website,
-      primaryEmail: record.primaryEmail,
-      primaryPhone: record.primaryPhone
-    });
-  }
+    this.objectForm.patchValue({...record})
   }
 
   getSubscriptions() {
