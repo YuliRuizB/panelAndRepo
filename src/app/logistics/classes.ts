@@ -43,7 +43,43 @@ export interface IActivityLog {
     { headerName: 'Vehículo', field: 'vehicle', enableRowGroup: true },
     { headerName: '¿Subió?', field: 'allowedOnBoard', enableRowGroup: true }
   ];
-
+ export var LiveProgramColumnsDef =[
+  { headerName: 'Inicia', field: 'time', 
+    valueGetter: (params) => {
+      if(params && params.node && params.node.data.time) {
+        return format( fromUnixTime(params.node.data.time.seconds), 'HH:mm a', { locale: esLocale })
+      }
+  } },
+  { headerName: 'Cliente', field: 'customerName', sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Ruta', field: 'routeName', sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Programa / Turno', field: 'round', valueGetter: (params) => {
+    if(params && params.node) {     
+      return  params.node.data.round + " / " + params.node.data.program
+    }
+  }},
+  { headerName: 'Conductor', field: 'driver', sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Inició', field: 'startedAt',  
+  valueGetter: (params) => {
+    if(params && params.node && params.node.data.startAt) {
+      if(params.node.data.started){
+      return format( fromUnixTime(params.node.data.startedAt.seconds), 'HH:mm a', { locale: esLocale })
+    } else {
+      return "No"
+    }
+    }
+  }},
+  { headerName: 'Finalizó', field: 'endedAt',
+  valueGetter: (params) => {
+    if(params && params.node) {
+      if (params.node.data.hasEnded) {
+      return format( fromUnixTime(params.node.data.endedAt.seconds), 'HH:mm a', { locale: esLocale })
+    } else {
+      return "No"
+    }
+    }
+  }}
+ ];
   export var LiveProgramColumnDefs = [
     { headerName: 'Conductor', field: 'driver', sortable: true, enableCellChangeFlash:true },
     { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true },

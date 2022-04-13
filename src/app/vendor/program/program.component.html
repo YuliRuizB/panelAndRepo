@@ -57,69 +57,17 @@
 </div>
 
 <nz-card style="width:100%;" [nzBodyStyle]="{ 'padding': '0px' }" nzTitle="Detalles">
-      
-  <nz-table #ajaxTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="listOfData" [nzLoading]="loading"
-    [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzPageIndexChange)="searchData()"
-    (nzPageSizeChange)="searchData(true)">
-    <thead (nzSortChange)="sort($event)" nzSingleSort>
-      <tr>
-        <th>Inicia</th>
-        <th>Cliente</th>
-        <th>Ruta</th>
-        <th>Programa / Turno</th>
-        <th>Conductor</th>
-        <th>Vehículo</th>
-        <th>Inició</th>
-        <th>Finalizó</th>
-        <th nzWidth="100px" nzRight="0px"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of ajaxTable.data">
-        <td>{{ data.time.toDate() | date: 'shortTime' }}</td>
-        <td>{{ data.customerName }}</td>
-        <td>{{ data.routeName }}</td>
-        <td>{{ data.round }} / {{ data.program }}</td>
-        <td>{{ data.driver }}</td>
-        <td>{{ data.vehicleName }}</td>
-        <td *ngIf="data.started">{{ data.startedAt.toDate() | date: 'shortTime' }}</td>
-        <td *ngIf="!data.started">No</td>
-        <td *ngIf="data.hasEnded">{{ data.endedAt.toDate() | date: 'shortTime' }}</td>
-        <td *ngIf="!data.hasEnded">No</td>
-        <td nzBreakWord nzRight="0px">
-          <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="tableMoreInfo" style="border: none; padding: 0">
-            <i nz-icon nzType="ellipsis" nzTheme="outline" color="primary" style="font-size: 20px; vertical-align: top;"></i>
-          </button>
-          <!-- <button nz-button nz-dropdown [nzDropdownMenu]="menu"><i nz-icon nzType="ellipsis"></i></button> -->
-          <nz-dropdown-menu #tableMoreInfo="nzDropdownMenu">
-            <ul nz-menu>
-              <li *ngIf="!data.hasEnded" nz-menu-item (click)="getAssignments()">
-                <i nz-icon nzType="eye" theme="outline"></i>
-                Editar
-              </li>
-              <li *ngIf="data.hasEnded" nz-menu-item>
-                Reporte detallado
-              </li>
-              <li *ngIf="!data.hasEnded" nz-menu-item>
-                <a
-        nz-popconfirm
-        nzPopconfirmTitle="¿Está seguro de eliminar este programa?"
-        (nzOnConfirm)="deleteAssignment(data.id, data.customerId)"
-        (nzOnCancel)="cancelDeleteAssignment()"
-        nzPopconfirmPlacement="topLeft"
-      >
-        Eliminar
-              </a>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
+  <div>
+  <ag-grid-angular #agGrid style="width: 100%; height: 450px;" 
+  class="ag-theme-material" [rowData]="rowData"
+  [onGridReady]='onGridReady' [columnDefs]="columnFleetDefsProgram" 
+  [defaultColDef]="columnProgram" [groupIncludeFooter]="true" 
+  [sideBar]="true">
+</ag-grid-angular>
+</div>
 
 </nz-card>
 
-<nz-modal [(nzVisible)]="isAssignmentsModalVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="isAssignmentsModalVisible" nzTitle="Asignaciones" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
   
 </nz-modal>

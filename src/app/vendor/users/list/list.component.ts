@@ -36,6 +36,7 @@ export class VendorUsersListComponent implements OnInit, OnDestroy {
   gridApi;
   gridColumnApi;
   columnDefs;
+  columnProgram;
   defaultColDef;
   detailCellRendererParams;
   rowData: any = [];
@@ -69,6 +70,19 @@ export class VendorUsersListComponent implements OnInit, OnDestroy {
       { headerName: 'Activa', field: 'permission', cellRenderer: (params) => {
         return !!params.value ? 'Si' : 'No'
       }}
+    ];
+    this.columnProgram = [
+      {
+        headerName: 'Inicia', field: 'time',
+        cellRenderer: 'agGroupCellRenderer', sortable: true
+      },
+      { headerName: 'Cliente', sortable: true, field: 'customerName' },
+      { headerName: 'Ruta', sortable: true, field: 'routeName'},
+      { headerName: 'Programa / Turno', Field: 'round'},
+      { headerName: 'Conductor', sortable: true, field: 'driver'},
+      { headerName: 'Vehículo', sortable: true, field: 'vehicleName'},
+      { headerName: 'Inició', sortable: true, field: 'startedAt'},
+      { headerName: 'Finalizó', sortable: true, field: 'endedAt'}
     ];
 
     this.usersColumnDefs = [
