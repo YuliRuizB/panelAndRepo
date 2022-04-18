@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "adminbus2u",
+    "site": "admin-bus2u-dev",
     "public": "dist",
     "ignore": [
       "firebase.json",
