@@ -10,15 +10,20 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { IActivityLog, ColumnDefs, LiveProgramColumnDefs, LiveProgramColumnsDef } from 'src/app/logistics/classes';
+import { IActivityLog, ColumnDefs, LiveProgramColumnDefs, LiveProgramColumnsDef, LiveAsignacionesColumnDef } from 'src/app/logistics/classes';
 import { LogisticsService } from 'src/app/logistics/services.service';
 import { GeoJson, FeatureCollection } from 'src/app/logistics/map';
-import { range, Subject } from 'rxjs';
+import { range, Subject, Subscription } from 'rxjs';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { LiveService } from 'src/app/shared/services/live.service';
 import { ProgramService } from 'src/app/shared/services/program.service';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { database } from 'firebase';
 import { CustomersModule } from 'src/app/customers/customers.module';
+import { UsersService } from 'src/app/shared/services/users.service';
+import { ColDef } from 'ag-grid-community';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+
 
 am4core.useTheme(am4themes_animated);
 
@@ -47,6 +52,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   // Grid
   rowFleetData: any[];
   columnFleetDefsProgram = LiveProgramColumnsDef;
+  columnFleetDefsAsingaciones = LiveAsignacionesColumnDef
 
   defaultColDef = {
     flex: 1,
@@ -90,6 +96,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   columnFleetDefs = LiveProgramColumnDefs
 
   rowData: IActivityLog[];
+  rowDataAsignaciones: IActivityLog[];
   liveServiceData: any[] = [];
   stopSubscription$: Subject<boolean> = new Subject();
   activityList: IActivityLog[];
@@ -103,12 +110,18 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   isSpinning: boolean = true;
   isAssignmentsModalVisible: boolean = false;
+  user: any;
+  stopSubscriptions$:Subject<boolean> = new Subject();
+  vendorRoutesSubscription: Subscription;
+  customersList: any[] = [];
 
   constructor(
     private logisticsService: LogisticsService,
     private liveService: LiveService,
     private programService: ProgramService,
     private routesService: RoutesService,
+    private authService: AuthenticationService,
+    private usersService: UsersService,
     private zone: NgZone
   ) {
     this.markers = [] as GeoJson[];
@@ -122,7 +135,23 @@ export class ProgramComponent implements OnInit, OnDestroy {
       this.searchData();
       this.isSpinning = false
     }, 500);
-    //this.initializeMap();
+  
+   
+  }
+  public columnAsignacion: ColDef = {
+    //flex: 1,
+    resizable: true,
+  };
+
+  getSubscriptions(vendorId: string) {
+    this.vendorRoutesSubscription = this.usersService.getBoardingPassesByRoute(vendorId).pipe(
+      takeUntil(this.stopSubscriptions$)
+    ).subscribe(data => {
+      console.log(data);
+   //  this.createNestedTableData(data);
+    })
+
+  
   }
 
   open(): void {
@@ -167,7 +196,13 @@ export class ProgramComponent implements OnInit, OnDestroy {
         console.log(data);
         
         this.rowData = data;
+        this.rowDataAsignaciones = data;
         let listCustomer: any[] = [];
+        this.authService.user.subscribe( (user:any) => {
+          this.user = user;
+          this.getSubscriptions(user.vendorId);
+        })
+
       })
     ).subscribe();
   }
@@ -183,6 +218,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.stopSubscription$.next();
     this.stopSubscription$.complete();
+    // Modal 
+    this.stopSubscriptions$.next();
+    this.stopSubscriptions$.complete();
   }
 
   getAssignments() {
@@ -203,6 +241,8 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   handleCancel() {
     this.isAssignmentsModalVisible = false;
+    //this.listOfParentData = [];
+    this.customersList = [];
   }
 
   handleOk() {
