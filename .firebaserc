@@ -1,5 +1,15 @@
 {
   "projects": {
-    "default": "bus2u-dev"
+    "default": "bus2u-dev",
+    "adminbus2u": "bus2u-834e8"
+  },
+  "targets": {
+    "bus2u-834e8": {
+      "hosting": {
+        "admin-bus2u-dev": [
+          "admin-bus2u-dev"
+        ]
+      }
+    }
   }
 }
