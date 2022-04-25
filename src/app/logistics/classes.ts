@@ -1,4 +1,4 @@
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ICellEditorParams } from 'ag-grid-community';
 import { format, fromUnixTime } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
 import * as firebase from 'firebase/app';
@@ -82,14 +82,11 @@ export interface IActivityLog {
   }}
  ];
  export var LiveAsignacionesColumnDef: (ColDef)[] =[
-  { headerName: 'Cliente', field: 'customerName', filter: true, checkboxSelection: true, sortable: true, enableRowGroup: true, enableCellChangeFlash:true },
+  { headerName: 'Cliente', field: 'customerName',  headerCheckboxSelection: true, 
+  headerCheckboxSelectionFilteredOnly: true, filter: true, checkboxSelection: true, sortable: true, enableRowGroup: true },
    { headerName: 'Ruta', field: 'routeName',filter: true, sortable: true,  enableCellChangeFlash:true },
-  { headerName: 'Inicia', field: 'time', 
-    valueGetter: (params) => {
-      if(params && params.node && params.node.data.time) {
-        return format( fromUnixTime(params.node.data.time.seconds), 'HH:mm a', { locale: esLocale })
-      }
-  } },
+  { headerName: 'Inicia', field: 'stopBeginHour', sortable: true, filter: true
+   },
   { headerName: 'Programa / Turno', field: 'round', valueGetter: (params) => {
     if(params && params.node) {     
       return  params.node.data.round + " / " + params.node.data.program
@@ -99,6 +96,7 @@ export interface IActivityLog {
   { headerName: 'Conductor', field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
   { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true }
  ];
+
   export var LiveProgramColumnDefs = [
     { headerName: 'Conductor', field: 'driver', sortable: true, enableCellChangeFlash:true },
     { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
