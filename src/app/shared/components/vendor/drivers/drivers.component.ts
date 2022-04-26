@@ -50,7 +50,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
       vendorName: [''],
       displayName: [''],
       password: ['',Validators.compose([Validators.required])],
-      verifyPassword: ['', [this.confirmValidator]]
+      verifyPassword1: ['', [this.confirmValidator]]
     });
 
     this.signupFormEdit = this.fb.group({
@@ -210,6 +210,11 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
     setTimeout(() => this.isEditContrasena? this.signupFormContrasena.controls.verifyPasswordContra.updateValueAndValidity() : this.signupForm.controls.verifyPassword.updateValueAndValidity());
   }
 
+  validateConfirmPassword1(): void {
+    setTimeout(() => this.signupForm.controls.verifyPassword1.updateValueAndValidity());
+  }
+ 
+
   confirmValidatorContra = (control: FormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { error: true, required: true };
@@ -221,8 +226,8 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   confirmValidator = (control: FormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { error: true, required: true };
-    } else if (control.value  !== this.signupFormContrasena.controls.password.value) {
-      return { verifyPassword: true, error: true };
+    } else if (control.value  !== this.signupForm.controls.password.value) {
+      return { verifyPassword1: true, error: true };
     }
     return {};
   };
