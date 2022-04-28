@@ -172,6 +172,12 @@
         <input type="text" nz-input formControlName="lastName" id="lastName" placeholder="Apellido(s)" />
       </nz-form-control>
     </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="employeeId">Id Empleado</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 7 caracteres.">
+        <input type="text" nz-input formControlName="employeeId" id="employeeId" placeholder="Id Empleado"/>
+      </nz-form-control>
+    </nz-form-item>
 
     <nz-form-item>
       <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="email">Correo electrónico</nz-form-label>
