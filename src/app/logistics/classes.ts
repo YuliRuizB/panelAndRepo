@@ -45,22 +45,22 @@ export interface IActivityLog {
     { headerName: '¿Subió?', field: 'allowedOnBoard', enableRowGroup: true }
   ];
  export var LiveProgramColumnsDef =[
-  { headerName: 'Inicia', field: 'time', 
+  { headerName: 'Inicia', width:115, field: 'time', 
     valueGetter: (params) => {
       if(params && params.node && params.node.data.time) {
         return format( fromUnixTime(params.node.data.time.seconds), 'HH:mm a', { locale: esLocale })
       }
   } },
-  { headerName: 'Cliente', field: 'customerName',filter: true, sortable: true, enableCellChangeFlash:true },
-  { headerName: 'Ruta', field: 'routeName', filter: true, sortable: true, enableCellChangeFlash:true },
-  { headerName: 'Programa / Turno', field: 'round', valueGetter: (params) => {
+  { headerName: 'Cliente',width:170, field: 'customerName',filter: true, sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Ruta', width:130,field: 'routeName', filter: true, sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Programa / Turno',width:175, field: 'round', valueGetter: (params) => {
     if(params && params.node) {     
       return  params.node.data.round + " / " + params.node.data.program
     }
   }},
-  { headerName: 'Conductor', field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
-  { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
-  { headerName: 'Inició', field: 'startedAt',  
+  { headerName: 'Conductor', width:210,field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Vehículo',width:120, field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Inició', width:115, field: 'startedAt',  
   valueGetter: (params) => {
     if(params && params.node && params.node.data.startAt) {
       if(params.node.data.started){
@@ -70,7 +70,7 @@ export interface IActivityLog {
     }
     }
   }},
-  { headerName: 'Finalizó', field: 'endedAt',
+  { headerName: 'Finalizó',width:115, field: 'endedAt',
   valueGetter: (params) => {
     if(params && params.node) {
       if (params.node.data.hasEnded) {

@@ -21,13 +21,12 @@ import { RoutesService } from 'src/app/shared/services/routes.service';
 import { database } from 'firebase';
 import { CustomersModule } from 'src/app/customers/customers.module';
 import { UsersService } from 'src/app/shared/services/users.service';
-import { ColDef, GridReadyEvent, ICellEditorParams } from 'ag-grid-community';
+import { CellValueChangedEvent, ColDef, GridReadyEvent, ICellEditorParams, ValueParserParams } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import { AssignmentsService } from 'src/app/shared/services/assignments.service';
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { variable } from '@angular/compiler/src/output/output_ast';
-import { ColourCellRenderer } from 'src/app/shared/components/routes/programs/colour-cell-renderer.component';
 
 
 
@@ -78,8 +77,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
   // Grid
   rowFleetData: any[];
   columnFleetDefsProgram = LiveProgramColumnsDef;
-  //columnFleetDefsAsingaciones = LiveAssignmentListDef;
-
 
   defaultColDef:  ColDef  = {
    // flex: 1,
@@ -121,18 +118,12 @@ export class ProgramComponent implements OnInit, OnDestroy {
   user: any;
   stopSubscriptions$:Subject<boolean> = new Subject();
   vendorRoutesSubscription: Subscription;
-  customersList: any[] = [];
   assignmentList: any = [];
   assignmentSubscription: Subscription;
-  vehicleAssignmentsList: any[] = [];
   vehicleAssignmentSubscription: Subscription;
-  public arrDrivers: any[] =[];
-  colors   = ['Red', 'Green', 'Blue'];
-  
-  vehiclesList: any[];
+  arrDrivers: any[] =[];
+  arrVehicle: any[] =[];
   vehiclesSubscription: Subscription;
-
-  driversList: any[] = [];
   driversSubscription: Subscription;
   pageIndex = 1;
   pageSize = 50;
@@ -142,6 +133,8 @@ export class ProgramComponent implements OnInit, OnDestroy {
   sortKey: string | null = null;
   filterGender = [{ text: 'male', value: 'male' }, { text: 'female', value: 'female' }];
   searchGenderList: string[] = [];
+  // Programar
+  selectedAssignment: any;
 
   constructor(
     private logisticsService: LogisticsService,
@@ -176,28 +169,37 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
 
   public columnFleetDefsAsingaciones: (ColDef) [] =[
-    { headerName: 'Cliente', field: 'customerName',
+    { headerName: 'Cliente', width:180, field: 'customerName',
       filter: true,checkboxSelection: true, headerCheckboxSelection: true,
       headerCheckboxSelectionFilteredOnly: true , sortable: true,enableCellChangeFlash:true },
-    { headerName: 'Ruta', field: 'routeName', sortable: true, enableCellChangeFlash:true },
-    { headerName: 'Programa / Turno', field: 'round', valueGetter: (params) => {
+    { headerName: 'Ruta',width:130, field: 'routeName', sortable: true, enableCellChangeFlash:true },
+    { headerName: 'Conductor',width:200,field: 'driverName', sortable: true,
+    cellEditor: 'agRichSelectCellEditor',
+    editable:true,
+    cellEditorParams: {values: this.arrDrivers.sort()},
+     enableCellChangeFlash:true },
+      { headerName: 'Vehículo', width:120, field: 'vehicleName', 
+      cellEditor: 'agRichSelectCellEditor',
+      editable:true,
+      cellEditorParams: {values: this.arrVehicle.sort()},
+      sortable: true,enableCellChangeFlash:true },
+    { headerName: 'Inicia', width:100,field: 'time', sortable: true, filter: true ,
+       valueGetter: (params) => {
+      if(params && params.node && params.node.data.time) {
+        return format( fromUnixTime(params.node.data.time.seconds), 'HH:mm a', { locale: esLocale })
+      }
+  } },,
+    { headerName: 'Programa / Turno', width:175,field: 'round', valueGetter: (params) => {
         if(params && params.node) {     
           return  params.node.data.round + " / " + params.node.data.program
         }
-    }},{ headerName: 'Vehículo', field: 'vehicleName', cellRenderer: 'agGroupCellRenderer',
-    cellEditor: 'agRichSelectCellEditor', cellEditorParams: {  //cellEditorPopup: true,
-      values: this.colors,
-      cellRenderer: ColourCellRenderer,
-    }, sortable: true, enableCellChangeFlash:true },
-    { headerName: 'Inicia', field: 'stopBeginHour', sortable: true, filter: true },
-    { headerName: 'Conductor', field: 'driverName', sortable: true, editable: true,
-     enableCellChangeFlash:true },
-    { headerName: 'Tipo', field: 'type', sortable: true, enableCellChangeFlash:true },
-    { headerName: 'Proveedor', field: 'vendorName', filter: true, sortable: true, enableCellChangeFlash:true }
+    }}, 
+    { headerName: 'Tipo', width:120,field: 'type', sortable: true, enableCellChangeFlash:true }
+    //,
+    //{ headerName: 'Proveedor', width:150,field: 'vendorName', filter: true, sortable: true, enableCellChangeFlash:true }
      ];
      
-    
-    onSelectDrivers(vendorID:string) {
+  onSelectDrivers(vendorID:string) {
   // Llena drivers dropdonws
     this.vehiclesSubscription = this.vehiclesService.getVendorVehicles(vendorID).pipe(
       takeUntil(this.stopSubscription$),
@@ -206,15 +208,30 @@ export class ProgramComponent implements OnInit, OnDestroy {
         const data = a.payload.doc.data() as any;
         return { id, ...data}
       }))
-    ).subscribe( vehicles => {
-      //this.vehicleNames.push(...vehicles);
-      this.arrDrivers.push(...vehicles);
-    //  console.log("vehicles" + vehicles);
-      //this.loading = false;
+    ).subscribe(vehicles => {
+      for (var x=0; x < vehicles.length;x++) {
+        if (this.arrVehicle.indexOf(vehicles[x].name) === -1 && vehicles[x].name != undefined && vehicles[x].name != "") {
+          this.arrVehicle.push(vehicles[x].name);  // asigna drivers dentro de la lista editable.
+        }
+      }
+    
+    });
+    // Llena Conductores dropdowns
+    this.driversSubscription = this.driversService.getDrivers(vendorID).pipe(
+      takeUntil(this.stopSubscription$),
+      map(actions => actions.map(a => {
+        const id = a.payload.doc.id;
+        const data = a.payload.doc.data() as any;
+        return { id, ...data}
+      }))
+    ).subscribe(drivers => {
+      for (var x=0; x < drivers.length;x++) {
+        if (this.arrDrivers.indexOf(drivers[x].displayName) === -1 && drivers[x].displayName != undefined && drivers[x].displayName != "") {
+          this.arrDrivers.push(drivers[x].displayName);  // asigna drivers dentro de la lista editable.
+        }
+      }
     });
   }
-
-
   getMonthData(date: Date): number | null {
     if (date.getMonth() === 8) {
       return 1394;
@@ -231,6 +248,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
   public columnAsignacion: ColDef = {
     //flex: 1,
+    //width: 100,
     resizable: true,
   };
 
@@ -238,25 +256,29 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.vendorRoutesSubscription = this.usersService.getBoardingPassesByRoute(vendorId).pipe(
       takeUntil(this.stopSubscriptions$)
     ).subscribe(data => {
-    // console.log("Datos=====" + data); // se  valida por cada customerid , rutaid
 
     var filterCustomer = [];
     var filterCustomerRoute = [];
     for (var x=0; x < data.length;x++) {
       for (var i = 0;i < data[x].passes.length; i++ ){
         if (data[x].passes[i].customer_id != undefined) {
-        if (filterCustomer.indexOf(data[x].passes[i].customer_id) === -1 ) {
-          filterCustomer.push(data[x].passes[i].customer_id);
-          filterCustomerRoute.push({customer: data[x].customerId ,customerName: data[x].customerName, routeId: data[x].passes[i].routeId , routeName:data[x].passes[i].routeName});
-        }
+        if (filterCustomer.indexOf(data[x].passes[i].routeId) === -1 ) {
+          filterCustomer.push(data[x].passes[i].routeId);
+          if (data[x].passes[i].active) {
+            filterCustomerRoute.push({customer: data[x].customerId ,customerName: data[x].customerName, 
+              routeId: data[x].passes[i].routeId , routeName:data[x].passes[i].routeName ,
+              type: data[x].passes[i].operation_type, round: data[x].passes[i].round ,
+              status:data[x].passes[i].status , program: data[x].passes[i].category});
+          }
+        } 
       }
       }
     }
-      
+
     filterCustomerRoute.forEach((routeElem) => {  // element = cusomerID 
-       // obtener informacion de vendorId y ruta 
-       if(vendorId.length > 0 && routeElem.routeId.length > 0) {
-       this.assignmentSubscription = this.assignmentsService.getActiveAssignmentsRoute(vendorId, routeElem.routeId).pipe(
+        // obtener informacion de vendorId y ruta 
+      if(vendorId.length > 0 && routeElem.routeId.length > 0) {
+        this.assignmentSubscription = this.assignmentsService.getActiveAssignmentsRoute(vendorId, routeElem.routeId).pipe(
         takeUntil(this.stopSubscription$),
         map(actions => actions.map(a => {
           const id = a.payload.doc.id;
@@ -264,8 +286,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
           return { id, ...data }
         }))
       ).subscribe( assignments => {
-
-        assignments.forEach((element) => {
+          assignments.forEach((element) => {
           // se valida por cada assigment , route 
           if (element.id.length > 0) {
           this.vehicleAssignmentSubscription = this.routesService.getRouteVehicleAssignments(routeElem.customer, 
@@ -277,7 +298,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
               return { id, ...data}
             }))
           ).subscribe( assignmentsVehiculo => {
-            //this.vehicleAssignmentsList.push(...assignmentsVehiculo);
             assignmentsVehiculo.forEach((vehiculoAssigmentElement) => { 
               if (element.active && vehiculoAssigmentElement.active){ // solo mostrara elentos activos
 
@@ -293,7 +313,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
                   vehicleId: vehiculoAssigmentElement.vehicleId,
                   vehicleName: vehiculoAssigmentElement.vehicleName, // 4
                   beginhour: element.beginhour,  //5
-                  stopBeginHour: element. stopBeginHour,
+                  time: element.time,
                   stopEndName: element.stopEndName,
                   type: element.type,  // 6
                   vendorName: element.vendorName, //7
@@ -305,33 +325,18 @@ export class ProgramComponent implements OnInit, OnDestroy {
             });
           });
           }
-         
         });
-      });
-    }
+        });
+      }
+      //console.log("assignmentList" + this.assignmentList);
+      this.rowDataAsignacionesModal=[];
+      if(this.assignmentList != undefined){
+      this.rowDataAsignacionesModal.push(...this.assignmentList);
+      }
     });
-    })
-    //console.log("assignmentList" + this.assignmentList);
-    this.rowDataAsignacionesModal=[];
-    if(this.assignmentList != undefined){
-    this.rowDataAsignacionesModal.push(...this.assignmentList);
-    }
-  
 
-    this.driversSubscription = this.driversService.getDrivers(vendorId).pipe(
-      takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
-        const id = a.payload.doc.id;
-        const data = a.payload.doc.data() as any;
-        return { id, ...data}
-      }))
-    ).subscribe( drivers => {
-      this.driversList = drivers;
-      //console.log("drivers" + drivers);
-     // this.loading = false;
-    });
-  
-  }
+  });
+}
 
   open(): void {
     this.visible = true;
@@ -371,8 +376,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
           this.getSubscriptions(user.vendorId);
 
           this.onSelectDrivers(user.vendorId);
-          
-       console.log('arrDrivers on select'+ this.arrDrivers);
         })
 
       })
@@ -395,7 +398,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   getAssignments() {
     console.log('date of assignments: ', this.date);
     this.isAssignmentsModalVisible = true;
-    console.log("rowDataAsignacionesModal" + this.rowDataAsignacionesModal);
+    //console.log("rowDataAsignacionesModal" + this.rowDataAsignacionesModal);
   }
 
   deleteAssignment(assignmentId: string, customerId: string ) {
@@ -409,11 +412,34 @@ export class ProgramComponent implements OnInit, OnDestroy {
   handleCancel() {
     this.isAssignmentsModalVisible = false;
     //this.listOfParentData = [];
-    this.customersList = [];
   }
 
   handleOk() {
-    this.isAssignmentsModalVisible = false;
+   // this.isAssignmentsModalVisible = false;
+   var selectedRows = this.gridApi.getSelectedRows();
+   this.rowDataAsignacionesPostProgramar=[];
+    //console.log(selectedRows);
+    this.rowDataAsignacionesPostProgramar.push(...selectedRows);
+
+    
+    selectedRows.forEach(function (selectedRow, index) {  
+     // Programar dia a dia
+
+    });
+
+  }
+
+  makeProgram() {
+  //  let data = this.selectedAssignment;
+  //  data.vendorId = this.vendorId;
+  //  data.customerId = this.customerId;
+  //  data.assignmentId = this.assignmentId;
+  //  data.routeId = this.routeId;
+  //  data.customerName = this.customerName;
+  //  data.routeName = this.routeName;
+  //  console.log('full data is: ', data);
+  //  this.programService.setProgram(data);
+  //  this.selectedAssignment = null;
   }
 
   formatDate(date: any) {
@@ -436,22 +462,20 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.gridColumnApi2 = params.columnApi;
   }
 
-  // clasess
-  
-  cellEditorSelector(params: ICellEditorParams) {
-    if (params.node.data.vehicleName != undefined) {
+  onSelectionChanged() {
+    var selectedRows = this.gridApi.getSelectedRows();
+    //(document.querySelector('#selectedRows') as any).innerHTML =
+     // selectedRows.length === 1 ? selectedRows[0].athlete : ''; 
+    var selectedRowsString = '';
+    selectedRows.forEach(function (selectedRow, index) {
       
-      this.onSelectDrivers(params.node.data.vendorId);
-       console.log('arrDrivers'+ this.arrDrivers);
-        return {
-        component: 'agRichSelectCellEditor',
-        params: {
-          values: ['ejem'], //arrDrivers,
-        },
-        popup: true,
-      };
-    }
-    return undefined;
+      if (index > 0) {
+        selectedRowsString += ', ';
+      }
+      selectedRowsString += selectedRow.customerName , selectedRow.routeName, selectedRow.driverName,
+      selectedRow.vehicleName, selectedRow.stopBeginHour, selectedRow.round, selectedRow.type, selectedRow.vendorName;
+    });
+    
   }
 }
 

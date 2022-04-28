@@ -51,8 +51,6 @@
 
   </div>
   <div nz-col nzSpan="16">
-    
-
   </div>
 </div>
 
@@ -62,13 +60,13 @@
   class="ag-theme-material" [rowData]="rowData"
   [onGridReady]='onGridReady' [columnDefs]="columnFleetDefsProgram" 
   [defaultColDef]="columnProgram" [groupIncludeFooter]="true" 
-  [sideBar]="true">
+  [sideBar]="false">
 </ag-grid-angular>
 </div>
 
 </nz-card>
 
-<nz-modal [(nzVisible)]="isAssignmentsModalVisible" nzTitle="Asignaciones" nzWidth="1000px"
+<nz-modal [(nzVisible)]="isAssignmentsModalVisible" nzTitle="Asignaciones {{ date | date: 'mediumDate' }}" nzWidth="1000px"
  (nzOnCancel)="handleCancel()"  [nzFooter]="modalFooter">
   <div>
     <div style="margin-bottom: 5px;">
@@ -80,19 +78,22 @@
         placeholder="Filtrar por..."
       />
     </div>
-    <ag-grid-angular #agGridProgramacion style="width: 100%; height: 250px;" 
+    <ag-grid-angular #agGridProgramacion style="width: 100%; height: 450px;" 
     class="ag-theme-material" [rowData]="rowDataAsignacionesModal"
     [columnDefs]="columnFleetDefsAsingaciones"  
     [rowSelection]="rowSelection" 
     [suppressRowClickSelection]="true" 
     [defaultColDef]="columnAsignacion" [groupIncludeFooter]="true" 
-    (gridReady)="onGridReady($event)"
+    (gridReady)="onGridReady($event)" (selectionChanged)="onSelectionChanged($event)"
     [sideBar]="false">
   </ag-grid-angular>
   <div>
     <button nz-button   nzType="primary"  style="float: right; margin-top:12px; margin-right: 20px;" (click)="handleOk()" [nzLoading]="isConfirmLoading">Programar</button>
   </div>
   </div>
+{{this.arrDrivers.sort()}}
+{{this.arrVehicle.sort()}}
+
   <div style="margin-bottom: 5px;"><p style="margin-top: 42px;" >Asignaciones Programadas</p></div>
 <div>
   <ag-grid-angular #agGridProgramacion1 style="width: 100%; height: 250px;" 

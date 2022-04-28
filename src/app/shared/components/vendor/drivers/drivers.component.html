@@ -172,7 +172,12 @@
         <input type="text" nz-input formControlName="lastName" id="lastName" placeholder="Apellido(s)" />
       </nz-form-control>
     </nz-form-item>
-
+    <nz-form-item>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="employeeId">Id Empleado</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Debe contener entre 7 caracteres.">
+        <input type="text" nz-input formControlName="employeeId" id="employeeId" placeholder="Id Empleado"/>
+      </nz-form-control>
+    </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="email">Correo electrónico</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="No es un correo válido!">
@@ -184,18 +189,18 @@
       <nz-form-label nzRequired id="contrasena"  [nzSm]="8" [nzXs]="24" nzFor="password">Contraseña</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzHasFeedback nzErrorTip="Ingresar mínimo 7 caracteres">
         <input type="password" nz-input formControlName="password" minlength="7"
-        placeholder="Contraseña" (ngModelChange)="validateConfirmPassword()"/>
+        placeholder="Contraseña" (ngModelChange)="validateConfirmPassword1()"/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item >
-      <nz-form-label nzRequired id="repContrasena" [nzSm]="8" [nzXs]="24" nzFor="verifyPassword">Repetir Contraseña</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24"nzHasFeedback [nzErrorTip]="passwordErrorTpl">
-        <input type="password" nz-input formControlName="verifyPassword"
+      <nz-form-label nzRequired id="repContrasena" [nzSm]="8" [nzXs]="24" nzFor="verifyPassword1">Repetir Contraseña</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24"nzHasFeedback [nzErrorTip]="passwordErrorTpl1">
+        <input type="password" nz-input formControlName="verifyPassword1"
         placeholder="Repetir Contraseña" />
-        <ng-template #passwordErrorTpl let-control>
+        <ng-template #passwordErrorTpl1 let-control>
           <ng-container *ngIf="control.hasError('required')">Por favor confirmar contraseña!</ng-container>
-          <ng-container *ngIf="control.hasError('verifyPassword')">La contraseña es inconsistente!</ng-container>
+          <ng-container *ngIf="control.hasError('verifyPassword1')">La contraseña es inconsistente!</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
