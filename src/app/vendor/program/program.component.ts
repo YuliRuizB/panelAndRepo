@@ -110,9 +110,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   private chart: am4charts.XYChart;
   chartData: any;
   gridApi: any;
-  gridApiDetalle: any;
+  gridApiDetail: any;
   gridColumnApi: any;
-  gridColumnApiDetalle: any;
+  gridColumnApiDetail: any;
 
   isSpinning: boolean = true;
   isAssignmentsModalVisible: boolean = false;
@@ -166,7 +166,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     );
   }
   onQuickFilterDetail() {
-    this.gridApiDetalle.setQuickFilter(
+    this.gridApiDetail.setQuickFilter(
       (document.getElementById('filterDetail') as HTMLInputElement).value
     );
   }
@@ -187,7 +187,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.searchData(true);
   }
 
-  public columnFleetDefsAsingaciones: (ColDef) [] =[
+  public columnFleetDefsAsign: (ColDef) [] =[
     { headerName: 'Cliente', width:170, field: 'customerName',
       filter: true,checkboxSelection: true, headerCheckboxSelection: true,
       headerCheckboxSelectionFilteredOnly: true , sortable: true,enableCellChangeFlash:true },
@@ -262,7 +262,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
       this.isSpinning = false
     }, 500);  
   }
-  public columnAsignacion: ColDef = {
+  public columnAsign: ColDef = {
     resizable: true,
   };
 
@@ -420,8 +420,8 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApiDetalle = params.api;
-    this.gridColumnApiDetalle = params.columnApi;
+    this.gridApiDetail = params.api;
+    this.gridColumnApiDetail = params.columnApi;
   }
   onGridReadyP(params: GridReadyEvent) {
     this.gridApi = params.api;
@@ -450,7 +450,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.filterRoute = filterRoute;
   }
 
-  onSelectRuta(routeSelected: any) {
+  onSelectRoute(routeSelected: any) {
     this.routePath = this.customerPath + " / " + routeSelected.routeName;
     if( this.routeNameSelected != routeSelected.routeName){
       this.rowDataAsignModal = [];

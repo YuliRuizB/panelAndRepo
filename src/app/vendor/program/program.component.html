@@ -75,20 +75,20 @@
         Asignaciones pendientes {{ numAssing }}
       </div>
       <div  style="margin-left: 26px" class="col-">
-        <a nz-dropdown [nzDropdownMenu]="menuCliente"> Cliente
+        <a nz-dropdown [nzDropdownMenu]="menuClient"> Cliente
           <i nz-icon nzType="down"></i>
         </a>
-        <a nz-dropdown [nzDropdownMenu]="menuRuta"> Ruta
+        <a nz-dropdown [nzDropdownMenu]="menuRoute"> Ruta
           <i nz-icon nzType="down"></i>
         </a>
-        <nz-dropdown-menu #menuCliente="nzDropdownMenu">
+        <nz-dropdown-menu #menuClient="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item *ngFor="let cust of filterCustomer" (click)="onSelect(cust)">{{cust.customerName}}</li>
           </ul>
         </nz-dropdown-menu>
-        <nz-dropdown-menu #menuRuta="nzDropdownMenu">
+        <nz-dropdown-menu #menuRoute="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item *ngFor="let routes of filterRoute" (click)="onSelectRuta(routes)">{{routes.routeName}}</li>
+            <li nz-menu-item *ngFor="let routes of filterRoute" (click)="onSelectRoute(routes)">{{routes.routeName}}</li>
           </ul>
         </nz-dropdown-menu>
       </div>
@@ -114,10 +114,10 @@
     </div>
     </div>
     <div>
-      <ag-grid-angular #agGridProgramacion style="width: 100%; height: 450px;" class="ag-theme-material"
-        [rowData]="rowDataAsignModal" [columnDefs]="columnFleetDefsAsingaciones" [rowSelection]="rowSelection"
+      <ag-grid-angular #agGridProg style="width: 100%; height: 450px;" class="ag-theme-material"
+        [rowData]="rowDataAsignModal" [columnDefs]="columnFleetDefsAsign" [rowSelection]="rowSelection"
         [suppressRowClickSelection]="true" [autoGroupColumnDef]="autoGroupColumnDef"
-        [defaultColDef]="columnAsignacion" [groupIncludeFooter]="true" (gridReady)="onGridReadyP($event)"
+        [defaultColDef]="columnAsign" [groupIncludeFooter]="true" (gridReady)="onGridReadyP($event)"
         (selectionChanged)="onSelectionChanged($event)" [sideBar]="false">
       </ag-grid-angular>
     </div>
