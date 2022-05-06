@@ -23,6 +23,14 @@ export interface IActivityLog {
     valid?: boolean;
     validUsage?: boolean;
     vehicle?: string;
+    customerName?: string;
+    time?: string;
+    routeName?:string;
+    routeid?:string;
+    vehicleName?:string;
+    driverName?:string;
+    customerId?:string;
+    id?:string;
   }
 
   export var ColumnDefs = [
