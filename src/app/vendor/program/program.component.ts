@@ -10,7 +10,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { IActivityLog, ColumnDefs ,LiveProgramColumnDefs, LiveProgramColumnsDef, LiveAsignacionesColumnDef } from 'src/app/logistics/classes';
+import { IActivityLog, ColumnDefs ,LiveProgramColumnDefs, LiveProgramColumnsDef, LiveAsignColumnDef } from 'src/app/logistics/classes';
 import { LogisticsService } from 'src/app/logistics/services.service';
 import { GeoJson, FeatureCollection } from 'src/app/logistics/map';
 import { range, Subject, Subscription } from 'rxjs';
@@ -404,7 +404,13 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.searchData(true);
     numAssignI =  numAssignI - selectedRows.length;
    this.regSelected = "(0)";
+   this.rowDataAsignModal = [];
+   this.rowDataAsignPostProg = [];
+   this.assignmentList =[];
    this.regFound = "";
+   this.routePath = "";
+   this.customerPath = "";
+   this.routeNameSelected =  "";
    this.isAssignmentsModalVisible = false;
 
   }

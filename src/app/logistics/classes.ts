@@ -89,7 +89,7 @@ export interface IActivityLog {
     }
   }}
  ];
- export var LiveAsignacionesColumnDef: (ColDef)[] =[
+ export var LiveAsignColumnDef: (ColDef)[] =[
   { headerName: 'Cliente', field: 'customerName',  headerCheckboxSelection: true, 
   headerCheckboxSelectionFilteredOnly: true, filter: true, checkboxSelection: true, sortable: true, enableRowGroup: true },
    { headerName: 'Ruta', field: 'routeName',filter: true, sortable: true,  enableCellChangeFlash:true },

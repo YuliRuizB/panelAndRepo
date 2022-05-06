@@ -20,13 +20,13 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   isVisibleNewDriver: boolean = false;
   isCreatingDriver: boolean = false;
   isEditMode: boolean = false;
-  isEditContrasena: boolean = false;
+  isEditPassword: boolean = false;
   responseUpdate:string = "";
   modalName: string = "Agregar conductor";
 
   signupForm: FormGroup;
   signupFormEdit: FormGroup;
-  signupFormContrasena: FormGroup;
+  signupFormPassword: FormGroup;
 
   constructor(
     private driversService: DriversService,
@@ -64,10 +64,10 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
       displayName: ['']
     });
 
-    this.signupFormContrasena = this.fb.group({
+    this.signupFormPassword = this.fb.group({
       id: [],
       password: ['',Validators.compose([Validators.required])],
-      verifyPasswordContra: ['', [this.confirmValidatorContra]]
+      verifyPasswordSec: ['', [this.confirmValidatorPass]]
     });
   }
 
@@ -104,30 +104,30 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
 
   editRecord(data) {
   this.isEditMode = true;
-  this.isEditContrasena = false;
+  this.isEditPassword = false;
   this.modalName = "Editar Conductor";
   this.patchForm(data);
   }
 
-  editRecordContrasena(data){
+  editRecordPassword(data){
     this.isEditMode = true;
-    this.isEditContrasena = true;
+    this.isEditPassword = true;
     this.modalName = "Restablecer Contraseña";
-    this.patchFormContrasena(data);
+    this.patchFormPassword(data);
   }
 
   patchForm(data: any) {
     this.signupFormEdit.patchValue({ ...data });
     this.openCreateDriverModal();
   }
-  patchFormContrasena(data: any) {
-    this.signupFormContrasena.patchValue({ ...data });
+  patchFormPassword(data: any) {
+    this.signupFormPassword.patchValue({ ...data });
     this.openCreateDriverModal();
   }
 
   createDriver() {
     const isValid: boolean =  true;
-     if (this.isEditMode && !this.isEditContrasena) {
+     if (this.isEditMode && !this.isEditPassword) {
        //is edit contact
        if (this.signupFormEdit.valid) {
         let currSignForm = this.signupFormEdit.value;
@@ -149,7 +149,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
         });
       }
      } else {
-       if (!this.isEditMode && !this.isEditContrasena) {
+       if (!this.isEditMode && !this.isEditPassword) {
          // is Adding
           if (this.signupForm.valid) {
           this.driversService.createDriver(this.signupForm.value).then((response) => {
@@ -169,17 +169,17 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
           }
        } else {
          // is update contraseña
-         console.log(this.signupFormContrasena.value);
-         if (this.signupFormContrasena.valid) {
-         this.driversService.resetPassword(this.signupFormContrasena.controls['id'].value , this.signupFormContrasena.controls['password'].value).then((response) => {
-          this.isEditContrasena = false;
+         console.log(this.signupFormPassword.value);
+         if (this.signupFormPassword.valid) {
+         this.driversService.resetPassword(this.signupFormPassword.controls['id'].value , this.signupFormPassword.controls['password'].value).then((response) => {
+          this.isEditPassword = false;
           this.isEditMode = false;
           this.isVisibleNewDriver = false;
         });
         this.nzMessageService.success('Se actualizó la contraseña con éxito'); 
         } else {
           console.log('singnup Contraseña no es valido');
-          Object.values(this.signupFormContrasena.controls).forEach(control => {
+          Object.values(this.signupFormPassword.controls).forEach(control => {
             if (control.invalid) {
               control.markAsDirty();
               control.updateValueAndValidity({ onlySelf: true });
@@ -192,7 +192,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
 
   createDriverModal() {
     this.isEditMode = false;
-    this.isEditContrasena = false;
+    this.isEditPassword = false;
     this.signupForm.pristine;
     this.modalName ="Agregar conductor";
     this.openCreateDriverModal();
@@ -207,18 +207,18 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   }
 
   validateConfirmPassword(): void {
-    setTimeout(() => this.isEditContrasena? this.signupFormContrasena.controls.verifyPasswordContra.updateValueAndValidity() : this.signupForm.controls.verifyPassword1.updateValueAndValidity());
+    setTimeout(() => this.isEditPassword? this.signupFormPassword.controls.verifyPasswordSec.updateValueAndValidity() : this.signupForm.controls.verifyPassword1.updateValueAndValidity());
   }
 
   validateConfirmPassword1(): void {
     setTimeout(() => this.signupForm.controls.verifyPassword1.updateValueAndValidity());
   }
  
-  confirmValidatorContra = (control: FormControl): { [s: string]: boolean } => {
+  confirmValidatorPass = (control: FormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { error: true, required: true };
-    } else if (control.value !== this.signupFormContrasena.controls.password.value) {
-      return { verifyPasswordContra: true, error: true };
+    } else if (control.value !== this.signupFormPassword.controls.password.value) {
+      return { verifyPasswordSec: true, error: true };
     }
     return {};
   };
