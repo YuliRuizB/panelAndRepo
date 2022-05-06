@@ -97,15 +97,15 @@ export class ProgramComponent implements OnInit, OnDestroy {
   columnFleetDefs = LiveProgramColumnDefs
 
   rowData: IActivityLog[];
-  rowDataAsignacionesPostProgramar: IActivityLog[];
-  rowDataAsignacionesModal:IActivityLogAssing[];
+  rowDataAsignPostProg: IActivityLog[];
+  rowDataAsignModal:IActivityLogAssing[];
   stopSubscription$: Subject<boolean> = new Subject();
   startDate: Date;
   endDate: Date;
   numAssing: string = "(0)";
   numAssingPro:string = "(0)";
-  regSeleccionados: string = "(0)";
-  regEncontrados:string;
+  regSelected: string = "(0)";
+  regFound:string;
 
   private chart: am4charts.XYChart;
   chartData: any;
@@ -140,7 +140,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
   routePath:string = "";
   routeNameSelected:string ="";
   routeSelectedRecord:any =[];
-  // Programar
   vendorID:string;
   filterCustomerRoute = [];
 
@@ -166,9 +165,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
       (document.getElementById('quickFilter') as HTMLInputElement).value
     );
   }
-  onQuickFilterDetalle() {
+  onQuickFilterDetail() {
     this.gridApiDetalle.setQuickFilter(
-      (document.getElementById('filterDetalle') as HTMLInputElement).value
+      (document.getElementById('filterDetail') as HTMLInputElement).value
     );
   }
   panelChange(change: { date: Date; mode: string }): void {
@@ -180,7 +179,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
    if (this.date != startOfDay(new Date(value))) {
       // si son diferentes. 
       this.assignmentList =[];
-      this.rowDataAsignacionesModal = this.assignmentList;  // se limpia para cargarse de nuevo.
+      this.rowDataAsignModal = this.assignmentList;  // clear code before fill
       this.numAssing ="(0)";
       console.log("Se limpia el modal porque cambio la fecha de las asignaciones");
    }
@@ -218,7 +217,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
      ];
      
   onSelectDrivers(vendorID:string) {
-  // Llena drivers dropdonws
+  // fill dropdowns
     this.vehiclesSubscription = this.vehiclesService.getVendorVehicles(vendorID).pipe(
       takeUntil(this.stopSubscription$),
       map(actions => actions.map((a:any) => {
@@ -229,12 +228,11 @@ export class ProgramComponent implements OnInit, OnDestroy {
     ).subscribe(vehicles => {
       for (var x=0; x < vehicles.length;x++) {
         if (this.arrVehicle.indexOf(vehicles[x].name) === -1 && vehicles[x].name != undefined && vehicles[x].name != "") {
-          this.arrVehicle.push(vehicles[x].name);  // asigna drivers dentro de la lista editable.
+          this.arrVehicle.push(vehicles[x].name); 
         }
       }
     
     });
-    // Llena Conductores dropdowns
     this.driversSubscription = this.driversService.getDrivers(vendorID).pipe(
       takeUntil(this.stopSubscription$),
       map(actions => actions.map(a => {
@@ -245,7 +243,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     ).subscribe(drivers => {
       for (var x=0; x < drivers.length;x++) {
         if (this.arrDrivers.indexOf(drivers[x].displayName) === -1 && drivers[x].displayName != undefined && drivers[x].displayName != "") {
-          this.arrDrivers.push(drivers[x].displayName);  // asigna drivers dentro de la lista editable.
+          this.arrDrivers.push(drivers[x].displayName);  
         }
       }
     });
@@ -328,7 +326,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
         
         this.rowData = data;
         this.numAssingPro = " ( " + data.length + " ) ";
-        this.rowDataAsignacionesPostProgramar = data;
+        this.rowDataAsignPostProg = data;
           
       })
     ).subscribe();
@@ -370,16 +368,15 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   handleCancel() {
     this.isAssignmentsModalVisible = false;
-     // cierra suscribe
      this.stopSubscriptions$.next();
      this.stopSubscriptions$.complete();
      (document.getElementById('quickFilter') as HTMLInputElement).value = "";
-     (document.getElementById('filterDetalle') as HTMLInputElement).value = "";
+     (document.getElementById('filterDetail') as HTMLInputElement).value = "";
      this.onQuickFilterChanged();     
-     this.regSeleccionados = "(0)";
-     this.regEncontrados="";
-     this.rowDataAsignacionesModal = [];
-     this.rowDataAsignacionesPostProgramar = [];
+     this.regSelected = "(0)";
+     this.regFound="";
+     this.rowDataAsignModal = [];
+     this.rowDataAsignPostProg = [];
      this.assignmentList =[];
      this.routePath = "";
      this.customerPath = "";
@@ -388,12 +385,10 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
 
   handleOk() {
-    // this.isAssignmentsModalVisible = false;
     var selectedRows = this.gridApi.getSelectedRows();
-    this.rowDataAsignacionesPostProgramar = [];
+    this.rowDataAsignPostProg = [];
     var numAssignI: number = this.gridApi.length;
     selectedRows.forEach(x => {
-       // Programar dia a dia
        let data = x;
   
        data.vendorId = x.vendorId;
@@ -404,13 +399,12 @@ export class ProgramComponent implements OnInit, OnDestroy {
        data.routeName = x.routeName;
        console.log('full data is: ', data);
        this.programService.setProgram(data);
-       // una ves establecido el programa  se borra del listado
     });
 
     this.searchData(true);
     numAssignI =  numAssignI - selectedRows.length;
-   this.regSeleccionados = "(0)";
-   this.regEncontrados = "";
+   this.regSelected = "(0)";
+   this.regFound = "";
    this.isAssignmentsModalVisible = false;
 
   }
@@ -436,7 +430,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   onSelectionChanged() {
     const selectedRows = this.gridApi.getSelectedRows();
-   this.regSeleccionados = " ( " + selectedRows.length + " ) ";
+   this.regSelected = " ( " + selectedRows.length + " ) ";
   }
 
   onSelect(customerSelected:any) {
@@ -459,7 +453,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   onSelectRuta(routeSelected: any) {
     this.routePath = this.customerPath + " / " + routeSelected.routeName;
     if( this.routeNameSelected != routeSelected.routeName){
-      this.rowDataAsignacionesModal = [];
+      this.rowDataAsignModal = [];
       this.assignmentList =[];
     }
     this.routeNameSelected =routeSelected.routeName;
@@ -477,10 +471,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
   handleSearch() {
     if (this.routeSelectedRecord.length > 0) {
-      this.rowDataAsignacionesModal = [];
-      this.regEncontrados = "";
+      this.rowDataAsignModal = [];
+      this.regFound = "";
        this.routeSelectedRecord.forEach((element) => {
-        // se valida por cada assigment , route 
         if (element.id.length > 0) {
           this.vehicleAssignmentSubscription = this.routesService.getRouteVehicleAssignments(element.customerId,
             element.routeId, element.id, element.vendorId).pipe(
@@ -493,15 +486,15 @@ export class ProgramComponent implements OnInit, OnDestroy {
             ).subscribe(assignmentsVehiculo => {
 
               assignmentsVehiculo.forEach((vehiculoAssigmentElement) => {
-                if (element.active) { // solo mostrara elentos activos
-                  // Busca el registro en los asignados ... para no mostrarlo.. 
-                  var findAssignacion = this.rowDataAsignacionesPostProgramar.find(x =>
+                if (element.active) {
+                  //serch inside the assigned , to now showed
+                  var findAssignacion = this.rowDataAsignPostProg.find(x =>
                     x.customerId == element.customerId &&  x.routeName == this.routeNameSelected &&
                     x.driver == vehiculoAssigmentElement.driverName &&
                     x.vehicleName == vehiculoAssigmentElement.vehicleName && x.type == element.type
                   );
-                  // Elimina duplicidad de datos
-                  var duplicateRecord = this.rowDataAsignacionesModal.find(yy =>
+                  // delete duplicity of data
+                  var duplicateRecord = this.rowDataAsignModal.find(yy =>
                     yy.assignmentId == vehiculoAssigmentElement.assignmentId);
                   if (findAssignacion == undefined && duplicateRecord == undefined) {
                     if (this.assignmentList.indexOf(vehiculoAssigmentElement.assignmentId) === -1) {
@@ -538,10 +531,10 @@ export class ProgramComponent implements OnInit, OnDestroy {
     }
     if (this.assignmentList != undefined) {  
       if(this.assignmentList.length == 0) {
-        this.regEncontrados= "No se encontraron rutas para programar.";
+        this.regFound= "No se encontraron rutas para programar.";
       }
-      this.rowDataAsignacionesModal.push(...this.assignmentList);
-      this.numAssing = " (" + this.rowDataAsignacionesModal.length + ") ";
+      this.rowDataAsignModal.push(...this.assignmentList);
+      this.numAssing = " (" + this.rowDataAsignModal.length + ") ";
     } 
     
   }
