@@ -75,6 +75,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   // Grid
   rowFleetData: any[];
   columnFleetDefsProgram = LiveProgramColumnsDef;
+  columnDefs =  LiveProgramColumnsDef;
 
   defaultColDef:  ColDef  = {
    // flex: 1,
@@ -93,7 +94,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
   map: any = mapboxgl.Map;
   source: any;
   markers: any;
-  columnDefs = ColumnDefs;
   columnFleetDefs = LiveProgramColumnDefs
 
   rowData: IActivityLog[];
