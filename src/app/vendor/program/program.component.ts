@@ -100,6 +100,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   rowDataAsignPostProg: IActivityLog[];
   rowDataAsignModal:IActivityLogAssing[];
   stopSubscription$: Subject<boolean> = new Subject();
+  activityList: IActivityLog[];
   startDate: Date;
   endDate: Date;
   numAssing: string = "(0)";
@@ -265,6 +266,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   public columnAsign: ColDef = {
     resizable: true,
   };
+  public columnProgram: ColDef = {
+    resizable: true,
+  };
 
   getSubscriptions(vendorId: string) {
     this.vendorRoutesSubscription = this.usersService.getBoardingPassesByRoute(vendorId).pipe(
@@ -299,6 +303,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   close(): void {
     this.visible = false;
+  }
+
+  onPanelChange(event) {
   }
 
   sort(sort: { key: string; value: string }): void {
@@ -434,7 +441,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.gridColumnApi = params.columnApi;
   }
 
-  onSelectionChanged() {
+  onSelectionChanged(params: GridReadyEvent) {
     const selectedRows = this.gridApi.getSelectedRows();
    this.regSelected = " ( " + selectedRows.length + " ) ";
   }
