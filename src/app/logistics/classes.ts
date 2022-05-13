@@ -1,4 +1,4 @@
-import { ColDef, ICellEditorParams } from 'ag-grid-community';
+import { ColDef } from 'ag-grid-community';
 import { format, fromUnixTime } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
 import * as firebase from 'firebase/app';

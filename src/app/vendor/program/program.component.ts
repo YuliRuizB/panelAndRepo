@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core'
 import { ThemeConstantService } from '../../shared/services/theme-constant.service';
 import { environment } from 'src/environments/environment';
 import { map, take, takeUntil, tap } from 'rxjs/operators';
