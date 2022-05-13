@@ -3,13 +3,14 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { firestore } from 'firebase';
 import { take, map } from 'rxjs/operators';
 import { addDays, addMinutes } from 'date-fns';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProgramService {
 
-  constructor(private afs: AngularFirestore) { }
+  constructor(private afs: AngularFirestore,public messageService: NzMessageService) { }
 
   setProgram(data: any) {
     console.log(data);
@@ -106,5 +107,18 @@ export class ProgramService {
       .orderBy('startAt','asc')
     );
     return programmedAssignments.snapshotChanges();
+  }
+
+  editProgram(vendorId:string, data: any) {
+    console.log(data);
+    const programRef = this.afs.collection('customers').doc(data.value.customerId).collection('program').doc(data.value.idProgram);
+      return programRef.update({driver: data.value.driverEdit , driverId: data.value.driverId ,
+        vehicleId: data.value.vehicleId ,vehicleName:data.value.vehicleEdit})
+        .then(() => this.sendMessage('success', 'La Programacion ha sido modificada.'))
+        .catch(err => this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`));
+  }
+
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
   }
 }

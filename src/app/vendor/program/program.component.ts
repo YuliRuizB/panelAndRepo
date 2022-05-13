@@ -27,6 +27,7 @@ import { AssignmentsService } from 'src/app/shared/services/assignments.service'
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { variable } from '@angular/compiler/src/output/output_ast';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 am4core.useTheme(am4themes_animated);
 
@@ -107,6 +108,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   numAssingPro:string = "(0)";
   regSelected: string = "(0)";
   regFound:string;
+  signupForm: FormGroup;
 
   private chart: am4charts.XYChart;
   chartData: any;
@@ -117,6 +119,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   isSpinning: boolean = true;
   isAssignmentsModalVisible: boolean = false;
+  isEditModalVisible: boolean = false;
   user: any;
   stopSubscriptions$:Subject<boolean> = new Subject();
   vendorRoutesSubscription: Subscription;
@@ -124,7 +127,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   assignmentSubscription: Subscription;
   vehicleAssignmentSubscription: Subscription;
   arrDrivers: any[] =[];
+  arrDriversEdit: any[] =[];
   arrVehicle: any[] =[];
+  arrVehicleEdit : any[]=[];
   vehiclesSubscription: Subscription;
   driversSubscription: Subscription;
   pageIndex = 1;
@@ -143,6 +148,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   routeSelectedRecord:any =[];
   vendorID:string;
   filterCustomerRoute = [];
+  public rowSelectionEdit = 'single';
+  vehicleEditInput:string = "";
+  driverEditInput:string = "";
 
   constructor(
     private logisticsService: LogisticsService,
@@ -154,7 +162,8 @@ export class ProgramComponent implements OnInit, OnDestroy {
     private assignmentsService: AssignmentsService,
     private vehiclesService: VehiclesService,
     private driversService: DriversService,
-    private zone: NgZone
+    private zone: NgZone,
+    private fb: FormBuilder
   ) {
     this.markers = [] as GeoJson[];
     this.startDate = startOfToday();
@@ -230,6 +239,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
       for (var x=0; x < vehicles.length;x++) {
         if (this.arrVehicle.indexOf(vehicles[x].name) === -1 && vehicles[x].name != undefined && vehicles[x].name != "") {
           this.arrVehicle.push(vehicles[x].name); 
+          this.arrVehicleEdit.push({name: vehicles[x].name , id: vehicles[x].id})
         }
       }
     
@@ -245,6 +255,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
       for (var x=0; x < drivers.length;x++) {
         if (this.arrDrivers.indexOf(drivers[x].displayName) === -1 && drivers[x].displayName != undefined && drivers[x].displayName != "") {
           this.arrDrivers.push(drivers[x].displayName);  
+          this.arrDriversEdit.push({ displayName: drivers[x].displayName, id:drivers[x].id});
         }
       }
     });
@@ -262,6 +273,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
       this.searchData();
       this.isSpinning = false
     }, 500);  
+    this.createForm();
   }
   public columnAsign: ColDef = {
     resizable: true,
@@ -552,5 +564,52 @@ export class ProgramComponent implements OnInit, OnDestroy {
     
   }
 
+  handleOKEdit() { // Accept the  edit over the program row
+    // Save the edit mode
+    let data = this.signupForm;
+    console.log('full data is: ', data);
+   this.programService.editProgram( this.vendorID, data);
+    // close the modal.
+    this.isEditModalVisible = false;
+  }
+  handleCancelEdit () { // cancel.
+    this.isEditModalVisible = false;
+  }
+  createForm() {
+    this.signupForm = this.fb.group({
+    id: [],
+    clientEdit: [''],
+    routeEdit: [''],
+    driverEdit: [''],
+    vehicleEdit: [''],
+    vehicleId:[''],
+    routeId: [''],
+    driverId:[''],
+    customerId: [''],
+    idProgram: ['']
+    });
+  }
+
+  onSelectionChangedEdit(params: GridReadyEvent) {
+    const selectedRows = this.gridApiDetail.getSelectedRows();
+    console.log(selectedRows);
+    this.isEditModalVisible = true;
+    this.signupForm.patchValue({clientEdit: selectedRows[0].customerName, 
+      routeEdit: selectedRows[0].routeName, driverEdit: selectedRows[0].driver,
+      vehicleEdit: selectedRows[0].vehicleName,id:selectedRows[0].id ,
+      vehicleId: selectedRows[0].vehicleId ,routeId: selectedRows[0].routeId,
+      driverId: selectedRows[0].driverId ,customerId: selectedRows[0].customerId,
+      idProgram:selectedRows[0].id });
+      // this.arrDrivers // arrVehicle fill 
+      this.getInfoAssigments();
+  }
+  vehicleSet(vehicle: any){
+    this.signupForm.controls['vehicleEdit'].setValue(vehicle.name);
+    this.signupForm.controls['vehicleId'].setValue(vehicle.id);
+  }
+  driverSet(driver: any){
+   this.signupForm.controls['driverEdit'].setValue(driver.displayName);
+   this.signupForm.controls['driverId'].setValue(driver.id);
+  }
 }
 

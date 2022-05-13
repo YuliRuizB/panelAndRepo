@@ -53,6 +53,11 @@ export interface IActivityLog {
     { headerName: '¿Subió?', field: 'allowedOnBoard', enableRowGroup: true }
   ];
  export var LiveProgramColumnsDef =[
+  { headerName: '--',width:90, cellStyle: {color: 'blue'}, field: 'editMode',initialPinned: 'left', enableCellChangeFlash:true 
+  ,valueGetter: (params) => {
+    if(params && params.node) {     
+      return  "Editar"
+    } }},
   { headerName: 'Inicia', width:115, field: 'time', 
     valueGetter: (params) => {
       if(params && params.node && params.node.data.time) {
