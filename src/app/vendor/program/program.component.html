@@ -134,19 +134,19 @@
   <div>
     <form nz-form [formGroup]="signupForm">
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="clientEdit">Cliente</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="customerName">Cliente</nz-form-label>
         <nz-form-control  [nzSm]="16" [nzXs]="24" >
-          <input [disabled]="true" type="text" nz-input formControlName="clientEdit" id="clientEdit"/>
+          <input [disabled]="true" type="text" nz-input formControlName="customerName" id="customerName"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="routeEdit">Ruta</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="routeName">Ruta</nz-form-label>
         <nz-form-control [nzSm]="16" [nzXs]="24" >
-          <input [disabled]="true" type="text" nz-input formControlName="routeEdit" id="routeEdit"/>
+          <input [disabled]="true" type="text" nz-input formControlName="routeName" id="routeName"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="driverEdit">Conductor</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="driver">Conductor</nz-form-label>
         <nz-form-control [nzSm]="16" [nzXs]="24" >
           <button nz-button nz-dropdown [nzDropdownMenu]="menuDriverEdit" [nzPlacement]="bottomRight">
             - Seleccionar - 
@@ -157,7 +157,7 @@
               <li *ngFor="let driver of arrDriversEdit" (click)="driverSet(driver)"  nz-menu-item>{{driver.displayName}}</li>
             </ul>
           </nz-dropdown-menu>
-          <input [disabled]="true" type="text"  nz-input formControlName="driverEdit" id="driverEditInput"/>
+          <input [disabled]="true" type="text"  nz-input formControlName="driver" id="driverEditInput"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -172,7 +172,7 @@
               <li *ngFor="let vehicle of arrVehicleEdit" (click)="vehicleSet(vehicle)" nz-menu-item>{{vehicle.name}}</li>
             </ul>
           </nz-dropdown-menu>
-          <input [disabled]="true" type="text" nz-input formControlName="vehicleEdit" id="vehicleEditInput"/> 
+          <input [disabled]="true" type="text" nz-input formControlName="vehicleName" id="vehicleEditInput"/> 
         </nz-form-control>
       </nz-form-item>
     </form>

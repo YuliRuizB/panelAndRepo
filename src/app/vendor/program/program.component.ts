@@ -568,7 +568,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     // Save the edit mode
     let data = this.signupForm;
     console.log('full data is: ', data);
-   this.programService.editProgram( this.vendorID, data);
+    this.programService.editProgram( this.vendorID, data);
     // close the modal.
     this.isEditModalVisible = false;
   }
@@ -578,10 +578,10 @@ export class ProgramComponent implements OnInit, OnDestroy {
   createForm() {
     this.signupForm = this.fb.group({
     id: [],
-    clientEdit: [''],
-    routeEdit: [''],
-    driverEdit: [''],
-    vehicleEdit: [''],
+    customerName: [''],
+    routeName: [''],
+    driver: [''],
+    vehicleName: [''],
     vehicleId:[''],
     routeId: [''],
     driverId:[''],
@@ -594,21 +594,17 @@ export class ProgramComponent implements OnInit, OnDestroy {
     const selectedRows = this.gridApiDetail.getSelectedRows();
     console.log(selectedRows);
     this.isEditModalVisible = true;
-    this.signupForm.patchValue({clientEdit: selectedRows[0].customerName, 
-      routeEdit: selectedRows[0].routeName, driverEdit: selectedRows[0].driver,
-      vehicleEdit: selectedRows[0].vehicleName,id:selectedRows[0].id ,
-      vehicleId: selectedRows[0].vehicleId ,routeId: selectedRows[0].routeId,
-      driverId: selectedRows[0].driverId ,customerId: selectedRows[0].customerId,
-      idProgram:selectedRows[0].id });
-      // this.arrDrivers // arrVehicle fill 
-      this.getInfoAssigments();
+    let recordToPatchValue = { ...selectedRows[0] };
+    this.signupForm.patchValue({ ...recordToPatchValue });
+    // this.arrDrivers // arrVehicle fill 
+    this.getInfoAssigments();
   }
   vehicleSet(vehicle: any){
-    this.signupForm.controls['vehicleEdit'].setValue(vehicle.name);
+    this.signupForm.controls['vehicleName'].setValue(vehicle.name);
     this.signupForm.controls['vehicleId'].setValue(vehicle.id);
   }
   driverSet(driver: any){
-   this.signupForm.controls['driverEdit'].setValue(driver.displayName);
+   this.signupForm.controls['driver'].setValue(driver.displayName);
    this.signupForm.controls['driverId'].setValue(driver.id);
   }
 }

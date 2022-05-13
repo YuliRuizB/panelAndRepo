@@ -111,9 +111,12 @@ export class ProgramService {
 
   editProgram(vendorId:string, data: any) {
     console.log(data);
-    const programRef = this.afs.collection('customers').doc(data.value.customerId).collection('program').doc(data.value.idProgram);
-      return programRef.update({driver: data.value.driverEdit , driverId: data.value.driverId ,
-        vehicleId: data.value.vehicleId ,vehicleName:data.value.vehicleEdit})
+    const programRef = this.afs.collection('customers').doc(data.value.customerId).collection('program').doc(data.value.id);
+      return programRef.update({
+        driver: data.value.driver , 
+        driverId: data.value.driverId ,
+        vehicleId: data.value.vehicleId ,
+        vehicleName:data.value.vehicleName})
         .then(() => this.sendMessage('success', 'La Programacion ha sido modificada.'))
         .catch(err => this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`));
   }
