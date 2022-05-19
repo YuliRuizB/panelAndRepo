@@ -89,7 +89,9 @@ export class ProgramService {
     ).subscribe( assignment => {
       console.log(assignment);
       const programRef = this.afs.collection('customers').doc(data.customerId).collection('program');
-      return programRef.add(assignment);
+      return programRef.add(assignment)
+      .then(() => this.sendMessage('success', 'La Programacion ha sido generada. Favor de Actualizar la tabla.'))
+        .catch(err => this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`));
       // return true;
     });
   }
@@ -117,7 +119,7 @@ export class ProgramService {
         driverId: data.value.driverId ,
         vehicleId: data.value.vehicleId ,
         vehicleName:data.value.vehicleName})
-        .then(() => this.sendMessage('success', 'La Programacion ha sido modificada.'))
+        .then(() => this.sendMessage('success', 'La Programacion ha sido modificada. Favor de Actualizar la tabla.'))
         .catch(err => this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`));
   }
 
