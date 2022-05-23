@@ -31,7 +31,7 @@
 <div nz-row [nzGutter]="8">
   <div nz-col nzSpan="8">
 
-    <nz-card style="width:100%;" nzTitle="Programación" [nzExtra]="extraTemplate">
+    <nz-card style="width:100%;" nzTitle="Programación ({{ date | date: 'mediumDate' }} )" [nzExtra]="extraTemplate">
       <nz-calendar [nzFullscreen]="false" (nzSelectChange)="onValueChange($event)"
         (nzPanelChange)="onPanelChange($event)"></nz-calendar>
     </nz-card>
@@ -55,15 +55,25 @@
 </div>
 
 <nz-card style="width:100%;" [nzBodyStyle]="{ 'padding': '0px' }" nzTitle="Programación {{ numAssingPro }}">
-  <input type="text" style="margin-left: 20px; margin-top:5px" (input)="onQuickFilterDetail()" id="filterDetail" placeholder="Filtrar por..." />
+  <div class="container">
+    <div class="row">
+      <div class="col" style="margin-top:5px">
+        <input type="text" style="margin-left: 20px; margin-top:5px" (input)="onQuickFilterDetail()" id="filterDetail" placeholder="Filtrar por..." />
+      </div>
+      <div class="col">     
+      </div>
+      <div class="col">
+        <button nz-button nzType="primary" (click)="refreshTable()"  style="margin-top:5px; display: block; margin-left: auto; margin-right: 0;">Actualizar</button>
+      </div>
+    </div>
+  </div>
   <div>
-  <ag-grid-angular #agGrid style="width: 100%; height: 450px;" 
-  class="ag-theme-material" [rowData]="rowData" [rowSelection]="rowSelectionEdit"
-  (gridReady)="onGridReady($event)" [columnDefs]="columnFleetDefsProgram" 
-  [defaultColDef]="columnProgram" [groupIncludeFooter]="true"  (selectionChanged)="onSelectionChangedEdit($event)"
-  [sideBar]="false">
-</ag-grid-angular>
-</div>
+    <ag-grid-angular #agGrid style="width: 100%; height: 450px;" class="ag-theme-material" [rowData]="rowData"
+      [rowSelection]="rowSelectionEdit" (gridReady)="onGridReady($event)" [columnDefs]="columnFleetDefsProgram"
+      [defaultColDef]="columnProgram" [groupIncludeFooter]="true" (selectionChanged)="onSelectionChangedEdit($event)"
+      [sideBar]="false">
+    </ag-grid-angular>
+  </div>
 
 </nz-card>
 
@@ -126,10 +136,10 @@
   </div>
   <ng-template #modalFooter>
     <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Programar</button>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button> 
   </ng-template>
 </nz-modal>
-<nz-modal [(nzVisible)]="isEditModalVisible" nzTitle="Editar Programacion"
+<nz-modal [(nzVisible)]="isEditModalVisible" nzTitle="Editar Programacion ( {{ date | date: 'mediumDate' }} )"
   nzWidth="500px" (nzOnCancel)="handleCancelEdit()" [nzFooter]="modalFooterEdit">
   <div>
     <form nz-form [formGroup]="signupForm">

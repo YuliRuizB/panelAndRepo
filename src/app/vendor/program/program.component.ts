@@ -28,6 +28,7 @@ import { DriversService } from 'src/app/shared/services/drivers.service';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { variable } from '@angular/compiler/src/output/output_ast';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd';
 
 am4core.useTheme(am4themes_animated);
 
@@ -163,7 +164,8 @@ export class ProgramComponent implements OnInit, OnDestroy {
     private vehiclesService: VehiclesService,
     private driversService: DriversService,
     private zone: NgZone,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private nzMessageService: NzMessageService,
   ) {
     this.markers = [] as GeoJson[];
     this.startDate = startOfToday();
@@ -408,30 +410,30 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.rowDataAsignPostProg = [];
     var numAssignI: number = this.gridApi.length;
     selectedRows.forEach(x => {
-       let data = x;
-  
-       data.vendorId = x.vendorId;
-       data.customerId = x.customerId;
-       data.assignmentId = x.assignmentId;
-       data.routeId = x.routeId;
-       data.customerName = x.customerName;
-       data.routeName = x.routeName;
-       console.log('full data is: ', data);
-       this.programService.setProgram(data);
+      let data = x;
+
+      data.vendorId = x.vendorId;
+      data.customerId = x.customerId;
+      data.assignmentId = x.assignmentId;
+      data.routeId = x.routeId;
+      data.customerName = x.customerName;
+      data.routeName = x.routeName;
+      console.log('full data is: ', data);
+      this.programService.setProgram(data);
     });
 
     this.searchData(true);
-    numAssignI =  numAssignI - selectedRows.length;
-   this.regSelected = "(0)";
-   this.rowDataAsignModal = [];
-   this.rowDataAsignPostProg = [];
-   this.assignmentList =[];
-   this.regFound = "";
-   this.routePath = "";
-   this.customerPath = "";
-   this.routeNameSelected =  "";
-   this.isAssignmentsModalVisible = false;
-
+    numAssignI = numAssignI - selectedRows.length;
+    this.regSelected = "(0)";
+    this.rowDataAsignModal = [];
+    this.rowDataAsignPostProg = [];
+    this.assignmentList = [];
+    this.regFound = "";
+    this.routePath = "";
+    this.customerPath = "";
+    this.routeNameSelected = "";
+    this.isAssignmentsModalVisible = false;
+    this.nzMessageService.success('Se Programo con éxito, favor de actualizar la tabla.'); 
   }
 
   formatDate(date: any) {
@@ -606,6 +608,10 @@ export class ProgramComponent implements OnInit, OnDestroy {
   driverSet(driver: any){
    this.signupForm.controls['driver'].setValue(driver.displayName);
    this.signupForm.controls['driverId'].setValue(driver.id);
+  }
+
+  refreshTable(){
+    this.searchData(true);
   }
 }
 
