@@ -824,7 +824,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
      //get all users tokens to notify
     const usersRef = await admin.firestore()
       .collection('users')
-      .where('routeId', '==', updated.routeId)
+      .where('routeId', '==', updated.routeId).where('round', '==', updated.round).where('routeName', '==', updated.routeName)
       .get();
 
      let tokens: any = [];
