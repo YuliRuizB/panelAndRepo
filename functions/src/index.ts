@@ -830,7 +830,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
      let tokens: any = [];
     usersRef.get().then(async (userDoc: { data: () => any; }) => {
       const user = userDoc.data() as any;
-      console.log(user);
+      console.log(user); 
       // check all users that actually have a token
       //add all users with a token to tokens array
       //create payload
