@@ -820,7 +820,6 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
     const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
     // get all users that are using that route
     // and have an active boardingPass
-    //const usersRef = this.collection('users', ref => ref.where('routeId','==', updated.routeId))
      //get all users tokens to notify
     const usersRef = await admin.firestore()
       .collection('users')
