@@ -818,6 +818,47 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
 
   if(!wasLive && isLive) {
     const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
+    // get all users that are using that route
+    // and have an active boardingPass
+     //get all users tokens to notify
+    const usersRef = await admin.firestore()
+      .collection('users')
+      .where('routeId', '==', updated.routeId).where('round', '==', updated.round).where('routeName', '==', updated.routeName)
+      .get();
+
+     let tokens: any = [];
+    usersRef.get().then(async (userDoc: { data: () => any; }) => {
+      const user = userDoc.data() as any;
+      console.log(user); 
+      // check all users that actually have a token
+      //add all users with a token to tokens array
+      //create payload
+      const payload = {
+        notification: {
+          title: `¡La ruta ${updated.routeName } está por iniciar`,
+          body: `${user.displayName}, La ruta  ${updated.routeName }, esta por comenzar, hora estimada de inicio :  ${updated.startAt}`
+        }
+        ,data: {
+          title: '¡Tu ruta esta por iniciar',
+          body: `${user.displayName}, La ruta  ${updated.routeName }, esta por comenzar, hora estimada de inicio :  ${updated.startAt}`,
+          color: 'primary',
+          position: 'top',
+          buttons: JSON.stringify([{
+            text: 'Ok',
+            role: 'cancel',
+            handler: "console.log('Cancel clicked')",
+          }])
+        }
+      };
+
+      // TEST: Override tokens array and assign a fixed token
+      tokens.forEach( async token => {
+        // send a FCM (Firebase Cloud Messaging)
+        const sendFCMNotification = await admin.messaging().sendToDevice(token, payload);
+      // For each message check if there was an error.
+      sendFCMNotification;
+      })
+    }).catch((err: any) => console.log(err));
     return insertLiveProgram.create(updated);
   } 
 
