@@ -748,7 +748,7 @@ exports.onAuthenticationDeletedUser = functions.auth.user().onDelete((user) => {
 
 exports.sendVerificationEmail = functions.https.onCall( async(data, context) => {
   
-  const useremail = data.email;
+  const useremail = data.data().email;
   return admin.auth().generateEmailVerificationLink(useremail).then((link: any) => {
     console.log(link);
     return {
@@ -805,6 +805,89 @@ exports.sendNotificationOnDiscountRequest = functions.firestore.document('discou
 
 });
 
+exports.sendPushNotificationOnLive = functions.firestore.document('customers/{customerId}/live/{programId}').onCreate(async (snap,context)=> {
+  // bring snap data into a controllable const
+  const createdProgram = snap.data();
+
+  // get all users that are to be notified
+  const usersSnapshot = await admin.firestore()
+    .collection('users')
+    .where('customerId', '==', createdProgram.customerId)
+    .where('defaultRound', '==', createdProgram.round)
+    .where('defaultRoute', '==', createdProgram.routeId).get();
+
+  // if there are users to be notified
+  if (!usersSnapshot.empty) {
+      
+      // clear tokens list
+      let tokens: any[] = [];
+      
+      usersSnapshot.forEach((userDoc:any) => {
+
+        const id = userDoc.id;
+        const data = userDoc.data();
+        const user = {id, ...data };
+        let userNotificationToken = user.token ?? null;
+
+        // check if the user actually have a notification token to create him/her a custom notification payload
+        if(userNotificationToken) {
+
+          // create custom notification payload
+          const payload = {
+            notification: {
+              title: `¡La ruta ${createdProgram.routeName} está por iniciar`,
+              body: `${user.displayName}, La ruta  ${createdProgram.routeName}, esta por comenzar, hora estimada de inicio :  ${createdProgram.startAt.toDate()}`
+            },
+            data: {
+              title: '¡Tu ruta esta por iniciar',
+              body: `${user.displayName}, La ruta  ${createdProgram.routeName}, esta por comenzar, hora estimada de inicio :  ${createdProgram.startAt.toDate()}`,
+              color: 'primary',
+              position: 'top',
+              buttons: JSON.stringify([{
+                  text: 'Ok',
+                  role: 'cancel',
+                  handler: "console.log('Cancel clicked')",
+              }])
+            }
+          };
+
+          // This user will be added to tokens notifications array
+          tokens.push({
+            token: userNotificationToken,
+            payload: payload
+          });
+        } else {
+          // TODO: Once we can be sure it all works, we can remove console.log
+          console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
+        }
+      });
+
+      //Check tokens array has elements
+      if(tokens.length > 0) {
+
+        //TODO: Remove this once we can check notifications where sent
+        console.log('tokens and users payload created: ', JSON.stringify(tokens));
+        
+        return tokens.forEach( async (userToNotify:any) => {
+          // send a FCM (Firebase Cloud Messaging)
+          const sendFCMNotification = await admin.messaging().sendToDevice(userToNotify.token, userToNotify.payload)
+          sendFCMNotification
+        })
+      } else {
+        // Users found does not have a token to be used for notification, so no user will be notified
+        // TODO: Once we can be sure it all works, we can remove console.log
+        console.log('Users found but none have a token to be used for notification');
+        return;
+        
+      }
+    } else {
+      // No users to be notified
+      // TODO: Once we can be sure it all works, we can remove console.log
+      console.log('No users found to be notified.');
+      return;
+    }
+});
+
 exports.setLiveProgram = functions.firestore.document('customers/{customerId}/program/{programId}').onUpdate(async (snap, context) => {
   const updated:any = snap.after.data();
   const before: any = snap.before.data();
@@ -813,52 +896,11 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
   const wasLive = before.isLive || false;
   const hasEnded = updated.hasEnded || false;
 
-  const customerId = context.params.customerId;
+  const customerId:any = context.params.customerId;
     const programId = context.params.programId;
 
   if(!wasLive && isLive) {
     const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
-    // get all users that are using that route
-    // and have an active boardingPass
-     //get all users tokens to notify
-    const usersRef = await admin.firestore()
-      .collection('users')
-      .where('routeId', '==', updated.routeId).where('round', '==', updated.round).where('routeName', '==', updated.routeName)
-      .get();
-
-     let tokens: any = [];
-    usersRef.get().then(async (userDoc: { data: () => any; }) => {
-      const user = userDoc.data() as any;
-      console.log(user); 
-      // check all users that actually have a token
-      //add all users with a token to tokens array
-      //create payload
-      const payload = {
-        notification: {
-          title: `¡La ruta ${updated.routeName } está por iniciar`,
-          body: `${user.displayName}, La ruta  ${updated.routeName }, esta por comenzar, hora estimada de inicio :  ${updated.startAt}`
-        }
-        ,data: {
-          title: '¡Tu ruta esta por iniciar',
-          body: `${user.displayName}, La ruta  ${updated.routeName }, esta por comenzar, hora estimada de inicio :  ${updated.startAt}`,
-          color: 'primary',
-          position: 'top',
-          buttons: JSON.stringify([{
-            text: 'Ok',
-            role: 'cancel',
-            handler: "console.log('Cancel clicked')",
-          }])
-        }
-      };
-
-      // TEST: Override tokens array and assign a fixed token
-      tokens.forEach( async token => {
-        // send a FCM (Firebase Cloud Messaging)
-        const sendFCMNotification = await admin.messaging().sendToDevice(token, payload);
-      // For each message check if there was an error.
-      sendFCMNotification;
-      })
-    }).catch((err: any) => console.log(err));
     return insertLiveProgram.create(updated);
   } 
 
