@@ -831,26 +831,31 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
         // check if the user actually have a notification token to create him/her a custom notification payload
         if(userNotificationToken) {
           const hasPassValidation = !!user.passValidation || false;
+          const defaultRoundValue = user.defaultRound ?? "";
+          const defaultRoute = user.defaultRoute ?? "";
+          
           if(hasPassValidation){
             const areEqualRound = user.defaultRound == user.passValidation.lastUsedRound || false;
             const areEqualRoute = user.defaultRoute == user.passValidation.lastUsedRoute || false;
+            const lastValidUsageValue =  user.passValidation.lastValidUsage ?? false;
+            const lastUsedRoundValue = user.passValidation.lastUsedRound ?? "";
+            const lastUsedRouteValue = user.passValidation.lastUsedRoute ?? "";
             if (areEqualRound && areEqualRoute ){ 
               // any is valid dafault or pass validation
-              if (user.defaultRound == createdProgram.round && user.defaultRoute == createdProgram.routeId)
+              if (defaultRoundValue== createdProgram.round && defaultRoute == createdProgram.routeId)
               {
                 routeDesc = createdProgram.routeName;
               }
             } else {
               // use pass validation
-              if (user.passValidation.lastUsedRound == createdProgram.round && 
-                user.passValidation.lastUsedRoute == createdProgram.routeId && user.passValidation.lastValidUsage == true)
+              if (lastUsedRoundValue == createdProgram.round && lastUsedRouteValue == createdProgram.routeId && lastValidUsageValue == true)
               {
                 routeDesc = createdProgram.routeName;
               }
             }
           } else {
             // no valid pass use default
-              if (user.defaultRound == createdProgram.round && user.defaultRoute == createdProgram.routeId)
+              if (defaultRoundValue == createdProgram.round && defaultRoute == createdProgram.routeId)
               {
                 routeDesc = createdProgram.routeName;
               }
