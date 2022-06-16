@@ -812,9 +812,8 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
   // get all users that are to be notified
   const usersSnapshot = await admin.firestore()
     .collection('users')
-    .where('customerId', '==', createdProgram.customerId)
-    .where('defaultRound', '==', createdProgram.round)
-    .where('defaultRoute', '==', createdProgram.routeId).get();
+    .where('customerId', '==', createdProgram.customerId).get();
+ 
 
   // if there are users to be notified
   if (!usersSnapshot.empty) {
@@ -828,19 +827,46 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
         const data = userDoc.data();
         const user = {id, ...data };
         let userNotificationToken = user.token ?? null;
-
+        let routeDesc: String = "";
         // check if the user actually have a notification token to create him/her a custom notification payload
         if(userNotificationToken) {
+          const hasPassValidation = !!user.passValidation || false;
+          if(hasPassValidation){
+            const areEqualRound = user.defaultRound == user.passValidation.lastUsedRound || false;
+            const areEqualRoute = user.defaultRoute == user.passValidation.lastUsedRoute || false;
+            if (areEqualRound && areEqualRoute ){ 
+              // any is valid dafault or pass validation
+              if (user.defaultRound == createdProgram.round && user.defaultRoute == createdProgram.routeId)
+              {
+                routeDesc = createdProgram.routeName;
+              }
+            } else {
+              // use pass validation
+              if (user.passValidation.lastUsedRound == createdProgram.round && 
+                user.passValidation.lastUsedRoute == createdProgram.routeId && user.passValidation.lastValidUsage == true)
+              {
+                routeDesc = createdProgram.routeName;
+              }
+            }
+          } else {
+            // no valid pass use default
+              if (user.defaultRound == createdProgram.round && user.defaultRoute == createdProgram.routeId)
+              {
+                routeDesc = createdProgram.routeName;
+              }
+          }
+          
 
+          var usertime = new Date(createdProgram.startAt);
           // create custom notification payload
           const payload = {
             notification: {
-              title: `¡La ruta ${createdProgram.routeName} está por iniciar`,
-              body: `${user.displayName}, La ruta  ${createdProgram.routeName}, esta por comenzar, hora estimada de inicio :  ${createdProgram.startAt.toDate()}`
+              title: `¡La ruta ${routeDesc} está por iniciar`,
+              body: `${user.firstName}, La ruta  ${routeDesc}, esta por comenzar, hora estimada de inicio :  ${usertime.toLocaleTimeString('es-MX')} , recuerda estar en la parada 10 min antes.`
             },
             data: {
               title: '¡Tu ruta esta por iniciar',
-              body: `${user.displayName}, La ruta  ${createdProgram.routeName}, esta por comenzar, hora estimada de inicio :  ${createdProgram.startAt.toDate()}`,
+              body: `${user.firstName}, La ruta  ${routeDesc}, esta por comenzar, hora estimada de inicio :  ${usertime.toLocaleTimeString('es-MX')} , recuerda estar en la parada 10 min antes.`,
               color: 'primary',
               position: 'top',
               buttons: JSON.stringify([{
@@ -850,12 +876,13 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
               }])
             }
           };
-
-          // This user will be added to tokens notifications array
+          // This user will be added to tokens notifications array 
+          if (routeDesc.length > 0){
           tokens.push({
             token: userNotificationToken,
             payload: payload
           });
+        }
         } else {
           // TODO: Once we can be sure it all works, we can remove console.log
           console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
