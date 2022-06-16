@@ -831,15 +831,15 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
         // check if the user actually have a notification token to create him/her a custom notification payload
         if(userNotificationToken) {
           const hasPassValidation = !!user.passValidation || false;
-          const defaultRoundValue = user.defaultRound ?? "";
-          const defaultRoute = user.defaultRoute ?? "";
+          const defaultRoundValue = user.defaultRound || "";
+          const defaultRoute = user.defaultRoute || "";
           
           if(hasPassValidation){
             const areEqualRound = user.defaultRound == user.passValidation.lastUsedRound || false;
             const areEqualRoute = user.defaultRoute == user.passValidation.lastUsedRoute || false;
-            const lastValidUsageValue =  user.passValidation.lastValidUsage ?? false;
-            const lastUsedRoundValue = user.passValidation.lastUsedRound ?? "";
-            const lastUsedRouteValue = user.passValidation.lastUsedRoute ?? "";
+            const lastValidUsageValue =  user.passValidation.lastValidUsage || false;
+            const lastUsedRoundValue = user.passValidation.lastUsedRound || "";
+            const lastUsedRouteValue = user.passValidation.lastUsedRoute || "";
             if (areEqualRound && areEqualRoute ){ 
               // any is valid dafault or pass validation
               if (defaultRoundValue== createdProgram.round && defaultRoute == createdProgram.routeId)
