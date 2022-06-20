@@ -748,7 +748,7 @@ exports.onAuthenticationDeletedUser = functions.auth.user().onDelete((user) => {
 
 exports.sendVerificationEmail = functions.https.onCall( async(data, context) => {
   
-  const useremail = data.data().email;
+  const useremail = data.email;
   return admin.auth().generateEmailVerificationLink(useremail).then((link: any) => {
     console.log(link);
     return {
@@ -983,7 +983,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
               // create custom notification payload
               const payload = {
                 notification: {
-                  title: `¡Tu ruta acaba de Iniciar! `,
+                  title: `¡Tu ruta acaba de iniciar! `,
                   body: `${user.firstName}, La ruta  ${routeDesc}, acaba de iniciar.`
                 },
                 data: {
