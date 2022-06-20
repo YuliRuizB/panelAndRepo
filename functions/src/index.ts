@@ -860,18 +860,15 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
                 routeDesc = createdProgram.routeName;
               }
           }
-          
-
-          var usertime = new Date(createdProgram.startAt);
           // create custom notification payload
           const payload = {
             notification: {
-              title: `¡La ruta ${routeDesc} está por iniciar`,
-              body: `${user.firstName}, La ruta  ${routeDesc}, esta por comenzar, hora estimada de inicio :  ${usertime.toLocaleTimeString('es-MX')} , recuerda estar en la parada 10 min antes.`
+              title: `¡Tu ruta esta por iniciar! `,
+              body: `${user.firstName}, La ruta  ${routeDesc}, esta por iniciar.`
             },
             data: {
               title: '¡Tu ruta esta por iniciar',
-              body: `${user.firstName}, La ruta  ${routeDesc}, esta por comenzar, hora estimada de inicio :  ${usertime.toLocaleTimeString('es-MX')} , recuerda estar en la parada 10 min antes.`,
+              body: `${user.firstName}, La ruta  ${routeDesc}, esta por inicar.`,
               color: 'primary',
               position: 'top',
               buttons: JSON.stringify([{
@@ -926,12 +923,119 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
 
   const isLive = updated.isLive || false;
   const wasLive = before.isLive || false;
+  const isConfirmed = updated.isConfirmed || false;
   const hasEnded = updated.hasEnded || false;
 
   const customerId:any = context.params.customerId;
     const programId = context.params.programId;
 
   if(!wasLive && isLive) {
+      if (isConfirmed) {
+        // if is confirm and isLive, means that we need to notify user that is started
+          // get all users that are to be notified
+      const usersSnapshot = await admin.firestore()
+      .collection('users')
+      .where('customerId', '==', updated.customerId).get();
+
+      // if there are users to be notified
+      if (!usersSnapshot.empty) {   
+          // clear tokens list
+          let tokens: any[] = [];  
+          usersSnapshot.forEach((userDoc:any) => {
+
+            const id = userDoc.id;
+            const data = userDoc.data();
+            const user = {id, ...data };
+            let userNotificationToken = user.token ?? null;
+            let routeDesc: String = "";
+            // check if the user actually have a notification token to create him/her a custom notification payload
+            if(userNotificationToken) {
+              const hasPassValidation = !!user.passValidation || false;
+              const defaultRoundValue = user.defaultRound || "";
+              const defaultRoute = user.defaultRoute || "";
+              
+              if(hasPassValidation){
+                const areEqualRound = user.defaultRound == user.passValidation.lastUsedRound || false;
+                const areEqualRoute = user.defaultRoute == user.passValidation.lastUsedRoute || false;
+                const lastValidUsageValue =  user.passValidation.lastValidUsage || false;
+                const lastUsedRoundValue = user.passValidation.lastUsedRound || "";
+                const lastUsedRouteValue = user.passValidation.lastUsedRoute || "";
+                if (areEqualRound && areEqualRoute ){ 
+                  // any is valid dafault or pass validation
+                  if (defaultRoundValue== updated.round && defaultRoute == updated.routeId)
+                  {
+                    routeDesc = updated.routeName;
+                  }
+                } else {
+                  // use pass validation
+                  if (lastUsedRoundValue == updated.round && lastUsedRouteValue == updated.routeId && lastValidUsageValue == true)
+                  {
+                    routeDesc = updated.routeName;
+                  }
+                }
+              } else {
+                // no valid pass use default
+                  if (defaultRoundValue == updated.round && defaultRoute == updated.routeId)
+                  {
+                    routeDesc = updated.routeName;
+                  }
+              }
+              // create custom notification payload
+              const payload = {
+                notification: {
+                  title: `¡Tu ruta acaba de Iniciar! `,
+                  body: `${user.firstName}, La ruta  ${routeDesc}, acaba de iniciar.`
+                },
+                data: {
+                  title: '¡Tu ruta esta por iniciar',
+                  body: `${user.firstName}, La ruta  ${routeDesc},acaba de inicar.`,
+                  color: 'primary',
+                  position: 'top',
+                  buttons: JSON.stringify([{
+                      text: 'Ok',
+                      role: 'cancel',
+                      handler: "console.log('Cancel clicked')",
+                  }])
+                }
+              };
+              // This user will be added to tokens notifications array 
+              if (routeDesc.length > 0){
+              tokens.push({
+                token: userNotificationToken,
+                payload: payload
+              });
+            }
+            } else {
+              // TODO: Once we can be sure it all works, we can remove console.log
+              console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
+            }
+          });
+
+          //Check tokens array has elements
+          if(tokens.length > 0) {
+
+            //TODO: Remove this once we can check notifications where sent
+            console.log('tokens and users payload created: ', JSON.stringify(tokens));
+            
+            return tokens.forEach( async (userToNotify:any) => {
+              // send a FCM (Firebase Cloud Messaging)
+              const sendFCMNotification = await admin.messaging().sendToDevice(userToNotify.token, userToNotify.payload)
+              sendFCMNotification
+            })
+          } else {
+            // Users found does not have a token to be used for notification, so no user will be notified
+            // TODO: Once we can be sure it all works, we can remove console.log
+            console.log('Users found but none have a token to be used for notification');
+            return;
+            
+          }
+        } else {
+          // No users to be notified
+          // TODO: Once we can be sure it all works, we can remove console.log
+          console.log('No users found to be notified.');
+          return;
+        }
+        }
     const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
     return insertLiveProgram.create(updated);
   } 
