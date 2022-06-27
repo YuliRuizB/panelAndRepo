@@ -863,12 +863,12 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
           // create custom notification payload
           const payload = {
             notification: {
-              title: `¡Tu ruta esta por iniciar! `,
-              body: `${user.firstName}, La ruta  ${routeDesc}, esta por iniciar.`
+              title: `¡Tu ruta acaba de iniciar! `,
+              body: `${user.firstName}, La ruta  ${routeDesc}, acaba de iniciar.`
             },
             data: {
-              title: '¡Tu ruta esta por iniciar',
-              body: `${user.firstName}, La ruta  ${routeDesc}, esta por inicar.`,
+              title: '¡Tu ruta acaba de iniciar',
+              body: `${user.firstName}, La ruta  ${routeDesc}, acaba de inicar.`,
               color: 'primary',
               position: 'top',
               buttons: JSON.stringify([{
@@ -983,12 +983,12 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
               // create custom notification payload
               const payload = {
                 notification: {
-                  title: `¡Tu ruta acaba de iniciar! `,
-                  body: `${user.firstName}, La ruta  ${routeDesc}, acaba de iniciar.`
+                  title: `¡Tu ruta esta por iniciar! `,
+                  body: `${user.firstName}, La ruta  ${routeDesc}, esta por iniciar.`
                 },
                 data: {
                   title: '¡Tu ruta esta por iniciar',
-                  body: `${user.firstName}, La ruta  ${routeDesc},acaba de inicar.`,
+                  body: `${user.firstName}, La ruta  ${routeDesc}, esta por inicar.`,
                   color: 'primary',
                   position: 'top',
                   buttons: JSON.stringify([{
