@@ -887,7 +887,7 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
         }
         } else {
           // TODO: Once we can be sure it all works, we can remove console.log
-          console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
+          // console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
         }
       });
 
@@ -895,7 +895,7 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
       if(tokens.length > 0) {
 
         //TODO: Remove this once we can check notifications where sent
-        console.log('tokens and users payload created: ', JSON.stringify(tokens));
+        // console.log('tokens and users payload created: ', JSON.stringify(tokens));
         
         return tokens.forEach( async (userToNotify:any) => {
           // send a FCM (Firebase Cloud Messaging)
@@ -905,14 +905,14 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
       } else {
         // Users found does not have a token to be used for notification, so no user will be notified
         // TODO: Once we can be sure it all works, we can remove console.log
-        console.log('Users found but none have a token to be used for notification');
+        // console.log('Users found but none have a token to be used for notification');
         return;
         
       }
     } else {
       // No users to be notified
       // TODO: Once we can be sure it all works, we can remove console.log
-      console.log('No users found to be notified.');
+      // console.log('No users found to be notified.');
       return;
     }
 });
@@ -1007,7 +1007,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
             }
             } else {
               // TODO: Once we can be sure it all works, we can remove console.log
-              console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
+              // console.log('User ' + user.displayName + ' found, but does not have a token to be used for notification');
             }
           });
 
@@ -1015,7 +1015,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
           if(tokens.length > 0) {
 
             //TODO: Remove this once we can check notifications where sent
-            console.log('tokens and users payload created: ', JSON.stringify(tokens));
+            // console.log('tokens and users payload created: ', JSON.stringify(tokens));
             
             return tokens.forEach( async (userToNotify:any) => {
               // send a FCM (Firebase Cloud Messaging)
@@ -1025,18 +1025,18 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
           } else {
             // Users found does not have a token to be used for notification, so no user will be notified
             // TODO: Once we can be sure it all works, we can remove console.log
-            console.log('Users found but none have a token to be used for notification');
+            // console.log('Users found but none have a token to be used for notification');
             return;
             
           }
         } else {
           // No users to be notified
           // TODO: Once we can be sure it all works, we can remove console.log
-          console.log('No users found to be notified.');
+          // console.log('No users found to be notified.');
           return;
         }
         }
-    const insertLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
+    const insertLiveProgram:any = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
     return insertLiveProgram.create(updated);
   } 
 
@@ -1049,7 +1049,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
     return batch.commit();
   }
 
-  const updateLiveProgram = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
+  const updateLiveProgram:any = await admin.firestore().doc(`customers/${customerId}/live/${programId}`);
   return updateLiveProgram.update(updated);
 
 })

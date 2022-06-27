@@ -138,9 +138,9 @@
       <nz-card>
           <div class="d-flex justify-content-between align-items-center">
               <h5>Operaciones Recientes</h5>
-              <div>
-                  <button nz-button nzType="default" nzSize="small">Ver todas</button>
-              </div>
+              <!-- <div>
+                  <button nz-button nzType="default" nzSize="small" (click)="testFunction()">Ver todas</button>
+              </div> -->
           </div>
           <div class="m-t-30">
               <nz-table #ordersListTable [nzData]="ordersList"  [nzShowPagination]="false" class="no-border-last">
