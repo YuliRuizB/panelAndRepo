@@ -697,6 +697,7 @@ exports.onDeleteDriver = functions.firestore.document('drivers/{userId}').onDele
     });
 });
 
+
 exports.onDriverResetPassword = functions.https.onCall((data) => {
  admin.auth().updateUser(
    data.uid,{
@@ -804,6 +805,48 @@ exports.sendNotificationOnDiscountRequest = functions.firestore.document('discou
   return await admin.messaging().sendToDevice(tokens, payload);
 
 });
+
+exports.sendToDeviceMessage = functions.firestore.document('chatMessages/{messageID}').onCreate(async (snap, context) => {
+  const dataChatMessage: any = snap.data();
+  const token = dataChatMessage.token || null;
+  let userNotificationToken = dataChatMessage.token || '';
+  let userMessage = dataChatMessage.msg || '';
+
+  if (userNotificationToken) {
+    // create custom notification payload
+
+    if (token.length > 0) {
+      const payload = {
+        notification: {
+          title: 'Bus2U Informa',
+          body: userMessage
+        },
+        data: {
+          title: 'Bus2U Informa',
+          body: userMessage,
+          color: 'primary',
+          position: 'top',
+          buttons: JSON.stringify([{
+            text: 'Ok',
+            role: 'cancel',
+            handler: "console.log('Cancel clicked')",
+          }])
+        }
+      };
+      // Send notifications to all tokens.
+      const sendFCMNotification = await admin.messaging().sendToDevice(token, payload);
+      // For each message check if there was an error.
+      sendFCMNotification;
+
+    } else {
+      // Users found does not have a token to be used for notification, so no user will be notified
+      // TODO: Once we can be sure it all works, we can remove console.log
+      console.log('Users found but none have a token to be used for notification');
+      return;
+    }
+  }
+});
+
 
 exports.setLiveProgram = functions.firestore.document('customers/{customerId}/program/{programId}').onUpdate(async (snap, context) => {
   const updated:any = snap.after.data();
