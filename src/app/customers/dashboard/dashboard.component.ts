@@ -9,6 +9,7 @@ import { Subscription, Subject } from 'rxjs';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { IBoardingPass, ICredential } from '../classes/customers';
 import * as firebase from 'firebase/app';
+import { DashboardService } from 'src/app/shared/services/admin/dashboard.service';
 
 export const months = {
   0: 'Enero',
@@ -43,6 +44,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   devicesList: any;
   loadedDevicesList: Array<any> = [];
 
+  //Modal MessageCenter
+  newMessage = "";
+  userChatMessageData;
+  loadingChatMessages= false;
 
   // modal Bulk create boardingPasses
   current = 0;
@@ -164,7 +169,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private customersService: CustomersService,
     public modalService: NzModalService,
     private productsService: ProductsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dashboardService: DashboardService
   ) { }
 
   ngOnInit() {
@@ -299,6 +305,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isProductVisible = true;
   }
 
+  async showModalMessageCenter() {
+    // send menssage to sender..
+    console.log('valores');
+    console.log(this.currentUserSelected);
+
+    console.log('token payload created: ', JSON.stringify(this.currentUserSelected.token));
+    const dataMessage = {
+      createdAt: new Date(),
+      from: 'FyXKSXsUbYNtAbWL7zZ66o2f1M92',
+      fromName: 'Bus2U Informa',
+      msg: this.newMessage,
+      requestId: 'suhB7YFAh6PYXCRuJhfD',
+      token: this.currentUserSelected.token,
+      uid: this.currentUserSelected.uid
+    }
+    this.dashboardService.setChatMessage(dataMessage)
+      .then(() => {
+        this.newMessage = "";
+      });
+  }
   onBulkBoardingPassSelected(customerId) {
     this.accountId$.next(customerId);
     this.currentSelectedCustomerId = customerId;
@@ -607,6 +633,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isBoardingPassSelected = false;
     this.getLatestPurchases(data.uid);
     this.getUserCredentials(data.uid);
+    this.getUserChatMessages(data.uid);
     this.lastPurchase = null;
     
   }
@@ -709,6 +736,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, err => {
       this.userCredentials = null;
       this.loadingUserCredentials = false;
+    });
+  }
+
+  getUserChatMessages(userId){
+    this.loadingChatMessages = true;
+    this.dashboardService.getUserChatMessages(userId,10)
+    .subscribe ( userChatMsn => {
+      this.userChatMessageData = userChatMsn;
     });
   }
 
