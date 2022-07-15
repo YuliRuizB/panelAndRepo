@@ -35,6 +35,7 @@ import { SharedSystemUsersListComponent } from './components/system/users/users.
 import { SharedVendorUsersListComponent } from './components/vendor/system/users/users.component';
 import { SharedUsersQRCodesComponent } from './components/users/boardingPass/qrcodes/qrcodes.component';
 import { SharedUsersCredentialsQRCodesComponent } from './components/users/credentials/qrcodes/qrcodes.component';
+import { MessageCenterComponent } from './components/vendor/messageCenter/messageCenter.component';
 
 @NgModule({ 
     exports: [
@@ -68,7 +69,8 @@ import { SharedUsersCredentialsQRCodesComponent } from './components/users/crede
         SharedSystemUsersListComponent,
         SharedVendorUsersListComponent,
         SharedUsersQRCodesComponent,
-        SharedUsersCredentialsQRCodesComponent
+        SharedUsersCredentialsQRCodesComponent,
+        MessageCenterComponent
     ],
     imports: [
         RouterModule,
@@ -104,7 +106,8 @@ import { SharedUsersCredentialsQRCodesComponent } from './components/users/crede
         SharedSystemUsersListComponent,
         SharedVendorUsersListComponent,
         SharedUsersQRCodesComponent,
-        SharedUsersCredentialsQRCodesComponent
+        SharedUsersCredentialsQRCodesComponent,
+        MessageCenterComponent
     ],
     providers: [
         ThemeConstantService,
