@@ -27,8 +27,16 @@
     </div>
   </div>
 </nz-drawer>
+<nz-drawer [nzClosable]="false" [nzWidth]="800"  [nzVisible]="vMessage" nzPlacement="right" nzTitle="Centro de Mensajes" (nzOnClose)="closeMessage()" >
+  <div class="m-t-40">
+    <div class="overflow-y-auto p-l-50 p-t-55">
+      <app-shared-messageCenter></app-shared-messageCenter>
+    </div>
+  </div>
+</nz-drawer>
 
 <button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="open()">Alertas</button>
+<button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="openMessage()">Mensajes</button>
 
 <div class="row">
   <div class="col-lg-6 col-sm-12">

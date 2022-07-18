@@ -30,7 +30,7 @@ export class LogisticsComponent implements OnInit {
 
 
   visible = false;
-
+  vMessage = false;
   lat = 37.75;
   lng = -122.41;
   loading = false;
@@ -106,7 +106,7 @@ export class LogisticsComponent implements OnInit {
       })
     )
       .subscribe((result: any) => {
-        console.log(result);
+      //  console.log(result);
         // this.chartData = _.countBy(result, 'country');
 
         this.zone.runOutsideAngular(() => {
@@ -186,7 +186,7 @@ export class LogisticsComponent implements OnInit {
 
           chart.data = groupA.concat(groupB, groupC, groupD);
 
-          console.log(chart.data);
+         // console.log(chart.data);
           let hoverState = chart.links.template.states.create("hover");
           hoverState.properties.fillOpacity = 0.6;
 
@@ -295,7 +295,7 @@ export class LogisticsComponent implements OnInit {
         })
       )
         .subscribe(markers => {
-          console.log(markers);
+          //.log(markers);
           let data = new FeatureCollection(markers)
           this.source.setData(data)
         })
@@ -451,7 +451,7 @@ export class LogisticsComponent implements OnInit {
       })
     )
       .subscribe((result: IActivityLog[]) => {
-        console.log(result);
+       // console.log(result);
         this.rowData = result;
         this.activityList = this.rowData.slice(0, 5);
         this.chartData = _.map(x => {
@@ -461,7 +461,7 @@ export class LogisticsComponent implements OnInit {
 
       this.liveService.getLiveProgram()
         .subscribe((result: any[]) => {
-          console.log(result);
+       //   console.log(result);
           this.rowFleetData = result;
         });
   }
@@ -470,5 +470,12 @@ export class LogisticsComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 }
+ openMessage() {
+  this.vMessage = true;
+ }
+ closeMessage() {
+  this.vMessage = false;
+ }
+
 
 }

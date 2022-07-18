@@ -1,0 +1,84 @@
+
+<div>
+    <nz-tabset>
+    <nz-tab nzTitle="Personalizado">
+        <nz-divider style='color: #72849a;' nzPlain nzText=""></nz-divider>
+        <div>
+          <nz-form-label [nzSpan]="2" nzFor="label">Cliente </nz-form-label>
+            <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" style="width: 80%;"
+               nzPlaceHolder="Selecciona un cliente" [(ngModel)]="listOfSelectedCustomer" 
+                (ngModelChange)="changesOverClient($event,listOfCustomer)">
+                <nz-option *ngFor="let customer of listOfCustomer" [nzLabel]="customer.name" [nzValue]="customer.id">
+                </nz-option>
+            </nz-select>
+               </div>
+        <nz-divider  style='color: #72849a;' nzPlain nzText=""></nz-divider>
+        <nz-form-label [nzSpan]="3" nzFor="label">Selecciona  </nz-form-label>
+        <nz-checkbox-group style="margin-top: 10px;" [(ngModel)]="checkOptionsRoute" (ngModelChange)="updateSingleCheckedRoute()">
+        </nz-checkbox-group>
+        <nz-divider style='color: #72849a;' nzPlain nzText=""></nz-divider>
+        <nz-form-label [nzSpan]="2" nzFor="label">Turno </nz-form-label>
+        <div >
+            <nz-checkbox-group [(ngModel)]="chekOptionsRound" (ngModelChange)="updateSingleCheckedRound()">
+            </nz-checkbox-group>
+            <label  style='margin-top: 10px' nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked()">
+              Todos
+          </label>
+        </div>
+        <nz-divider style='color: #72849a;' nzPlain nzText=""></nz-divider>
+        <div style='margin-top: 15px' *ngIf="isShowDivRoutes">
+            <nz-select style="width: 80%;" nzAllowClear nzPlaceHolder="Selecciona la ruta" [(ngModel)]="listOfSelectedRoutes">
+              <nz-option *ngFor="let o of routes" nzCustomContent [nzLabel]="o.name" [nzValue]="o.routeId"><i nz-icon
+                  nzType="fork"></i> {{ o.name }}</nz-option>
+            </nz-select>
+
+        </div>
+        <nz-divider style='color: #72849a;' nzPlain nzText=""></nz-divider>
+        <div style='margin-top: 15px' >
+            <button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="applyFilter()">Agregar</button>
+        </div>
+        <nz-divider style='margin-top: 15px; color: #72849a;' nzPlain nzText="Filtros"></nz-divider>
+        <div *ngIf="isShowUsers">
+           
+            <nz-table #borderedTable nzBordered #basicTableFilter [nzData]="listofRecordsAfected">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Turno</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of basicTableFilter.data">
+                    <td>{{ data.customerName }}</td>
+                    <td>{{ data.round }}</td>
+                  </tr>
+                </tbody>
+              </nz-table>
+        </div>
+        <div>
+          Rango aproximado de usuarios : {{ ListofUsersIDs.length }}
+        </div>
+       
+        <nz-divider nzPlain nzText="Mensaje"></nz-divider>
+        <textarea rows="4" nz-input [(ngModel)]="InputMessage" placeholder="Mensaje"></textarea>
+        <nz-divider nzPlain nzText=""></nz-divider>
+        <div class="row"> 
+          <div class="col">
+            <button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="sendMessage()">Enviar</button>
+          </div>
+          <div class="col" >
+            <button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="Cancel()">Cancelar</button>
+          </div>
+        </div>
+    </nz-tab>
+      <nz-tab nzTitle="General">
+        <div>
+            <nz-divider nzPlain nzText="Mensaje"></nz-divider>
+              <textarea rows="4" nz-input [(ngModel)]="newMessage" placeholder="Mensaje"></textarea>
+          </div>
+          <button class="m-r-10" nz-button nzType="primary" disabled (click)="sendGeneralMessage()"><i nz-icon nzType="plus"></i>Enviar
+            Mensaje</button>
+      </nz-tab>
+    </nz-tabset>
+</div>

@@ -236,6 +236,31 @@
               <nz-tab nzTitle="Otras compras">
                 Otras compras
               </nz-tab>
+              <nz-tab nzTitle="Mensajes">
+                <nz-table #basicChatData [nzData]="userChatMessageData" nzPageSize="3" [nzFooter]="messageCenterFooterTemplate"
+                  [nzLoadingDelay]="500">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Mensaje</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let data of basicChatData.data" >
+                      <td>{{ data.createdAt.toDate() | date:'dd/MM/yyyy' }}</td>
+                      <td>{{ data.msg}}</td>
+                    </tr>
+                  </tbody>
+                </nz-table>
+                <ng-template #messageCenterFooterTemplate>
+                  <div>
+                    <nz-divider nzPlain nzText="Mensaje"></nz-divider>
+                      <textarea rows="4" nz-input [(ngModel)]="newMessage" placeholder="Mensaje"></textarea>
+                  </div>
+                  <button class="m-r-10" nz-button nzType="default" (click)="showModalMessageCenter()"><i nz-icon nzType="plus"></i>Enviar
+                    Mensaje</button>
+                </ng-template>
+              </nz-tab>
 
             </nz-tabset>
 
