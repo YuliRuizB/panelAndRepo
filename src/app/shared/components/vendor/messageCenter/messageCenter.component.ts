@@ -137,7 +137,7 @@ export class MessageCenterComponent implements OnInit {
             token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
             uid: eachUserMessage.uid //'RgNnO7ElJgdThoKh8rUvrpb2EhH2'//
           }
-          // this.dashboardService.setChatMessage(dataMessage); 
+           this.dashboardService.setChatMessage(dataMessage); 
         })
        // console.log("send message");
         this.createMessage('sucess', "Concluyo el envio");
