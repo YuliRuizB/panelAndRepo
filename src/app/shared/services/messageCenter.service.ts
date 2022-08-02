@@ -33,7 +33,7 @@ import { bufferCount, mergeMap, reduce, switchMap, take } from 'rxjs/operators';
             ref
             .where('routeId', '==', idRoute)
             .where('round', '==', round)
-            .where('validTo', '<=', today)
+           .where('validTo', '>=', today)
         );
        return usersBoardingPassesByCustomer;
     }

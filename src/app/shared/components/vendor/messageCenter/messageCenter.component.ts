@@ -40,13 +40,14 @@ export class MessageCenterComponent implements OnInit {
   listOfUsers: any;
   listofUsersPreview: any[] = [];
   InputMessage: string = "";
+  newMessage: string = "";
   listofRoutesByRound: any[] = [];
   IdCustomerLive: string = "";
   IdCustomerName: string = "";
   listofRecordsAfected: any[] = [];
   arrayPreview: any[] = [];
   listOfRound: any[] = [];
-
+  listOfSelectedCustomer: any[] = [];
   accountId$ = new Subject<string>();
   routeId$ = new Subject<string>();
   routes: any[] = [];
@@ -136,9 +137,9 @@ export class MessageCenterComponent implements OnInit {
             token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
             uid: eachUserMessage.uid //'RgNnO7ElJgdThoKh8rUvrpb2EhH2'//
           }
-           this.dashboardService.setChatMessage(dataMessage); 
+          // this.dashboardService.setChatMessage(dataMessage); 
         })
-        console.log("send message");
+       // console.log("send message");
         this.createMessage('sucess', "Concluyo el envio");
       } else {
         this.createMessage('warning', 'Se tiene que seleccionar una ruta para envio de mensajes.');
@@ -202,6 +203,7 @@ export class MessageCenterComponent implements OnInit {
       this.isShowUsers = true;
 
       this.ListofUsersIDs = [];
+      console.log(this.listofRecordsAfected);
       this.listofRecordsAfected.forEach(singleRow => {
         this.messageCenterService.getUserByRouteRound(singleRow.round, singleRow.routeId).snapshotChanges().pipe(
           take(1),
@@ -213,7 +215,7 @@ export class MessageCenterComponent implements OnInit {
                 const path = a.payload.doc.ref.parent.path as any;
                 const pathArray = path.split('/');
                 const VuserID = pathArray[1];
-                // console.log({id, ...data, VuserID });
+             //  console.log({id, ...data, VuserID });
                 return { id, ...data, VuserID };
               });
             } else {
