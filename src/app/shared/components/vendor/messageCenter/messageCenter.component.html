@@ -5,7 +5,7 @@
         <nz-divider style='color: #72849a;' nzPlain nzText=""></nz-divider>
         <div>
           <nz-form-label [nzSpan]="2" nzFor="label">Cliente </nz-form-label>
-            <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" style="width: 80%;"
+            <nz-select [nzMaxTagCount]="3" style="width: 80%;"
                nzPlaceHolder="Selecciona un cliente" [(ngModel)]="listOfSelectedCustomer" 
                 (ngModelChange)="changesOverClient($event,listOfCustomer)">
                 <nz-option *ngFor="let customer of listOfCustomer" [nzLabel]="customer.name" [nzValue]="customer.id">
