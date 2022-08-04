@@ -1,7 +1,7 @@
 import { removeSummaryDuplicates, ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { _ } from 'ag-grid-community';
+import { ColumnController, _ } from 'ag-grid-community';
 import { isTemplateRef, NzMessageService } from 'ng-zorro-antd';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { Subject } from 'rxjs';
@@ -126,20 +126,42 @@ export class MessageCenterComponent implements OnInit {
         // Send message to selected users.
 
         this.FinalList.forEach(eachUserMessage => {
-
-          // console.log('token payload created: ', JSON.stringify(eachUserMessage.token));
-          const dataMessage = {
-            createdAt: new Date(),
-            from: 'FyXKSXsUbYNtAbWL7zZ66o2f1M92',
-            fromName: 'Bus2U Informa General',
-            msg: this.InputMessage,
-            requestId: 'suhB7YFAh6PYXCRuJhfD',
-            token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
-            uid: eachUserMessage.uid //'RgNnO7ElJgdThoKh8rUvrpb2EhH2'//
+          let userNotificationToken=  eachUserMessage.token || '';
+          
+         //console.log(userNotificationToken);
+          if (userNotificationToken){
+            // console.log('token payload created: ', JSON.stringify(eachUserMessage.token));
+            const dataMessage = {
+              createdAt: new Date(),
+              from: 'FyXKSXsUbYNtAbWL7zZ66o2f1M92',
+              fromName: 'Bus2U Informa General',
+              msg: this.InputMessage,
+              requestId: 'suhB7YFAh6PYXCRuJhfD',
+             // token: 'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
+             // uid: 'RgNnO7ElJgdThoKh8rUvrpb2EhH2',//
+              token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
+              uid: eachUserMessage.uid,
+              email: eachUserMessage.email,
+              title: 'Bus2U Informa General',
+              body: this.InputMessage
+            }
+            const notifMessage = {
+              timestamp: new Date(),
+              title: 'Bus2U Informa General',
+              email: eachUserMessage.email,
+              body: this.InputMessage,
+              token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
+              uid:  eachUserMessage.uid //'RgNnO7ElJgdThoKh8rUvrpb2EhH2'
+            }
+            this.dashboardService.setChatMessage(dataMessage); 
+            this.dashboardService.setMessage(notifMessage,eachUserMessage.idUser);
+            console.log(dataMessage);
+          } else {
+            console.log ('Null token :' + eachUserMessage.uid + "// " + eachUserMessage.name);
           }
-           this.dashboardService.setChatMessage(dataMessage); 
+         
         })
-       // console.log("send message");
+        console.log("send message");
         this.createMessage('sucess', "Concluyo el envio");
       } else {
         this.createMessage('warning', 'Se tiene que seleccionar una ruta para envio de mensajes.');
@@ -311,7 +333,7 @@ export class MessageCenterComponent implements OnInit {
       this.customerService.getUser(User.idUser).valueChanges().subscribe(item => {
         const findUserToken = this.FinalList.find(find => find.token == item.token && find.uid == item.uid);
         if (!findUserToken) {
-          this.FinalList.push({ token: item.token, uid: item.uid })
+          this.FinalList.push({ token: item.token, uid: item.uid, email: item.email , idUser: User.idUser})
         }
       });
 

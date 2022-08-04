@@ -41,6 +41,13 @@ export class DashboardService {
     const sendChatMessage = this.afs.collection('chatMessages').doc(key);
     return sendChatMessage.set(data);
   }
+  setMessage(data:object,idUser:string) {
+    console.log(data);
+   const key = this.afs.createId();
+    //console.log('key '+ key );
+    const sendMessage = this.afs.collection('users').doc(idUser).collection('messages').doc(key);
+    return sendMessage.set(data);
+  }
 
   getUserChatMessages(userId:string, limit?: number){
     console.log('userChatMessages:'+userId);
