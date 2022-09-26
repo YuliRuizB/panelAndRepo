@@ -318,7 +318,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       msg: this.newMessage,
       requestId: 'suhB7YFAh6PYXCRuJhfD',
       token: this.currentUserSelected.token,
-      uid: this.currentUserSelected.uid
+      uid: this.currentUserSelected.uid,
+      result: ""
     }
     const notifMessage = {
       timestamp: new Date(),
@@ -327,7 +328,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       requestId: 'suhB7YFAh6PYXCRuJhfD',
       body: this.newMessage,
       token:this.currentUserSelected.token, // 'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
-      uid: this.currentUserSelected.uid //'RgNnO7ElJgdThoKh8rUvrpb2EhH2'
+      uid: this.currentUserSelected.uid//'RgNnO7ElJgdThoKh8rUvrpb2EhH2'
     }
     this.dashboardService.setMessage(notifMessage,this.currentUserSelected.uid);
 

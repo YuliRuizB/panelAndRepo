@@ -125,10 +125,10 @@
     </div>
     <div>
       <ag-grid-angular #agGridProg style="width: 100%; height: 450px;" class="ag-theme-material"
-        [rowData]="rowDataAsignModal" [columnDefs]="columnFleetDefsAsign" [rowSelection]="rowSelection"
+        [columnDefs]="columnFleetDefsAsign" [rowData]="rowDataAsignModal" [rowSelection]="rowSelection"
         [suppressRowClickSelection]="true"
         [defaultColDef]="columnAsign" [groupIncludeFooter]="true" (gridReady)="onGridReadyP($event)"
-        (selectionChanged)="onSelectionChanged($event)" [sideBar]="false">
+        (selectionChanged)="onSelectionChanged($event)" [sideBar]="false"[suppressChangeDetection]="false">
       </ag-grid-angular>
     </div>
     {{this.arrDrivers.sort()}}

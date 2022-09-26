@@ -53,7 +53,7 @@ export interface IActivityLog {
     { headerName: '¿Subió?', field: 'allowedOnBoard', enableRowGroup: true }
   ];
  export var LiveProgramColumnsDef =[
-  { headerName: '--',width:90, cellStyle: {color: 'blue'}, field: 'editMode',initialPinned: 'left', enableCellChangeFlash:true 
+  { headerName: '--',width:90, cellStyle: {color: 'blue'}, field: 'editMode',pinned: 'left', enableCellChangeFlash:true 
   ,valueGetter: (params) => {
     if(params && params.node) {     
       return  "Editar"

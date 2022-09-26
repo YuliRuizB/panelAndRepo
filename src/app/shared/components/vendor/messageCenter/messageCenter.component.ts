@@ -161,7 +161,6 @@ export class MessageCenterComponent implements OnInit {
           }
          
         })
-        console.log("send message");
         this.createMessage('sucess', "Concluyo el envio");
       } else {
         this.createMessage('warning', 'Se tiene que seleccionar una ruta para envio de mensajes.');
@@ -375,6 +374,7 @@ export class MessageCenterComponent implements OnInit {
   }
 
   Cancel() {
+    this.listOfSelectedCustomer = null;
     this.isShowDivRoutes = false;
     this.isShowUsers = false;
     this.listOfUsers = [];
@@ -388,5 +388,6 @@ export class MessageCenterComponent implements OnInit {
     });
     this.ListofUsersIDs = [];
     this.listOfRound = [];
+    this.InputMessage = "";
   }
 }

@@ -42,16 +42,21 @@ export interface Data {
   disabled: boolean;
 }
 interface IActivityLogAssing {
-  assigmentid?: string;
+  assignmentId?:string;
   program?:string;
   customerId?:string;
   customerName:string;
   routeId?:string;
   routeName?:string;
   vendorId?:string;
+  round?:string;
+  date?:Date;
+  vehicleCapacity?:number;
   vehicleId?:string;
   vehicleName?:string;
+  id?:string;
   beginhour?:string;
+  time?:Date;
   stopBeginHour?:string;
   stopEndName?:string;
   type?:string;
@@ -59,7 +64,6 @@ interface IActivityLogAssing {
   vendorid?:string;
   driverId?:string;
   driverName?:string;
-  assignmentId?:string;
 }
 
 @Component({
@@ -124,7 +128,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
   user: any;
   stopSubscriptions$:Subject<boolean> = new Subject();
   vendorRoutesSubscription: Subscription;
-  assignmentList: any = [];
   assignmentSubscription: Subscription;
   vehicleAssignmentSubscription: Subscription;
   arrDrivers: any[] =[];
@@ -190,8 +193,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
    //console.log(`Current value: ${value}`);
    if (this.date != startOfDay(new Date(value))) {
       // si son diferentes. 
-      this.assignmentList =[];
-      this.rowDataAsignModal = this.assignmentList;  // clear code before fill
+      this.rowDataAsignModal = [];  // clear code before fill
       this.numAssing ="(0)";
       console.log("Se limpia el modal porque cambio la fecha de las asignaciones");
    }
@@ -398,7 +400,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
      this.regFound="";
      this.rowDataAsignModal = [];
      this.rowDataAsignPostProg = [];
-     this.assignmentList =[];
      this.routePath = "";
      this.customerPath = "";
      this.routeNameSelected =  "";
@@ -427,7 +428,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.regSelected = "(0)";
     this.rowDataAsignModal = [];
     this.rowDataAsignPostProg = [];
-    this.assignmentList = [];
     this.regFound = "";
     this.routePath = "";
     this.customerPath = "";
@@ -481,7 +481,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
     this.routePath = this.customerPath + " / " + routeSelected.routeName;
     if( this.routeNameSelected != routeSelected.routeName){
       this.rowDataAsignModal = [];
-      this.assignmentList =[];
     }
     this.routeNameSelected =routeSelected.routeName;
     
@@ -499,7 +498,9 @@ export class ProgramComponent implements OnInit, OnDestroy {
   handleSearch() {
     if (this.routeSelectedRecord.length > 0) {
       this.rowDataAsignModal = [];
+      let assignedDataModal = [];
       this.regFound = "";
+      let counter = 0;
        this.routeSelectedRecord.forEach((element) => {
         if (element.id.length > 0) {
           this.vehicleAssignmentSubscription = this.routesService.getRouteVehicleAssignments(element.customerId,
@@ -511,21 +512,19 @@ export class ProgramComponent implements OnInit, OnDestroy {
                 return { id, ...data }
               }))
             ).subscribe(assignmentsVehiculo => {
-
+              counter++;
               assignmentsVehiculo.forEach((vehiculoAssigmentElement) => {
                 if (element.active) {
-                  //serch inside the assigned , to now showed
+                  //search inside the assigned , to now showed
                   var findAssignacion = this.rowDataAsignPostProg.find(x =>
                     x.customerId == element.customerId &&  x.routeName == this.routeNameSelected &&
                     x.driver == vehiculoAssigmentElement.driverName &&
                     x.vehicleName == vehiculoAssigmentElement.vehicleName && x.type == element.type
                   );
                   // delete duplicity of data
-                  var duplicateRecord = this.rowDataAsignModal.find(yy =>
-                    yy.assignmentId == vehiculoAssigmentElement.assignmentId);
-                  if (findAssignacion == undefined && duplicateRecord == undefined) {
-                    if (this.assignmentList.indexOf(vehiculoAssigmentElement.assignmentId) === -1) {
-                      this.assignmentList.push({
+                  if (findAssignacion == undefined) {
+                    if (this.rowDataAsignModal.indexOf(vehiculoAssigmentElement.assignmentId) === -1) {
+                      assignedDataModal.push({
                         assignmentId: vehiculoAssigmentElement.assignmentId,
                         program: element.program, // si
                         customerId: element.customerId,
@@ -552,18 +551,19 @@ export class ProgramComponent implements OnInit, OnDestroy {
                   }
                 }
               });
+              if(counter === this.routeSelectedRecord.length) {
+                this.rowDataAsignModal = assignedDataModal;
+              }
+              if (this.rowDataAsignModal != undefined) {  
+                if(this.rowDataAsignModal.length == 0) {
+                  this.regFound= "No se encontraron rutas para programar.";
+                }
+                this.numAssing = " (" + this.rowDataAsignModal.length + ") ";
+              } 
             });
         }
       });
     }
-    if (this.assignmentList != undefined) {  
-      if(this.assignmentList.length == 0) {
-        this.regFound= "No se encontraron rutas para programar.";
-      }
-      this.rowDataAsignModal.push(...this.assignmentList);
-      this.numAssing = " (" + this.rowDataAsignModal.length + ") ";
-    } 
-    
   }
 
   handleOKEdit() { // Accept the  edit over the program row
