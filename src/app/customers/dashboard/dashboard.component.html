@@ -1,11 +1,15 @@
-<div class="site-page-header-ghost-wrapper">
-  <nz-page-header [nzGhost]="false">
-    <nz-page-header-title>Clientes</nz-page-header-title>
-    <nz-page-header-subtitle>Listado general</nz-page-header-subtitle>
+<div style="background-color: white ; color: #4F6F57;" >
+  <nz-page-header [nzGhost]="false"  style="background-color: white ;  color: #4F6F57;">
+ 
+    <nz-page-header-title >Empresas</nz-page-header-title>
+    <div style="background-color: white ; color: #4F6F57;">
+      <nz-page-header-subtitle>Listado general</nz-page-header-subtitle>
+    </div>
+ 
     <nz-page-header-extra>
       <!-- <button nz-button>Operation</button>
       <button nz-button>Operation</button> -->
-      <button nz-button nzNoAnimation nz-dropdown nzType="primary" [nzDropdownMenu]="menu">
+      <button nz-button nzNoAnimation nz-dropdown  style=" background-color: #4F6F57; color: #f6f3ea;" [nzDropdownMenu]="menu">
         Múltiples pases de abordar
       </button>
 
@@ -16,7 +20,7 @@
         </ul>
       </nz-dropdown-menu>
 
-      <button nz-button nzNoAnimation nz-dropdown nzType="primary" [nzDropdownMenu]="menuCredentials">
+      <button nz-button nzNoAnimation nz-dropdown  style=" background-color: #4F6F57; color: #f6f3ea;" [nzDropdownMenu]="menuCredentials">
         Múltiples credenciales
       </button>
       
@@ -38,38 +42,14 @@
         <!-- <input placeholder="Search..."> -->
         <input placeholder="Buscar" #searchBar (keyup)="getItems(searchBar.value)">
       </div>
-      <div class="chat-user-list">
-        <!-- <nz-list [nzDataSource]="devicesList" [nzPagination]="pagination" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
-                    <ng-template #item let-item let-index="index">
-                        <a href="#">
-                            <nz-list-item class="p-h-25" [ngClass]="{'active': index == chatId}">
-                                <div class="media align-items-center">
-                                    <div>
-                                        <nz-avatar class="shadow" nzIcon="user" [nzSrc]="item.avatar"></nz-avatar>
-                                    </div>
-                                    <div class="p-l-15">
-                                        <h5 class="m-b-0">{{item.name}}</h5>
-                                        <ng-container *ngFor="let item of item.msg; let last = last">
-                                            <p *ngIf="last" class="msg-overflow m-b-0 text-muted font-size-13">
-                                                {{item.text}}
-                                            </p>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                            </nz-list-item>
-                        </a>
-                    </ng-template>
-                    <ng-template #pagination>
-                        <nz-pagination [nzPageIndex]="1" [nzTotal]="10"></nz-pagination>
-                      </ng-template>
-                </nz-list> -->
+      <div class="chat-user-list">    
         <nz-table #basicTable [nzData]="devicesList" [nzShowPagination]="false" [nzPageSize]="10">
           <tbody>
             <tr *ngFor="let data of basicTable.data" (click)="userSelected(data)">
               <td>
                 <div class="media align-items-center">
                   <div>
-                    <nz-avatar class="shadow" nzShape="square" nzSize="40" nzIcon="user" [nzSrc]="data.photoURL">
+                    <nz-avatar style="background-color: white ;  color: #4F6F57;" class="shadow" nzShape="square" nzSize="40" nzIcon="user" [nzSrc]="data.photoURL">
                     </nz-avatar>
                   </div>
                   <div class="p-l-15">
@@ -83,10 +63,7 @@
                       </p>
                     </ng-container>
                   </div>
-                </div>
-                <!-- <nz-avatar class="shadow" nzIcon="user" [nzSrc]="data.photoURL"></nz-avatar>
-                                {{ data.displayName }}
-                                <p>{{ data.studentId }} {{ data.email }}</p> -->
+                </div>               
               </td>
             </tr>
           </tbody>
@@ -103,7 +80,7 @@
                   <i nz-icon type="left-circle" theme="outline"></i>
                 </a>
                 <div>
-                  <nz-avatar class="shadow" nzShape="square" nzIcon="user" [nzSrc]="currentUserSelected.photoURL">
+                  <nz-avatar  style="background-color: white ;  color: #4F6F57;"class="shadow" nzShape="square" nzIcon="user" [nzSrc]="currentUserSelected.photoURL">
                   </nz-avatar>
                 </div>
                 <div class="p-l-15">
@@ -178,9 +155,9 @@
                   </tbody>
                 </nz-table>
                 <ng-template #footerTemplate>
-                  <button class="m-r-10" nz-button nzType="default" (click)="showModal()"><i nz-icon
+                  <button class="m-r-10" nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"(click)="showModal()"><i nz-icon
                       nzType="plus"></i>Nuevo Pase de Abordar</button>
-                  <button nz-button nzType="default" (click)="showModalProduct()"><i nz-icon
+                  <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModalProduct()"><i nz-icon
                       nzType="plus"></i>Productos</button>
                 </ng-template>
               </nz-tab>
@@ -190,10 +167,10 @@
                   [nzLoading]="loadingUserCredentials" [nzLoadingDelay]="500" *ngIf="userCredentials">
                   <thead>
                     <tr>
-                      <th>Válida desde</th>
-                      <th>Válida hasta</th>
-                      <th>Estado</th>
-                      <th>Ultima Actividad</th>
+                      <th style="color: #4F6F57;">Válida desde</th>
+                      <th style="color: #4F6F57;">Válida hasta</th>
+                      <th style="color: #4F6F57;">Estado</th>
+                      <th style="color: #4F6F57;">Ultima Actividad</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -228,7 +205,7 @@
                   </tbody>
                 </nz-table>
                 <ng-template #credentialFooterTemplate>
-                  <button class="m-r-10" nz-button nzType="default" (click)="showModalCredential()"><i nz-icon
+                  <button class="m-r-10" nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModalCredential()"><i nz-icon
                       nzType="plus"></i>Nueva credencial</button>
                 </ng-template>
               </nz-tab>
@@ -241,8 +218,8 @@
                   [nzLoadingDelay]="500">
                   <thead>
                     <tr>
-                      <th>Fecha</th>
-                      <th>Mensaje</th>
+                      <th style="color: #4F6F57;">Fecha</th>
+                      <th style="color: #4F6F57;">Mensaje</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -257,21 +234,21 @@
                     <nz-divider nzPlain nzText="Mensaje"></nz-divider>
                       <textarea rows="4" nz-input [(ngModel)]="newMessage" placeholder="Mensaje"></textarea>
                   </div>
-                  <button class="m-r-10" nz-button nzType="default" (click)="showModalMessageCenter()"><i nz-icon nzType="plus"></i>Enviar
+                  <button class="m-r-10" nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModalMessageCenter()"><i nz-icon nzType="plus"></i>Enviar
                     Mensaje</button>
                 </ng-template>
               </nz-tab>
 
             </nz-tabset>
 
-            <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
+            <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"  style="background-color: white ;  color: #4F6F57;"
               [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
               <ng-template #modalTitle>
-                Nuevo pase de abordar
+                Nuevo pase de abordar 
               </ng-template>
 
               <ng-template #modalContent>
-                <form nz-form nzLayout="horizontal" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+                <form nz-form nzLayout="horizontal" [formGroup]="validateForm" (ngSubmit)="submitForm()"  style="background-color: white ;  color: #4F6F57;">
                   <nz-form-item>
                     <nz-form-label>Servicio</nz-form-label>
                     <nz-select style="width: 320px;" formControlName="product_id" nzAllowClear
@@ -293,9 +270,9 @@
                     </nz-select>
                   </nz-form-item>
                   <nz-form-item>
-                    <nz-form-label>Parada</nz-form-label>
+                    <nz-form-label>Estación</nz-form-label>
                     <nz-select style="width: 320px;" formControlName="stopId" nzAllowClear
-                      nzPlaceHolder="Selecciona la parada" (ngModelChange)="onStopPointSelected($event, stopPoints)">
+                      nzPlaceHolder="Selecciona la estación" (ngModelChange)="onStopPointSelected($event, stopPoints)">
                       <nz-option *ngFor="let o of stopPoints" nzCustomContent [nzLabel]="o.name"
                         [nzValue]="o.stopPointId"><i nz-icon nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}
                       </nz-option>
@@ -350,8 +327,8 @@
               </ng-template>
 
               <ng-template #modalFooter>
-                <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
-                <button nz-button nzType="primary" (click)="submitForm()"
+                <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleCancel()">Cancelar</button>
+                <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="submitForm()"
                   [nzLoading]="isConfirmLoading">Guardar</button>
               </ng-template>
             </nz-modal>
@@ -415,8 +392,8 @@
               </ng-template>
 
               <ng-template #modalFooter>
-                <button nz-button nzType="default" (click)="handleCancelProduct()">Cancelar</button>
-                <button nz-button nzType="primary" (click)="submitFormProduct()"
+                <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleCancelProduct()">Cancelar</button>
+                <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="submitFormProduct()"
                   [nzLoading]="isConfirmLoading">Guardar</button>
               </ng-template>
             </nz-modal>
@@ -484,12 +461,12 @@
                         nzPopconfirmPlacement="bottom" nzIcon="edit" (nzOnConfirm)="onCanUpdatePayment()"
                         (nzOnCancel)="handleCancel()"><small>Editar</small></a>
                       <nz-input-number *ngIf="canUpdatePayment" [(ngModel)]="lastPurchase.amount" [nzMin]="1"
-                        [nzMax]="3000" (ngModelChange)="onPaymentUpdated($event)" [nzStep]="1"
+                        [nzMax]="12000" (ngModelChange)="onPaymentUpdated($event)" [nzStep]="1"
                         [nzFormatter]="formatterDollar" [nzParser]="parserDollar"></nz-input-number>
                     </nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Autorización">{{ lastPurchase.authorization }}</nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Ruta">{{ lastPurchase.routeName }} </nz-descriptions-item>
-                    <nz-descriptions-item nzTitle="Parada">{{ lastPurchase.stopName }}
+                    <nz-descriptions-item nzTitle="Estación">{{ lastPurchase.stopName }}
                       {{ lastPurchase.stopDescription }}</nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Turno">{{ lastPurchase.round }}</nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Información de la compra">
@@ -505,10 +482,9 @@
               </nz-tab>
               <nz-tab nzTitle="Código QR">
                 <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-                  qrc-value="{{currentUserSelected.uid}},{{lastPurchase.id}}" qrc-class="qrCode-size"
+                qrc-value="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" qrc-class="qrCode-size"
                   qrc-errorCorrectionLevel="Q"></ngx-qrcode>
-                {{currentUserSelected.uid}},{{lastPurchase.id}}
-                {{ currentUserSelected.id }}
+                {{currentUserSelected.uid}}-{{lastPurchase.id}}
               </nz-tab>
               <nz-tab nzTitle="Soporte">
                 Content of Tab Pane 3
@@ -532,7 +508,7 @@
 
     <nz-steps [nzCurrent]="current" nzSize="small">
       <nz-step nzTitle="Pase" nzDescription="Crear el pase de abordar."></nz-step>
-      <nz-step nzTitle="Clientes" nzDescription="Seleccionar los clientes."></nz-step>
+      <nz-step nzTitle="Empresas" nzDescription="Seleccionar las Empresas."></nz-step>
       <nz-step nzTitle="Confirmar" nzDescription="Validar la creación."></nz-step>
     </nz-steps>
 
@@ -561,8 +537,8 @@
             </nz-select>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>Parada</nz-form-label>
-            <nz-select style="width: 320px;" formControlName="stopId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+            <nz-form-label>Estación</nz-form-label>
+            <nz-select style="width: 320px;" formControlName="stopId" nzAllowClear nzPlaceHolder="Selecciona la estación"
               (ngModelChange)="onStopPointSelected($event, stopPoints)">
               <nz-option *ngFor="let o of stopPoints" nzCustomContent [nzLabel]="o.name" [nzValue]="o.stopPointId"><i
                   nz-icon nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
@@ -623,9 +599,9 @@
               <th nzShowCheckbox nzShowRowSelection [nzSelections]="listOfSelection"
                 [(nzChecked)]="isAllDisplayDataChecked" [nzIndeterminate]="isIndeterminate"
                 (nzCheckedChange)="checkAllData($event)"></th>
-              <th>Id</th>
-              <th>Nombre</th>
-              <th>Email / Teléfono</th>
+              <th style="color: #4F6F57;">Id</th>
+              <th style="color: #4F6F57;">Nombre</th>
+              <th style="color: #4F6F57;">Email / Teléfono</th>
             </tr>
           </thead>
           <tbody>
@@ -675,12 +651,12 @@
                 nzPopconfirmPlacement="bottom" nzIcon="edit" (nzOnConfirm)="onCanUpdatePayment()"
                 (nzOnCancel)="handleCancel()"><small>Editar</small></a>
               <nz-input-number *ngIf="canUpdatePayment" [(ngModel)]="lastPurchase.amount" [nzMin]="1"
-                [nzMax]="3000" (ngModelChange)="onPaymentUpdated($event)" [nzStep]="1"
+                [nzMax]="12000" (ngModelChange)="onPaymentUpdated($event)" [nzStep]="1"
                 [nzFormatter]="formatterDollar" [nzParser]="parserDollar"></nz-input-number>
             </nz-descriptions-item>
             <nz-descriptions-item nzTitle="Autorización">{{ lastPurchase.authorization }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Ruta">{{ lastPurchase.routeName }} </nz-descriptions-item>
-            <nz-descriptions-item nzTitle="Parada">{{ lastPurchase.stopName }}
+            <nz-descriptions-item nzTitle="Estación">{{ lastPurchase.stopName }}
               {{ lastPurchase.stopDescription }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Turno">{{ lastPurchase.round }}</nz-descriptions-item>
             <nz-descriptions-item nzTitle="Información de la compra">
@@ -697,18 +673,18 @@
 
   <ng-template #modalFooterBulk>
     <div class="steps-action">
-      <button nz-button nzType="default" [disabled]="isCreatingBoardingPasses" (click)="pre()"
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" [disabled]="isCreatingBoardingPasses" (click)="pre()"
         *ngIf="current > 0 && !isDone">
         <span>Anterior</span>
       </button>
-      <button nz-button nzType="default" [disabled]="isCreatingBoardingPasses" (click)="next()" *ngIf="current < 2">
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" [disabled]="isCreatingBoardingPasses" (click)="next()" *ngIf="current < 2">
         <span>Siguiente</span>
       </button>
-      <button nz-button nzType="primary" [nzLoading]="isCreatingBoardingPasses" (click)="createMultipleBoardingPasses()"
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" [nzLoading]="isCreatingBoardingPasses" (click)="createMultipleBoardingPasses()"
         *ngIf="current === 2 && !isDone">
         <span>Crear Pases</span>
       </button>
-      <button nz-button nzType="primary" (click)="done()" *ngIf="current === 2 && isDone">
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="done()" *ngIf="current === 2 && isDone">
         <span>Terminar</span>
       </button>
     </div>
@@ -768,10 +744,10 @@
               <th nzShowCheckbox nzShowRowSelection [nzSelections]="listOfCredentialsSelection"
                 [(nzChecked)]="isCredentialsAllDisplayDataChecked" [nzIndeterminate]="isCredentialsIndeterminate"
                 (nzCheckedChange)="checkCredentialsAllData($event)"></th>
-                <th>Cliente</th>
-              <th>Id</th>
-              <th>Nombre</th>
-              <th>Email / Teléfono</th>
+                <th style="color: #4F6F57;">Empresa</th>
+              <th style="color: #4F6F57;">Id</th>
+              <th style="color: #4F6F57;">Nombre</th>
+              <th style="color: #4F6F57;">Email / Teléfono</th>
             </tr>
           </thead>
           <tbody>
@@ -809,18 +785,18 @@
 
   <ng-template #modalFooterBulkCredentials>
     <div class="steps-action">
-      <button nz-button nzType="default" (click)="pre()"
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="pre()"
         *ngIf="current > 0 && !isDone">
         <span>Anterior</span>
       </button>
-      <button nz-button nzType="default" [disabled]="credentialForm.invalid" (click)="next()" *ngIf="current < 2">
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" [disabled]="credentialForm.invalid" (click)="next()" *ngIf="current < 2">
         <span>Siguiente</span>
       </button>
-      <button nz-button nzType="primary" [disabled]="actualSelectedRows === 0" [nzLoading]="isCreatingCredentials" (click)="createMultipleCredentials()"
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" [disabled]="actualSelectedRows === 0" [nzLoading]="isCreatingCredentials" (click)="createMultipleCredentials()"
         *ngIf="current === 2 && !isDone">
         <span>Crear Credenciales</span>
       </button>
-      <button nz-button nzType="primary" (click)="done()" *ngIf="current === 3 && isDone">
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="done()" *ngIf="current === 3 && isDone">
         <span>Terminar</span>
       </button>
     </div>
@@ -866,7 +842,7 @@
   </ng-template>
 
   <ng-template #modalFooterCredential>
-    <button nz-button nzType="primary" [disabled]="credentialForm.invalid" [nzLoading]="isCreatingCredentials" (click)="createCredential()">
+    <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" [disabled]="credentialForm.invalid" [nzLoading]="isCreatingCredentials" (click)="createCredential()">
         <span>Crear Credencial</span>
       </button>
   </ng-template>

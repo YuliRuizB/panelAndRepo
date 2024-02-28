@@ -5,6 +5,7 @@ import * as firebase from 'firebase/app';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ICredential } from '../classes/customers';
+import { AngularFireFunctions } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +23,15 @@ export class CustomersService {
   purchasesCollection: AngularFirestoreCollection<any>;
   routesCollection: AngularFirestoreCollection<any>;
   userBoardingPassesCollection: AngularFirestoreCollection<any>;
+  userBoardingPassesDetailCollection : AngularFirestoreCollection<any>;
   userPurchasesCollection: AngularFirestoreCollection<any>;
+  userPurchasesDetailCollection: AngularFirestoreCollection<any>;
   userPurchasePaymentsCollection: AngularFirestoreCollection<any>;
 
   constructor(
     private afs: AngularFirestore,
-    public messageService: NzMessageService
+    public messageService: NzMessageService, 
+    private aff: AngularFireFunctions
   ) {
     this.usersCollection = this.afs.collection('users');
     this.paymentsCollection = this.afs.collection('payments');
@@ -105,8 +109,7 @@ export class CustomersService {
 
   createUserWithoutApp(newUser: any) {
     const newId = this.afs.createId();
-    newUser.uid = newId;
-    console.log(newId);
+    newUser.uid = newId;   
     const user = this.afs.collection('users').doc(newId);
     return user.set(newUser).then(() => {
       return newId;
@@ -115,11 +118,37 @@ export class CustomersService {
 
   createSystemUser(newUser: any) {
     const newId = this.afs.createId();
-    newUser.uid = newId;
-    console.log(newId);
+    newUser.uid = newId;  
     const user = this.afs.collection('bulkusers').doc(newId);
     return user.set(newUser);
   }
+
+
+  createSystemDeleteUser(newUserD: any) {
+    const newId = this.afs.createId();
+  //  newUserD.uid = newId; 
+    const user = this.afs.collection('deleteUsers').doc(newId).set(newUserD)
+    .then(() => {
+      console.log('Document successfully written!');
+    })
+    .catch((error) => {
+      console.error('Error writing document: ', error);
+    });
+  }
+  createPurchaseRequest(userID: string, purchaseDetail:any) {
+    const newId = this.afs.createId();
+    const user = this.afs.collection('users').doc(userID).collection("purchaseRequests").doc(newId).set(purchaseDetail)
+    .then(() => {
+      console.log('Purchase Request  successfully written!');
+      return newId;
+    })
+    .catch((error) => {
+      console.error('Error writing document: ', error);
+
+      return "";
+    });
+  }
+
 
   saveOldBoardingPassToUserCollection(purchaseId: string) {
     this.purchase = this.purchasesCollection.doc(purchaseId);
@@ -153,8 +182,7 @@ export class CustomersService {
       userRef.update({
         hasCredential: true,
         credentialId: response.id
-      });
-      console.log(response);
+      });  
     })
   }
 
@@ -168,8 +196,7 @@ export class CustomersService {
   }
 
   activatePurchase(uid: string, purchaseId: string, active: boolean) {
-    this.user = this.usersCollection.doc(uid);
-    console.log(uid, purchaseId, active);
+    this.user = this.usersCollection.doc(uid);   
     this.purchase = this.user.collection('boardingPasses').doc(purchaseId);
     const lastUpdatedAt = firebase.firestore.Timestamp.fromDate(new Date());
     this.purchase.update({active, lastUpdatedAt})
@@ -181,8 +208,7 @@ export class CustomersService {
   }
 
   deletePurchase(uid: string, purchaseId: string) {
-    this.user = this.usersCollection.doc(uid);
-    console.log(uid, purchaseId);
+    this.user = this.usersCollection.doc(uid);   
     this.purchase = this.user.collection('boardingPasses').doc(purchaseId);
     this.purchase.delete()
       .then(() => {
@@ -218,24 +244,46 @@ export class CustomersService {
   saveBoardingPassToUserPurchaseCollection(uid: string, purchase: object) {
     this.userPurchasesCollection = this.usersCollection.doc(uid).collection('boardingPasses');
     return this.userPurchasesCollection.add(purchase).then(() => {
-      this.sendMessage('success', '¡Listo!');
+      this.sendMessage('success', 'Se creo el pase de abordar.!');
     }).catch(err => {
       this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`);
     });
   }
 
-  updateBoardingPassToUserPurchaseCollection(uid: string, purchase: any) {
-    console.log(uid, purchase);
+  async createPurchaseCloud(send:any, currentUser:any , idBoardingPass: string) {  
+    const purchaseRequest44 = await  this.aff.httpsCallable('createPurchaseRequest');
+    purchaseRequest44({ purchaseRequestData: send, user:currentUser , idBoardingPass: idBoardingPass }).toPromise().then((response: any) => {
+      console.log(response);
+    //  this.sendMessage(success("El registro se hizo con exito");
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  saveBoardingPassDetailToUserPurchaseCollection(uid: string, purchaseId: string, purchaseDetail : object) {
+    return new Promise(async (resolve, reject) => {
+      const aux1 = await this.usersCollection.doc(uid).collection('boardingPasses').doc(purchaseId).collection('boardingPassesDetail');
+      aux1.add(purchaseDetail).then(() => {
+        this.sendMessage('success', 'Purchase Order Detail Creado!');
+        resolve(true)
+      }).catch(err => {
+        resolve(false)
+        this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`);
+      });
+    })
+ 
+  }
+
+  updateBoardingPassToUserPurchaseCollection(uid: string, purchase: any) {  
     this.purchase = this.usersCollection.doc(uid).collection('boardingPasses').doc(purchase.id);
     return this.purchase.update(purchase).then(() => {
-      this.sendMessage('success', '¡Listo!');
+      this.sendMessage('success', 'Se actualizo con exito el pago,  favor de refrescar la pagina.!');
     }).catch(err => {
       this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`);
     });
   }
 
-  getLatestUserPurchases(uid: string, limit?: number) {
-    console.log('doc uid: ', uid);
+  getLatestUserPurchases(uid: string, limit?: number) {   
     this.userBoardingPassesCollection = this.usersCollection.doc(uid)
       .collection('boardingPasses', ref =>
         ref.limit(limit).orderBy('creation_date', 'desc')
@@ -243,14 +291,58 @@ export class CustomersService {
     return this.userBoardingPassesCollection.snapshotChanges();
   }
 
-  getLatestValidUserPurchases(uid: string, limit: number = 10) {
-    console.log('doc uid: ', uid);
+  getLatestUserPurchasesRequest(uid: string, limit?: number) {   
+    this.userBoardingPassesCollection = this.usersCollection.doc(uid)
+      .collection('purchaseRequests', ref =>
+        ref.limit(limit).orderBy('creation_date', 'desc')
+      );
+    return this.userBoardingPassesCollection.snapshotChanges();
+  }
+
+  getLatestUserPurchaseDetail(uid: string, limit?: number, purchaseId?: string) {
+    this.userBoardingPassesDetailCollection = this.usersCollection.doc(uid).collection('boardingPasses').doc(purchaseId)
+      .collection('boardingPassesDetail', ref =>
+        ref.limit(limit).orderBy('creation_date', 'desc')
+      );
+    return this.userBoardingPassesDetailCollection.snapshotChanges();
+  }
+
+  getLatestValidUserPurchases(uid: string, limit: number = 10) {  
     this.userBoardingPassesCollection = this.usersCollection.doc(uid)
       .collection('boardingPasses', ref =>
         ref.where('validTo','<=', new Date())
         .limit(limit).orderBy('validTo', 'desc')
       );
     return this.userBoardingPassesCollection.snapshotChanges();
+  }
+
+
+  getLatestValidUserPurchasesAdvance(uid: string, limit: number = 10, promiseDate: string, paymentSelected: string,creation_date :string) {
+  
+   
+    if (paymentSelected == "Mensualidad") {
+    
+      this.userBoardingPassesCollection =  this.afs.collection('users').doc(uid).collection('boardingPasses', ref => {
+        let filterData = ref.where('creation_date','==', creation_date);
+        return filterData;
+      })
+      // this.userBoardingPassesCollection = this.usersCollection.doc(uid).collection('boardingPasses');
+      // this.userBoardingPassesCollection.ref.where('creation_date','==', creation_date);
+      // .collection('boardingPasses', ref =>
+      //   ref.where('creation_date','==', creation_date)
+        // .limit(limit).orderBy('creation_date', 'desc')
+      //);    
+      return this.userBoardingPassesCollection.snapshotChanges();
+
+    } else {
+      this.userBoardingPassesCollection = this.usersCollection.doc(uid)
+      .collection('boardingPasses', ref =>
+        ref.where('promiseDate','<=', promiseDate)
+        .limit(limit).orderBy('promiseDate', 'desc')
+      );
+    return this.userBoardingPassesCollection.snapshotChanges();
+    }
+   
   }
 
   setUserPurchasePayment(uid: string, purchaseId: string, data: object) {

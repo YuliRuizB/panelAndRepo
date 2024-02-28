@@ -31,7 +31,7 @@ export class EditComponent implements OnInit, OnDestroy {
       this.sub = this.route.params.subscribe(params => {
         this.recordId = params['id']; // (+) converts string 'id' to a number
         this.selectedIndex = params['index']; // (+) converts string 'id' to a number
-        console.log(params);
+        
         this.getSubscriptions();
      });
 
@@ -62,7 +62,7 @@ export class EditComponent implements OnInit, OnDestroy {
         })
       ).subscribe( (account) => {
         this.record = account;
-        console.log(this.record);
+       // console.log(this.record);
       })
     }
  

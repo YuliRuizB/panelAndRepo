@@ -9,6 +9,10 @@ import * as _ from 'lodash';
 import { AssignmentType } from 'src/app/shared/interfaces/assignment.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
+import { NzMessageService } from 'ng-zorro-antd';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { UsersService } from 'src/app/shared/services/users.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-shared-route-programs',
@@ -31,16 +35,35 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
   currentSelectedId: string;
   programForm: FormGroup;
   assigmentType: AssignmentType
+  infoLoad: any = [];
+  userlevelAccess: string;
+  user: any;
+
 
   constructor(
     private routesService: RoutesService,
     private vendorsService: VendorService,
+    private messageService: NzMessageService,
+    private rolService: RolService,
+    private userService: UsersService,
+    public authService: AuthenticationService,
     private fb: FormBuilder
-  ) { 
+  ) {
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
+    });
     this.createForm();
     console.log(this.assigmentType);
   }
-
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+  }
   ngOnInit() {
     this.getSubscriptions();
   }
@@ -58,11 +81,11 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBaseProgram;
         return { id, ...data }
-    })))
-    .subscribe( (programs:IBaseProgram[]) => {
-      this.programsList = programs;
-      this.loading = false;
-    });
+      })))
+      .subscribe((programs: IBaseProgram[]) => {
+        this.programsList = programs;
+        this.loading = false;
+      });
 
     this.routesService.getRouteStopPoints(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
@@ -70,11 +93,11 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id, ...data }
-    })))
-    .subscribe( (stopPoints:IStopPoint[]) => {
-      this.stopPointsList = stopPoints;
-      this.loading = false;
-    });
+      })))
+      .subscribe((stopPoints: IStopPoint[]) => {
+        this.stopPointsList = stopPoints;
+        this.loading = false;
+      });
 
     this.vendorsService.getVendors().pipe(
       takeUntil(this.stopSubscription$),
@@ -82,39 +105,39 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IVendor;
         return { id, ...data }
-    })))
-    .subscribe( (vendors:IVendor[]) => {
-      this.vendorsList = vendors;
-      this.loading = false;
-    });
+      })))
+      .subscribe((vendors: IVendor[]) => {
+        this.vendorsList = vendors;
+        this.loading = false;
+      });
   }
 
   createForm() {
     this.programForm = this.fb.group({
-      active: [false, [ Validators.required ]],
-      acRequired: [false, [ Validators.required ]],
-      isSunday: [false, [ Validators.required ]],
-      isMonday: [true, [ Validators.required ]],
-      isTuesday: [true, [ Validators.required ]],
-      isWednesday: [true, [ Validators.required ]],
-      isThursday: [true, [ Validators.required ]],
-      isFriday: [true, [ Validators.required ]],
-      isSaturday: [false, [ Validators.required ]],
-      program: ['', [ Validators.required ]],
-      round: ['', [ Validators.required ]],
-      stopBeginId: ['', [ Validators.required ]],
-      stopBeginName: ['', [ Validators.required ]],
-      stopBeginHour: ['', [ Validators.required ]],
-      stopEndId: ['', [ Validators.required ]],
-      stopEndName: ['', [ Validators.required ]],
-      stopEndHour: ['', [ Validators.required ]],
-      time: [new Date(), [ Validators.required ]],
-      type: [ this.assigmentType, [ Validators.required ]],
-      customerName: ['', [ Validators.required ]],
-      customerId: [ this.accountId, [ Validators.required ]],
-      vendorName: ['', [ Validators.required ]],
-      vendorId: ['', [ Validators.required ]],
-      routeId: [ this.routeId, [ Validators.required ]]
+      active: [false, [Validators.required]],
+      acRequired: [false, [Validators.required]],
+      isSunday: [false, [Validators.required]],
+      isMonday: [true, [Validators.required]],
+      isTuesday: [true, [Validators.required]],
+      isWednesday: [true, [Validators.required]],
+      isThursday: [true, [Validators.required]],
+      isFriday: [true, [Validators.required]],
+      isSaturday: [false, [Validators.required]],
+      program: ['', [Validators.required]],
+      round: ['', [Validators.required]],
+      stopBeginId: ['', [Validators.required]],
+      stopBeginName: ['', [Validators.required]],
+      stopBeginHour: ['', [Validators.required]],
+      stopEndId: ['', [Validators.required]],
+      stopEndName: ['', [Validators.required]],
+      stopEndHour: ['', [Validators.required]],
+      time: [new Date(), [Validators.required]],
+      type: [this.assigmentType, [Validators.required]],
+      customerName: ['', [Validators.required]],
+      customerId: [this.accountId, [Validators.required]],
+      vendorName: ['', [Validators.required]],
+      vendorId: ['', [Validators.required]],
+      routeId: [this.routeId, [Validators.required]]
     })
   }
 
@@ -148,11 +171,11 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
   }
 
   toggleActive(data) {
-    this.routesService.toggleRouteAssignment(this.accountId, this.routeId, data.id, data).then( () => {
+    this.routesService.toggleRouteAssignment(this.accountId, this.routeId, data.id, data).then(() => {
       this.isCreateVisible = false;
       this.isEditMode = false;
     })
-    .catch( err => console.log(err));
+      .catch(err => console.log(err));
   }
 
   showCreateModal() {
@@ -162,11 +185,16 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
   showModalDelete(data) {
     console.log(data);
-    this.routesService.deleteRouteAssignments(this.accountId, this.routeId, data.id).then( () => {
-      this.isCreateVisible = false;
-      this.isEditMode = false;
-    })
-    .catch( err => console.log(err));
+    if (this.userlevelAccess == "1") {
+      this.routesService.deleteRouteAssignments(this.accountId, this.routeId, data.id).then(() => {
+        this.isCreateVisible = false;
+        this.isEditMode = false;
+      })
+        .catch(err => console.log(err));
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+
   }
 
   showModalEdit(data) {
@@ -185,22 +213,26 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
   createProgram() {
     this.programForm.get('customerId').setValue(this.accountId);
     this.programForm.get('routeId').setValue(this.routeId);
-
-    if(!this.isEditMode) {
-      this.routesService.setRouteAssignments(this.accountId, this.routeId, this.programForm.value).then( () => {
-        this.isCreateVisible = false;
-        this.isEditMode = false;
-      })
-      .catch( err => console.log(err));
+    if (this.userlevelAccess != "3") {
+      if (!this.isEditMode) {
+        this.routesService.setRouteAssignments(this.accountId, this.routeId, this.programForm.value).then(() => {
+          this.isCreateVisible = false;
+          this.isEditMode = false;
+        })
+          .catch(err => console.log(err));
+      } else {
+        this.routesService.updateRouteAssignment(this.accountId, this.routeId, this.currentSelectedId, this.programForm.value).then(() => {
+          this.isCreateVisible = false;
+          this.isEditMode = false;
+          this.currentSelectedId = null;
+        })
+          .catch(err => console.log(err));
+      }
     } else {
-      this.routesService.updateRouteAssignment(this.accountId, this.routeId, this.currentSelectedId, this.programForm.value).then( () => {
-        this.isCreateVisible = false;
-        this.isEditMode = false;
-        this.currentSelectedId = null;
-      })
-      .catch( err => console.log(err));
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
     }
-    
+
+
   }
 
   checkChange(formControl: string, event: boolean) {
@@ -209,7 +241,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
   }
 
   onStopPointSelected(event, field, time) {
-    if(event) {
+    if (event) {
       const recordArray = _.filter(this.stopPointsList, s => {
         return s.id == event;
       });
@@ -220,7 +252,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
       this.programForm.controls[field].setValue(record.name);
       switch (round) {
         case 'Día':
-          this.programForm.controls[time].setValue(record.round1);    
+          this.programForm.controls[time].setValue(record.round1);
           break;
         case 'Tarde':
           this.programForm.controls[time].setValue(record.round2);
@@ -233,7 +265,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
   }
 
   onVendorSelected(event, field) {
-    if(event) {
+    if (event) {
       const recordArray = _.filter(this.vendorsList, s => {
         return s.id == event;
       });

@@ -22,7 +22,7 @@
             <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
           </label>
         </nz-radio-group>
-        <button nz-button nzType="primary" (click)="showNewModal(newContent)">
+        <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showNewModal(newContent)">
           <i nz-icon nzType="plus"></i>
           <span>Agregar nuevo</span>
         </button>
@@ -98,7 +98,7 @@
               </div>
               <div class="col-md-6">
                 <nz-form-label>Precio</nz-form-label>
-                <nz-input-number [nzMin]="0" [nzMax]="3000" [nzStep]="1" formControlName="price"></nz-input-number>
+                <nz-input-number [nzMin]="0" [nzMax]="12000" [nzStep]="1" formControlName="price"></nz-input-number>
               </div>
             </div>
           </form>
@@ -113,7 +113,7 @@
       <nz-card>
         <div class="d-flex justify-content-between">
           <div class="media">
-            <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]=""></nz-avatar>
+            <nz-avatar [nzSize]="40" style="background-color: white ;  color: #4F6F57;" nzShape="square" [nzSrc]=""></nz-avatar>
             <div class="m-l-10">
               <h5 class="m-b-0">{{item.name}}</h5>
               <span class="text-muted font-size-13">{{ item.timesSold  || 0}} Ventas</span>
@@ -180,7 +180,7 @@
             <div>
               <a routerLinkActive="router-link-active" class="m-r-5"
                 *ngFor="let item of (item.member ? item.member.slice(0,2): [])">
-                <nz-avatar nzSize="small" [nzSrc]="item.avatar" nz-tooltip [nzTitle]="item.name">
+                <nz-avatar nzSize="small"  style="background-color: white ;  color: #4F6F57;"[nzSrc]="item.avatar" nz-tooltip [nzTitle]="item.name">
                 </nz-avatar>
               </a>
               <a *ngIf="item.price > 2">
@@ -196,19 +196,19 @@
     <nz-table #listViewTable [nzData]="productsList">
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Descripción</th>
-          <th>Tipo</th>
+          <th style="color: #4F6F57;">Nombre</th>
+          <th style="color: #4F6F57;">Categoría</th>
+          <th style="color: #4F6F57;">Descripción</th>
+          <th style="color: #4F6F57;">Tipo</th>
           <th class="text-center">Status</th>
-          <th></th>
+          <th style="color: #4F6F57;"></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of listViewTable.data">
           <td>
             <div class="media align-items-center">
-              <nz-avatar nzShape="square" [nzSrc]=""></nz-avatar>
+              <nz-avatar nzShape="square" style="background-color: white ;  color: #4F6F57;" [nzSrc]=""></nz-avatar>
               <div class="m-l-10">
                 <h5 class="m-b-0">{{item.name}}</h5>
               </div>

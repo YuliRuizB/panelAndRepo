@@ -4,17 +4,17 @@
         'is-side-nav-dark' : isSideNavDark,
         'is-expand' : isExpand
     }"
->
+    style="background-color: white ;  color: #4F6F57;">
     <app-header></app-header>
     <app-sidenav></app-sidenav>
-    <div class="page-container">
+    <div class="page-container" style="background-color: white ;  color: #4F6F57;">
         <div class="main-content">
-            <div class="main-content-header" *ngIf="contentHeaderDisplay !== 'none'">
+            <div class="main-content-header" *ngIf="contentHeaderDisplay !== 'none'" style="background-color: white ;  color: #4F6F57;">
                 <h4 class="page-title" *ngIf="breadcrumbs$ | async; let breadcrumbs">{{(breadcrumbs[breadcrumbs.length - 1].label)}}</h4>
                 <nz-breadcrumb nzSeparator=">">
                     <i class="m-r-5 text-gray" nz-icon nzType="home"></i>
                     <nz-breadcrumb-item *ngFor="let breadcrumb of breadcrumbs$ | async">
-                        <a [routerLink]="breadcrumb.url">
+                        <a  style=" color: #4F6F57;" [routerLink]="breadcrumb.url">
                             {{ breadcrumb.label }}
                         </a>
                     </nz-breadcrumb-item>

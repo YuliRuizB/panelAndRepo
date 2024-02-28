@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { DefaultDashboardComponent } from './default/default-dashboard.component';
 import { WithBreadcrumbDashboardComponent } from './with-breadcrumb/with-breadcrumb-dashboard.component';
 import { AuthGuard } from 'src/app/shared/guard/auth.guard';
+import { QualityDashboardComponent } from './quality/quality-dashboard.component';
+import { ReportsDashboardComponent } from './reports/reports-dashboard.component';
 
 const routes: Routes = [
   {
@@ -25,44 +27,80 @@ const routes: Routes = [
       {
         path: 'admin',
         component: DefaultDashboardComponent,
-        canActivate: [ AuthGuard ],
+        /* canActivate: [ AuthGuard ],
         data: {
           role: ['admin'],
           title: 'General'
-        }
+        } */
+      },
+      {
+        path: 'admin',
+        component: QualityDashboardComponent,
+       /*  canActivate: [ AuthGuard ],
+        data: {
+          role: ['admin'],
+          title: 'Calidad'
+        } */
+      },
+      {
+        path: 'admin',
+        component: ReportsDashboardComponent,
+       /*  canActivate: [ AuthGuard ],
+        data: {
+          role: ['admin'],
+          title: 'Reportes'
+        } */
       },
       {
         path: 'default',
         component: DefaultDashboardComponent,
-        canActivate: [ AuthGuard ],
+       /*  canActivate: [ AuthGuard ],
         data: {
           role: ['admin', 'vendor'],
           title: 'General'
-        }
+        } */
+      },
+      {
+        path: 'quality',
+        component: QualityDashboardComponent,
+       /*  canActivate: [ AuthGuard ],
+        data: {
+          role: ['admin', 'vendor', 'quality'],
+          title: 'Calidad'
+        } */
+      },
+      {
+        path: 'reports',
+        component: ReportsDashboardComponent,
+      /*   canActivate: [ AuthGuard ],
+        data: {
+          role: ['admin', 'vendor', 'quality'],
+          title: 'Reports'
+        } */
       },
       {
         path: 'user',
         component: DefaultDashboardComponent,
-        data: {
+       /*  data: {
           role: ['user','anonymous'],
           title: 'Usuario'
-        }
+        } */
       },
       {
         path: 'vendor',
         component: DefaultDashboardComponent,
-        data: {
+       /*  data: {
           role: ['vendor','sales'],
-          title: 'Transportista'
-        }
+          title: 'Clientes'
+        } */
       },
       {
         path: 'sales',
         component: WithBreadcrumbDashboardComponent,
-        data: {
+       /*  data: {
           role: ['sales','user'],
           title: 'Ventas'
-        }
+        } */
       }
     ]
   }

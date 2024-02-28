@@ -12,6 +12,8 @@ import { NgxCsvParser } from 'ngx-csv-parser';
 import { NgxCSVParserError } from 'ngx-csv-parser';
 import { map, take, tap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-shared-users-list',
@@ -46,8 +48,29 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
   isDone: boolean = false;
   gridApi: any;
   gridColumnApi: any;
+  infoLoad: any = [];
+  userlevelAccess: string;
+  user: any;
+  accountsList;
 
-  constructor(private usersService: CustomersService, private afs: AngularFirestore, private customersService: CustomersService, private msg: NzMessageService, private ngxCsvParser: NgxCsvParser) {
+
+  constructor(private usersService: CustomersService,
+    private afs: AngularFirestore,
+    private customersService: CustomersService,
+    private msg: NzMessageService,
+    private rolService: RolService,
+    public authService: AuthenticationService,
+    private ngxCsvParser: NgxCsvParser) {
+
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
+    });
     this.popupParent = document.querySelector("body");
   }
 
@@ -88,38 +111,20 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
       }
 
     });
-
-    // const boardingPassRef = this.afs.doc('/users/0BaGqU6pwlV4YJOpDgrn/boardingPasses/bCR06CvuWUSHuQwndrNH');
-    // boardingPassRef.snapshotChanges().pipe(
-    //   take(1),
-    //   map(a => {
-    //     const id = a.payload.id;
-    //     const data = a.payload.data() as any;
-    //     return { id, ...data }
-    //   }),
-    //   tap(boardingPass => {
-    //     const boardingPassDoc = boardingPass;
-    //     const boardingPassNewRef = this.afs.doc(`/users/M8n8uC7dVL3pr4nEevMO/boardingPasses/bCR06CvuWUSHuQwndrNH`);
-    //     return boardingPassNewRef.set(boardingPassDoc, { merge: true})
-    //   })
-    // ).subscribe();
-
-    // this.usersService.updateUser(this.usersList[0].uid, this.usersList[0]).then((response) => {
-    //   this.usersService.deleteUser(this.usersList[0].id);
-    // });
-    // this.usersList.forEach( (user) => {
-    //   console.log(user);
-    //   this.usersService.updateUser(user.uid, user).then( (response) => {
-    //     this.usersService.deleteUser(user.id);
-    //   });
-    // });
   }
-
+  sendMessage(type: string, message: string): void {
+    this.msg.create(type, message);
+  }
   deleteUsers() {
-    this.usersList.forEach((user) => {
-      console.log(user);
-      this.usersService.deleteUser(user.id);
-    });
+    if (this.userlevelAccess == "1") {
+      this.usersList.forEach((user) => {
+        console.log(user);
+        this.usersService.deleteUser(user.id);
+      });
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+
   }
 
   onGridReady(params) {
@@ -222,28 +227,35 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
 
   done(): void {
     this.isSavingUsers = true;
-    this.csvRecords.forEach(user => {
-      this.usersService.createUserWithoutApp(this.makeUserObject(user)).then((response:any) => {
 
-        console.log(response);
-        
-      const userCreateBoardingPass = user.createBoardingPass //.toLowerCase() == 'true';
-      console.log('create boarding pass: ', userCreateBoardingPass);
+    if (this.userlevelAccess != "3") {
+      this.csvRecords.forEach(user => {
+        this.usersService.createUserWithoutApp(this.makeUserObject(user)).then((response: any) => {
 
-      if (userCreateBoardingPass) {
-        user.uid = response;
-        console.log('will create a boarding pass for this user');
-        this.makeBoardingPassObject(user);
-      }
-        
-      console.log(response);
-        user.result = 'Creado'
-      }).catch(err => {
-        console.log(err);
-        user.result = err.message;
-      })
+          console.log(response);
 
-    });
+          const userCreateBoardingPass = user.createBoardingPass //.toLowerCase() == 'true';
+          console.log('create boarding pass: ', userCreateBoardingPass);
+
+          if (userCreateBoardingPass) {
+            user.uid = response;
+            console.log('will create a boarding pass for this user');
+            this.makeBoardingPassObject(user);
+          }
+
+          console.log(response);
+          user.result = 'Creado'
+        }).catch(err => {
+          console.log(err);
+          user.result = err.message;
+        })
+
+      });
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }
+
+
     this.isDone = true;
   }
 
@@ -259,115 +271,117 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
     const routeRef = firebase.firestore().collection('customers').doc(this.accountId).collection('routes');
     const actualRoute = routeRef.where('name', '==', user.routeName);
 
-    actualService.get().then(serviceQuerySnapshot => {
-      const count = serviceQuerySnapshot.size;
-      console.log('size of services found: ', count);
-      if (count > 0) {
-        serviceQuerySnapshot.forEach(doc => {
-          const id = doc.id;
-          const data = doc.data() as any;
-          service = { id, ...data }
-        });
-      } else {
-        return;
-      }
-
-      actualRoute.get().then(querySnapshot => {
-        const count = querySnapshot.size;
-        console.log('size of route found; ', count);
+    if (this.userlevelAccess != "3") {
+      actualService.get().then(serviceQuerySnapshot => {
+        const count = serviceQuerySnapshot.size;
+        console.log('size of services found: ', count);
         if (count > 0) {
-          querySnapshot.forEach(doc => {
+          serviceQuerySnapshot.forEach(doc => {
             const id = doc.id;
             const data = doc.data() as any;
-            route = { id, ...data }
-
-            const stopPointRef = firebase.firestore().collection('customers').doc(this.accountId).collection('routes').doc(route.id).collection('stops');
-            const actualStop = stopPointRef.where('order', '==', +user.stop);
-
-            actualStop.get().then(stopQuerySnapshot => {
-              const count = stopQuerySnapshot.size;
-              console.log('size of stop found; ', count);
-              if (count > 0) {
-                stopQuerySnapshot.forEach(doc => {
-                  const id = doc.id;
-                  const data = doc.data() as any;
-                  stopPoint = { id, ...data }
-                });
-
-                console.log(service, route, stopPoint);
-
-
-                let boardingPassObject = {
-                  active: user.validated,
-                  amount: service.price,
-                  authorization: '',
-                  category: service.category,
-                  conciliated: false,
-                  creation_date: new Date().toISOString(),
-                  currency: 'MXN',
-                  customer_id: this.accountId,
-                  date_created: new Date().toISOString(),
-                  description: service.description,
-                  due_date: new Date(service.validTo.toDate()).toISOString(),
-                  name: service.name,
-                  price: service.price,
-                  product_description: service.description,
-                  product_id: service.id,
-                  realValidTo: new Date((service.validTo).toDate()).toISOString(),
-                  error_message: "",
-                  fee: {
-                    amount: 0,
-                    currency: "MXN",
-                    tax: 0
-                  },
-                  isOpenpay: false,
-                  isTaskIn: true,
-                  isTaskOut: true,
-                  is_courtesy: false,
-                  method: "cash",
-                  operation_date: new Date().toISOString(),
-                  operation_type: "in",
-                  order_id: "",
-                  paidApp: "web",
-                  payment_method: {
-                    barcode_url: "",
-                    reference: "",
-                    type: "cash"
-                  },
-                  round: user.round,
-                  routeId: route.id,
-                  routeName: route.name,
-                  status: 'completed',
-                  stopDescription: stopPoint.description,
-                  stopId: stopPoint.id,
-                  stopName: stopPoint.name,
-                  transaction_type: 'charge',
-                  validFrom: service.validFrom,
-                  validTo: service.validTo
-                };
-
-                console.log(boardingPassObject);
-
-                this.customersService.saveBoardingPassToUserPurchaseCollection(user.uid, boardingPassObject)
-                  .then((success) => {
-                    this.isVisible = false;
-                    this.isConfirmLoading = false;
-                  }).catch((err) => { this.isConfirmLoading = false; });
-                return;
-
-              } else {
-                return;
-              }
-            });
-          })
+            service = { id, ...data }
+          });
         } else {
           return;
         }
 
+        actualRoute.get().then(querySnapshot => {
+          const count = querySnapshot.size;
+          console.log('size of route found; ', count);
+          if (count > 0) {
+            querySnapshot.forEach(doc => {
+              const id = doc.id;
+              const data = doc.data() as any;
+              route = { id, ...data }
+
+              const stopPointRef = firebase.firestore().collection('customers').doc(this.accountId).collection('routes').doc(route.id).collection('stops');
+              const actualStop = stopPointRef.where('order', '==', +user.stop);
+
+              actualStop.get().then(stopQuerySnapshot => {
+                const count = stopQuerySnapshot.size;
+                console.log('size of stop found; ', count);
+                if (count > 0) {
+                  stopQuerySnapshot.forEach(doc => {
+                    const id = doc.id;
+                    const data = doc.data() as any;
+                    stopPoint = { id, ...data }
+                  });
+
+                  console.log(service, route, stopPoint);
+
+
+                  let boardingPassObject = {
+                    active: user.validated,
+                    amount: service.price,
+                    authorization: '',
+                    category: service.category,
+                    conciliated: false,
+                    creation_date: new Date().toISOString(),
+                    currency: 'MXN',
+                    customer_id: this.accountId,
+                    date_created: new Date().toISOString(),
+                    description: service.description,
+                    due_date: new Date(service.validTo.toDate()).toISOString(),
+                    name: service.name,
+                    price: service.price,
+                    product_description: service.description,
+                    product_id: service.id,
+                    realValidTo: new Date((service.validTo).toDate()).toISOString(),
+                    error_message: "",
+                    fee: {
+                      amount: 0,
+                      currency: "MXN",
+                      tax: 0
+                    },
+                    isOpenpay: false,
+                    isTaskIn: true,
+                    isTaskOut: true,
+                    is_courtesy: false,
+                    method: "cash",
+                    operation_date: new Date().toISOString(),
+                    operation_type: "in",
+                    order_id: "",
+                    paidApp: "web",
+                    payment_method: {
+                      barcode_url: "",
+                      reference: "",
+                      type: "cash"
+                    },
+                    round: user.round,
+                    routeId: route.id,
+                    routeName: route.name,
+                    status: 'completed',
+                    stopDescription: stopPoint.description,
+                    stopId: stopPoint.id,
+                    stopName: stopPoint.name,
+                    transaction_type: 'charge',
+                    validFrom: service.validFrom,
+                    validTo: service.validTo
+                  };
+
+                  console.log(boardingPassObject);
+
+                  this.customersService.saveBoardingPassToUserPurchaseCollection(user.uid, boardingPassObject)
+                    .then((success) => {
+                      this.isVisible = false;
+                      this.isConfirmLoading = false;
+                    }).catch((err) => { this.isConfirmLoading = false; });
+                  return;
+
+                } else {
+                  return;
+                }
+              });
+            })
+          } else {
+            return;
+          }
+
+        })
       })
-    })
-
-
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }
     return;
 
   }
@@ -441,7 +455,7 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
     }
     this.csvRecords = sanitizedResults;
     console.log(this.csvRecords);
-    
+
   }
 
   changeContent(): void {

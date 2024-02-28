@@ -1,0 +1,12 @@
+body {
+    background-color: #BCB192;
+    margin: 0; /* Reset default body margin */
+  }
+  
+  .container-fluid {
+    height: 100vh; /* 100% of the viewport height */
+  }
+  
+  .d-flex {
+    background-color: #BCB192; /* Set background color for the container with flex properties */
+  }

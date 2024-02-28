@@ -14,6 +14,8 @@ import { ThemeConstantService } from '../services/theme-constant.service';
 import { TermsComponent } from './terms/terms.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ExternalPrivacyComponent } from './privacy/external/external-privacy.component';
+import { BajaUsuarioComponent } from './bajaUsuario/bajaUsuario.component';
 
 @NgModule({
     exports: [
@@ -24,7 +26,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
         SideNavDirective,
         FooterComponent,
         TermsComponent,
-        PrivacyComponent
+        PrivacyComponent,
+        BajaUsuarioComponent,
+        ExternalPrivacyComponent
     ],
     imports: [
         RouterModule,
@@ -39,7 +43,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
         FooterComponent,
         TermsComponent,
         PrivacyComponent,
-        PageNotFoundComponent
+        BajaUsuarioComponent,
+        PageNotFoundComponent,
+        ExternalPrivacyComponent
     ],
     entryComponents: [
         TermsComponent,

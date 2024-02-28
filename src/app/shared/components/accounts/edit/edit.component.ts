@@ -3,6 +3,10 @@ import { AccountsService } from 'src/app/shared/services/accounts.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, map, tap } from 'rxjs/operators';
+import { NzMessageService } from 'ng-zorro-antd';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { UsersService } from 'src/app/shared/services/users.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-shared-account-edit',
@@ -16,11 +20,30 @@ export class SharedAccountEditComponent implements OnInit, OnDestroy {
   stopSubscription$: Subject<boolean> = new Subject();
   loading: boolean = true;
   record;
+  infoLoad: any = [];
+  userlevelAccess:string;
+ user: any;
+
 
   constructor(
     private accountsService: AccountsService,
+    private messageService: NzMessageService,
+    private rolService: RolService,
+     private userService: UsersService,
+      public authService: AuthenticationService,
     private fb: FormBuilder
-  ) { }
+  ) {
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+          this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+              this.infoLoad = item;
+              this.userlevelAccess = this.infoLoad.optionAccessLavel;                 
+          });
+      }
+  });
+
+   }
 
   ngOnInit() {
     this.createForm();
@@ -103,13 +126,19 @@ export class SharedAccountEditComponent implements OnInit, OnDestroy {
   handleChange(event) {
 
   }
-
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+}
   onSubmit() {
-    this.accountsService.updateAccount(this.accountId, this.objectForm.value).then(() => {
-      console.log('ok')
-    }, err => {
-      console.log('err: ', err)
-    }).catch((err) => console.log(err))
+    if (this.userlevelAccess != "3") {
+      this.accountsService.updateAccount(this.accountId, this.objectForm.value).then(() => {
+        console.log('ok')
+      }, err => {
+        console.log('err: ', err)
+      }).catch((err) => console.log(err))
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }    
   }
 
 

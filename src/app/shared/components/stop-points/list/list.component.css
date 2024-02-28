@@ -1,0 +1,24 @@
+.documentPDF {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }  
+  .tableStyle {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+  }
+  .theadClass {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+ 

@@ -30,20 +30,15 @@ export class LogisticsMainComponent implements OnInit {
   lat = 37.75;
   lng = -122.41;
   loading = false;
-
   // mapData
   map: any = mapboxgl.Map;
   source: any;
   markers: any;
-
-
   columnDefs = ColumnDefs;
-
   rowData: IActivityLog[];
   activityList: IActivityLog[];
   startDate: Date;
   endDate: Date;
-
   private chart: am4charts.XYChart;
   chartData: any;
   gridApi: any;
@@ -65,11 +60,8 @@ export class LogisticsMainComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-
-
     // Add data
     // chart.data = this.chartData;
-
     // Create axes
     let chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
 
@@ -85,12 +77,8 @@ export class LogisticsMainComponent implements OnInit {
       .subscribe((result: any) => {
         console.log(result);
         // this.chartData = _.countBy(result, 'country');
-
-        this.zone.runOutsideAngular(() => {
-
-          
+        this.zone.runOutsideAngular(() => {          
           chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
           let groupA = [...result.reduce((r, o) => {
             const key = o.round + '-' + o.program;
             
@@ -233,9 +221,7 @@ export class LogisticsMainComponent implements OnInit {
 
     /// Add realtime firebase data on map load
     this.map.on('load', (event) => {
-
       this.map.resize();
-
       /// register source
       this.map.addSource('firebase', {
         type: 'geojson',

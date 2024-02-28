@@ -20,7 +20,8 @@ import * as cors from "cors";
 
 
 const app = express();
-app.use(cors({ origin: true }))
+app.use(cors());
+
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
@@ -869,7 +870,7 @@ exports.sendPushNotificationOnLive = functions.firestore.document('customers/{cu
         const id = userDoc.id;
         const data = userDoc.data();
         const user = {id, ...data };
-        let userNotificationToken = user.token ?? null;
+        let userNotificationToken = user.token || null;
         let routeDesc: String = "";
         // check if the user actually have a notification token to create him/her a custom notification payload
         if(userNotificationToken) {
@@ -989,7 +990,7 @@ exports.setLiveProgram = functions.firestore.document('customers/{customerId}/pr
             const id = userDoc.id;
             const data = userDoc.data();
             const user = {id, ...data };
-            let userNotificationToken = user.token ?? null;
+            let userNotificationToken = user.token || null;
             let routeDesc: String = "";
             // check if the user actually have a notification token to create him/her a custom notification payload
             if(userNotificationToken) {

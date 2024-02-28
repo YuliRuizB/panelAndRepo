@@ -7,6 +7,12 @@ import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { SharedStopPointsNewComponent } from '../new/new.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { SharedStopPointsEditComponent } from '../edit/edit.component';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { UsersService } from 'src/app/shared/services/users.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 @Component({
   selector: 'app-shared-stoppoints-list',
@@ -24,6 +30,14 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
   time = new Date();
   isEditing = false;
   item; //route record
+  infoLoad: any = [];
+  userlevelAccess: string;
+  user: any;
+  isPdfVisible:boolean = false;
+  pdfTitle:string = "";
+  pdfOrder:string = "";
+  pdfDescription:string= "";
+  stopId:string = "";
 
   stopSubscriptions$: Subject<boolean> = new Subject();
 
@@ -31,8 +45,21 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
     private routesService: RoutesService,
     public modalService: NzModalService,
     public message: NzMessageService,
+    private rolService: RolService,
+    public authService: AuthenticationService,
     private afs: AngularFirestore
-  ) { }
+  ) {
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
+    });
+
+  }
 
   ngOnInit() {
     this.getSubscriptions();
@@ -45,7 +72,34 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
   }
 
   timePickerChange(event) {
-    console.log(event);
+   //console.log(event);
+  }
+
+  handleCancel() {
+     this.isPdfVisible = false;
+  }
+
+  handleOkPDF() {
+    // imprimir aqui
+    console.log("Imprimir");
+    try {
+
+      var doc = new jsPDF();
+      html2canvas(document.getElementById("documentoPDF")!).then(canvas => {
+        const contentDataURL = canvas.toDataURL('image/png');
+        let pdf = new jsPDF('p', 'pt', 'a4');
+        var width = pdf.internal.pageSize.getWidth();
+        var height = canvas.height * width / canvas.width;
+        pdf.addImage(contentDataURL, 'PNG', 10, 10, width, height);
+        const nameSave =  this.pdfOrder + "-" + this.pdfTitle + ".pdf";        
+        pdf.save(nameSave);
+      });
+      this.isPdfVisible = false; // Close the modal
+    }
+    catch (e) {
+      console.error(e);
+    }
+  
   }
 
   toggleActive(data) {
@@ -53,11 +107,28 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
     this.routesService.toggleActiveStopPoint(this.accountId, this.routeId, data);
   }
 
+  openPanelPDF(data) {
+    this.isPdfVisible = true;
+    console.log(data);
+    this.pdfTitle = data.name;
+    this.pdfOrder =data.order;
+    this.pdfDescription = data.description;
+    this.stopId = data.id;
+  }
+  sendMessage(type: string, message: string): void {
+    this.message.create(type, message);
+  }
+
   deleteRoute(data) {
-    this.routesService.deleteRoute(data.customerId, data.routeId).then(() => {
-      console.log('done');
-    })
-      .catch(err => console.log(err));
+    if (this.userlevelAccess == "1") {
+      this.routesService.deleteRoute(data.customerId, data.routeId).then(() => {
+        console.log('done');
+      })
+        .catch(err => console.log(err));
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+
   }
 
   getSubscriptions() {
@@ -81,7 +152,7 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
       }),
       tap(route => {
         this.item = route;
-        console.log(this.item);
+       // console.log(this.item);
         return route;
       })
     ).subscribe();
@@ -97,16 +168,16 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
       nzOkText: 'Guardar',
       nzCancelText: 'Cancelar',
       nzOkLoading: this.isEditing,
-      nzOnOk: () => new Promise( async (resolve) => {
+      nzOnOk: () => new Promise(async (resolve) => {
         this.isEditing = true;
         const updated = modal.getContentComponent().validateForm.value;
         updated.id = data.id;
-        await this.routesService.updateStopPoint(this.accountId, this.routeId, updated).then( () => {
+        await this.routesService.updateStopPoint(this.accountId, this.routeId, updated).then(() => {
           resolve;
           this.isEditing = false;
           modal.destroy();
           this.message.success('¡Listo!');
-        }).catch( err => {
+        }).catch(err => {
           this.isEditing = false;
           this.message.error('Ocurrió un error: ', err);
           resolve;
@@ -117,12 +188,12 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
 
     // modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
-    
+
   }
 
   showModalCreate() {
     let modal = this.modalService.create({
-      nzTitle: 'Nueva Parada',
+      nzTitle: 'Nueva Estación',
       nzContent: SharedStopPointsNewComponent,
       nzComponentParams: {
         stopPoint: {}
@@ -130,17 +201,17 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
       nzOkText: 'Crear',
       nzCancelText: 'Cancelar',
       nzOkLoading: this.isEditing,
-      nzOnOk: () => new Promise( async (resolve) => {
+      nzOnOk: () => new Promise(async (resolve) => {
         this.isEditing = true;
         const record = modal.getContentComponent().validateForm.value;
         record.id = this.afs.createId();
-        console.log(record);
-        await this.routesService.createStopPoint(this.accountId, this.routeId, record).then( () => {
+      //  console.log(record);
+        await this.routesService.createStopPoint(this.accountId, this.routeId, record).then(() => {
           resolve;
           this.isEditing = false;
           modal.destroy();
           this.message.success('¡Listo!');
-        }).catch( err => {
+        }).catch(err => {
           this.isEditing = false;
           this.message.error('Ocurrió un error: ', err);
           resolve;
@@ -151,7 +222,7 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
 
     // modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // modal.afterClose.subscribe(result => console.log('[afterClose] The result is:', result));
-    
+
   }
 
   onEditOk() {

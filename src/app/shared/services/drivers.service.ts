@@ -61,4 +61,40 @@ export class DriversService {
     });
   }
 
+  getEvidenceDrivers(selectedDate: Date) {
+    // Check if selectedDate is a valid Date object
+    if (!(selectedDate instanceof Date && !isNaN(selectedDate.getTime()))) {
+      // Handle the case where selectedDate is not a valid Date object
+      console.error('Invalid date:', selectedDate);
+      return; // or return an observable/error as appropriate
+    }
+  
+    // Set the start and end of the selected date
+    const startOfDay = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate(), 0, 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate(), 23, 59, 59, 999));
+
+  
+    // Query based on date range
+    const evidence = this.afs.collection('driversEvidence', ref =>
+      ref.where('dateTimeStamp', '>=', startOfDay)
+         .where('dateTimeStamp', '<=', endOfDay)
+    );
+  
+    return evidence.snapshotChanges();
+  }
+
+  getEvidenceDriversperDriver(selectedDate: string, uidDriver:string) {
+    // Check if selectedDate is a valid Date object
+   
+    
+    // Query based on date range
+    const evidence = this.afs.collection('driversEvidence', ref =>
+      ref.where('date', '==', selectedDate)
+         .where('uid', '==', uidDriver)
+    );
+  
+    return evidence.snapshotChanges();
+  }
+
+
 }

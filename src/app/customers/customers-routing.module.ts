@@ -6,6 +6,8 @@ import { PayeeComponent } from './payments/payee/payee.component';
 import { ListComponent } from './list/list.component';
 import { RoutesComponent } from './routes/routes.component';
 import { RouteEditComponent } from './routes/edit/edit.component';
+import { ExternalPrivacyComponent } from '../shared/template/privacy/external/external-privacy.component';
+import { BajaUsuarioComponent } from '../shared/template/bajaUsuario/bajaUsuario.component';
 
 const routes: Routes = [
   {
@@ -20,15 +22,21 @@ const routes: Routes = [
         path: 'main',
         component: ListComponent,
         data: {
-          title: 'Clientes'
+          title: 'Empresa'
         }
       },
       {
         path: 'list',
         component: DashboardComponent,
         data: {
-          title: 'Clientes'
+          title: 'Empresa'
         }
+      },
+      { path: 'external-privacy', 
+      component: ExternalPrivacyComponent 
+      },
+      { path: 'bajaUsuario', 
+      component: BajaUsuarioComponent 
       },
       {
         path: 'payments',

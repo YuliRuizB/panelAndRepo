@@ -49,7 +49,7 @@ export class VendorUsersListComponent implements OnInit, OnDestroy {
   ) {
     this.columnDefs = [
       {
-        headerName: 'Cliente', field: 'customerName',
+        headerName: 'Empresa', field: 'customerName',
         cellRenderer: 'agGroupCellRenderer', sortable: true
       },
       { headerName: 'Ruta', sortable: true, field: 'routeName' },
@@ -76,20 +76,20 @@ export class VendorUsersListComponent implements OnInit, OnDestroy {
         headerName: 'Inicia', field: 'time',
         cellRenderer: 'agGroupCellRenderer', sortable: true
       },
-      { headerName: 'Cliente', sortable: true, field: 'customerName' },
+      { headerName: 'Empresa', sortable: true, field: 'customerName' },
       { headerName: 'Ruta', sortable: true, field: 'routeName'},
       { headerName: 'Programa / Turno', Field: 'round'},
-      { headerName: 'Conductor', sortable: true, field: 'driver'},
+      { headerName: 'PR', sortable: true, field: 'driver'},
       { headerName: 'Vehículo', sortable: true, field: 'vehicleName'},
       { headerName: 'Inició', sortable: true, field: 'startedAt'},
       { headerName: 'Finalizó', sortable: true, field: 'endedAt'}
     ];
 
     this.usersColumnDefs = [
-      { headerName: 'Cliente', field: 'customerName', enableRowGroup: true },
+      { headerName: 'Empresa', field: 'customerName', enableRowGroup: true },
       { headerName: 'Ruta', field: 'routeName', enableRowGroup: true },
       { headerName: 'Turno', field: 'round', enableRowGroup: true },
-      { headerName: 'Parada', field: 'stopName', enableRowGroup: true },
+      { headerName: 'Estación', field: 'stopName', enableRowGroup: true },
       { headerName: 'Pase de abordar', field: 'name' },
       { headerName: 'Mete', field: 'isTaskIn', cellRenderer: (params) => {
         return !!params.value ? 'Si' : 'No'
@@ -134,7 +134,7 @@ export class VendorUsersListComponent implements OnInit, OnDestroy {
           { headerName: 'Pase Cortesía', field: 'is_courtesy', cellRenderer: (params) => {
             return !!params.value ? 'Si':'No'
           }},
-          { headerName: 'Parada', field: 'stopName' },
+          { headerName: 'Estación', field: 'stopName' },
           { headerName: 'Válido desde', field: 'validFrom', cellRenderer: (params) => {
             const date = (params.value).toDate();
             return format(date, 'MMMM dd yyyy', {

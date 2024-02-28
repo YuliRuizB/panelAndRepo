@@ -8,6 +8,8 @@ import { PageNotFoundComponent } from './shared/template/page-not-found/page-not
 
 import { FullLayout_ROUTES } from './shared/routes/full-layout.routes';
 import { CommonLayout_ROUTES } from './shared/routes/common-layout.routes';
+import { ExternalPrivacyComponent } from './shared/template/privacy/external/external-privacy.component';
+import { BajaUsuarioComponent } from './shared/template/bajaUsuario/bajaUsuario.component';
 
 const redirectUnauthorizedToLogin = redirectUnauthorizedTo(['authentication/login']);
 const redirectAuthorizedToHome = redirectLoggedInTo(['dashboard']);
@@ -29,9 +31,17 @@ const appRoutes: Routes = [
         children: FullLayout_ROUTES
     },
     {
+        path: "external-privacy",
+        component: ExternalPrivacyComponent
+    },
+    {
+        path: "bajaUsuario",
+        component: BajaUsuarioComponent
+    }/* ,
+    {
         path: '**',
         component: PageNotFoundComponent
-    }
+    } */
 ];
 
 @NgModule({

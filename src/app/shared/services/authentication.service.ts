@@ -7,7 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd';
 import { Observable, of } from 'rxjs';
 import { switchMap, take, map, tap } from 'rxjs/operators';
 import * as firebase from 'firebase';
-import { User, Roles, Permission, Role } from 'src/app/shared/interfaces/user.type';
+import { User, Permission, Role } from 'src/app/shared/interfaces/user.type';
 import * as _ from 'lodash';
 
 @Injectable({ providedIn: 'root' })
@@ -23,7 +23,7 @@ export class AuthenticationService {
     private ngZone: NgZone,
     private notification: NzNotificationService
   ) {
-
+   
     //// Get auth data, then get firestore user document || null
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
@@ -31,12 +31,13 @@ export class AuthenticationService {
           localStorage.setItem('user', JSON.stringify(user));
           const data = this.afs.doc<User>(`users/${user.uid}`);
           return data.valueChanges();
-        } else {
+        } else {         
           localStorage.setItem('user', null);
           return of(null);
         }
       })
     );
+    
   }
 
   getUser() {
@@ -55,7 +56,7 @@ export class AuthenticationService {
               'Para continuar es necesario verificar su cuenta de correo electrónico.'
             );
             this.router.navigate(['authentication/please-verify-email']);
-          } else {
+          } else {           
             this.getAccessLevel(result.user.uid);
           }
         });
@@ -74,9 +75,8 @@ export class AuthenticationService {
         const data = a.payload.data() as any;
         return { id: id, ...data }
       })
-    ).subscribe( (user:any) => {
-      console.log(user);
-      const hasRoleAccess = _.includes(['admin','vendor','sales'], user.roles[0]);
+    ).subscribe( (user:any) => {     
+      const hasRoleAccess = _.includes(['admin','vendor','sales','student','user'], user.roles[0]);
       if(!hasRoleAccess) {
         this.notification.create(
           'warning',
@@ -132,21 +132,25 @@ export class AuthenticationService {
       .then((result) => {
         /* Call the SendVerificaitonMail() function when new user sign
         up and returns promise */
-        this.sendVerificationMail();
+       // console.log(result);
         this.setUserData(result.user, form);
+        this.sendVerificationMail();
+
+        
       }).catch((error) => {
-        this.notification.create('error', '¡Oops!, algo salió mal ...', error);
+        this.notification.create('error', 'Error de creación de Usuario', error);
       });
   }
 
   // Send email verfificaiton when new user sign up
   sendVerificationMail() {
+    console.log("sendverificationMail)");
     return this.afAuth.auth.currentUser.sendEmailVerification()
       .then(() => {
         this.router.navigate(['authentication/verify-email']);
         this.notification.create('info', '¡Perfecto!', 'El correo ha sido enviado');
       }).catch((error) => {
-        this.notification.create('error', '¡Oops!, algo salió mal ...', error);
+        this.notification.create('error', 'Error de verificación de correo', error);
       });
   }
 
@@ -191,17 +195,31 @@ export class AuthenticationService {
   sign up with username/password and sign in with social auth
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   setUserData(user, form?) {
+    console.log(form);
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     const userData = {
       uid: user.uid,
       email: user.email,
       phoneNumber: form && form.phoneNumber ? form.phoneNumber : null,
-      displayName: user.displayName ? user.displayName : form && form.fullName ? form.fullName : null,
+      displayName: form.firstName + ' ' + form.lastName,//user.displayName ? user.displayName : form && form.firstName ? form.lastName : null,
       studentId: form && form.studentId ? form.studentId : null,
-      photoURL: user.photoURL,
-      roles: [Role.user],
-      permissions: [Permission.canList],
-      emailVerified: user.emailVerified
+      photoURL:   user.photoURL,
+      roles: [Role.admin],
+      permissions: [Permission.canRead],
+      emailVerified: user.emailVerified,
+      name: form.firstName,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      customerName: form.customerName,
+      customerId: form.customerId,
+      round: form.round,      
+      status: form && form.status !== undefined ? form.status : 'active',
+      rolId: form && form.rolId !== undefined ? form.rolId :  '54YNS3xlSLPc6UzNq2HJ',
+      roundTrip: form.roundTrip,
+      turno: form.turno,
+      defaultRouteName: form.defaultRouteName,
+      defaultRoute: form.defaultRoute,
+      defaultRound: form.defaultRound
     };
     return userRef.set(userData, {
       merge: true

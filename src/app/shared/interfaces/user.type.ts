@@ -9,6 +9,8 @@ export interface User {
     uid?: string;
     email?: string;
     displayName?: string;
+    name?:string;
+    lastName?:string;
     photoURL?: string;
     phoneNumber?: string;
     studentId?: number;
@@ -18,14 +20,19 @@ export interface User {
     defaultRoute?: string;
     defaultRound?: string;
     roles: string[];
+    rolId?:string;
     permissions?: Permission[];
+    customerName?:string;
+    customerId?:string;
+    round?:string;
   }
 
-  export enum Role {
+   export enum Role {
     user = 'user',
+    student = 'student',
     manager = 'manager',
     admin = 'admin'
-  }
+  } 
 
   export enum Permission {
     canRead = 'canRead',
@@ -36,8 +43,10 @@ export interface User {
     canDelete = 'canDelete'
   }
 
-  export interface Roles {
+/*   export interface Roles {
     user?: boolean;
     manager?: boolean;
     admin?: boolean;
+    student?: boolean;
  }
+ */

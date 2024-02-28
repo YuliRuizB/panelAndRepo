@@ -107,7 +107,7 @@ export class TableService {
 //                     <th nzShowSort nzSortKey="name">Name</th>
 //                     <th nzShowSort nzSortKey="age">Age</th>
 //                     <th nzShowSort nzSortKey="address">Address</th>
-//                     <th>Action</th>
+//                     <th style="color: #4F6F57;">Action</th>
 //                 </tr>
 //             </thead>
 //             <tbody>

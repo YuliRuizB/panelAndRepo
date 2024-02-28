@@ -13,6 +13,8 @@ import { NgxCSVParserError } from 'ngx-csv-parser';
 import { map } from 'rxjs/operators';
 
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-shared-vendor-users-list',
@@ -45,15 +47,32 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
   isSavingUsers: boolean = false;
   isDone: boolean = false;
   validateForm: FormGroup;
+  infoLoad: any = [];
+  userlevelAccess: string;
+  user: any;
 
   constructor(
     private usersService: CustomersService,
     private afs: AngularFirestore,
     private msg: NzMessageService,
     private ngxCsvParser: NgxCsvParser,
+    private rolService: RolService,
+    public authService: AuthenticationService,
     private fb: FormBuilder
   ) {
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
+    });
     this.popupParent = document.querySelector("body");
+  }
+  sendMessage(type: string, message: string): void {
+    this.msg.create(type, message);
   }
 
   ngOnInit() {
@@ -211,11 +230,16 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
 
   done(): void {
     this.isSavingUsers = true;
-    this.usersService.createSystemUser(this.makeUserObject(this.validateForm.value)).then(response => {
-      console.log(response);
-    }).catch(err => {
-      console.log(err);
-    })
+
+    if (this.userlevelAccess != "3") {
+      this.usersService.createSystemUser(this.makeUserObject(this.validateForm.value)).then(response => {
+        console.log(response);
+      }).catch(err => {
+        console.log(err);
+      })
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }
     this.isDone = true;
     this.isVisible = false;
     this.isSavingUsers = false;

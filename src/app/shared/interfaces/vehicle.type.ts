@@ -46,7 +46,7 @@ export const columnDefs = [
     { headerName: 'Id', sortable: true, filter: true, field: 'chassis' },
     { headerName: 'Vehículo', sortable: true, filter: true, field: 'name' },
     { headerName: 'Placas', sortable: true, filter: true, field: 'licensePlate' },
-    { headerName: 'Conductor', sortable: true, filter: true, field: 'driver' },
+    { headerName: 'PR', sortable: true, filter: true, field: 'driver' },
     { headerName: 'Carrocería', sortable: true, filter: true, field: 'carMaker' },
     { headerName: 'Puertas', sortable: true, filter: true, field: 'doors' },
     { headerName: 'Asientos', sortable: true, filter: true, field: 'seats' },

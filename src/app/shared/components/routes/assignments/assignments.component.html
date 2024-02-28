@@ -1,7 +1,7 @@
 <div class="site-page-header-ghost-wrapper">
   <nz-page-header nzGhost="false">
     <nz-page-header-extra>
-      <button nz-button nzType="primary" (click)="showCreateModal()">Agregar asignación</button>
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showCreateModal()">Agregar asignación</button>
     </nz-page-header-extra>
   </nz-page-header>
 </div>
@@ -9,17 +9,17 @@
 <nz-table *ngIf="routesList.length > 0" #programsListTable [nzData]="programsList" [nzLoading]="loading" nzShowSizeChanger [(nzPageSize)]="pageSize">
   <thead>
     <tr>
-      <th>Asignado A</th>
-      <th>Ruta</th>
-      <th>Tarea</th>
-      <th>Días</th>
-      <th>Turno</th>
-      <th>Hora</th>
-      <th>AC</th>
-      <th>Inicio</th>
-      <th>Fin</th>
-      <th>Tipo</th>
-      <th></th>
+      <th style="color: #4F6F57;">Asignado A</th>
+      <th style="color: #4F6F57;">Ruta</th>
+      <th style="color: #4F6F57;">Tarea</th>
+      <th style="color: #4F6F57;">Días</th>
+      <th style="color: #4F6F57;">Turno</th>
+      <th style="color: #4F6F57;">Hora</th>
+      <th style="color: #4F6F57;">AC</th>
+      <th style="color: #4F6F57;">Inicio</th>
+      <th style="color: #4F6F57;">Fin</th>
+      <th style="color: #4F6F57;">Tipo</th>
+      <th style="color: #4F6F57;"></th>
     </tr>
   </thead>
   <tbody>
@@ -82,9 +82,9 @@
   (nzOnOk)="createProgram()">
   <form nz-form [formGroup]="programForm" (ngSubmit)="createProgram()">
     <nz-form-item>
-      <nz-form-label>Transportista</nz-form-label>
+      <nz-form-label>Clientes</nz-form-label>
       <nz-form-control>
-        <nz-select formControlName="vendorId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+        <nz-select formControlName="vendorId" nzAllowClear nzPlaceHolder="Selecciona la estación"
           (ngModelChange)="onVendorSelected($event, 'vendorName')">
           <nz-option *ngFor="let o of vendorsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
               nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
@@ -202,7 +202,7 @@
         <nz-form-item>
           <nz-form-label>Inicia en</nz-form-label>
           <nz-form-control>
-            <nz-select formControlName="stopBeginId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+            <nz-select formControlName="stopBeginId" nzAllowClear nzPlaceHolder="Selecciona la estación"
               (ngModelChange)="onStopPointSelected($event, 'stopBeginName','stopBeginHourT')">
               <nz-option *ngFor="let o of stopPointsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
                   nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
@@ -214,7 +214,7 @@
         <nz-form-item>
           <nz-form-label>Termina en</nz-form-label>
           <nz-form-control>
-            <nz-select formControlName="stopEndId" nzAllowClear nzPlaceHolder="Selecciona la parada"
+            <nz-select formControlName="stopEndId" nzAllowClear nzPlaceHolder="Selecciona la estación"
               (ngModelChange)="onStopPointSelected($event, 'stopEndName','stopEndHourT')">
               <nz-option *ngFor="let o of stopPointsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
                   nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>

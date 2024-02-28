@@ -3,6 +3,7 @@ import { format, fromUnixTime } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
 import * as firebase from 'firebase/app';
 
+
 export interface IActivityLog {
     actualKey?: string;
     code?: string;
@@ -31,6 +32,13 @@ export interface IActivityLog {
     driverName?:string;
     customerId?:string;
     id?:string;
+  }
+
+  export interface IFileInfo {
+    folder?: string;
+    fileName?: string;
+    fileUrl?: string;
+    creation_date?: Date;
   }
 
   export var ColumnDefs = [
@@ -64,14 +72,14 @@ export interface IActivityLog {
         return format( fromUnixTime(params.node.data.time.seconds), 'HH:mm a', { locale: esLocale })
       }
   } },
-  { headerName: 'Cliente',width:170, field: 'customerName',filter: true, sortable: true, enableCellChangeFlash:true },
+  { headerName: 'Empresa',width:170, field: 'customerName',filter: true, sortable: true, enableCellChangeFlash:true },
   { headerName: 'Ruta', width:130,field: 'routeName', filter: true, sortable: true, enableCellChangeFlash:true },
   { headerName: 'Programa / Turno',width:175, field: 'round', valueGetter: (params) => {
     if(params && params.node) {     
       return  params.node.data.round + " / " + params.node.data.program
     }
   }},
-  { headerName: 'Conductor', width:210,field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
+  { headerName: 'PR', width:210,field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
   { headerName: 'Vehículo',width:120, field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
   { headerName: 'Inició', width:115, field: 'startedAt',  
   valueGetter: (params) => {
@@ -95,7 +103,7 @@ export interface IActivityLog {
   }}
  ];
  export var LiveAsignColumnDef: (ColDef)[] =[
-  { headerName: 'Cliente', field: 'customerName',  headerCheckboxSelection: true, 
+  { headerName: 'Empresa', field: 'customerName',  headerCheckboxSelection: true, 
   headerCheckboxSelectionFilteredOnly: true, filter: true, checkboxSelection: true, sortable: true, enableRowGroup: true },
    { headerName: 'Ruta', field: 'routeName',filter: true, sortable: true,  enableCellChangeFlash:true },
   { headerName: 'Inicia', field: 'stopBeginHour', sortable: true, filter: true
@@ -106,14 +114,41 @@ export interface IActivityLog {
     }
   }},
   { headerName: 'Tipo', field: 'type', sortable: true, enableValue: true, enableCellChangeFlash:true },
-  { headerName: 'Conductor', field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
+  { headerName: 'PR', field: 'driver', filter: true, sortable: true, enableCellChangeFlash:true },
   { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true }
+ ];
+ export var QualityColumnDef: (ColDef)[] =[
+  { headerName: '--',width:90, enableRowGroup: true, sortable: true,
+  resizable: true, cellStyle: {color: 'blue'}, field: 'editMode',pinned: 'left', enableCellChangeFlash:true 
+  ,valueGetter: (params) => {
+    if(params && params.node) {     
+      return  "Detalle"
+    } }},
+   /*  { headerName: '--',width:90, sortable: true,
+    resizable: true,enableRowGroup: true, cellStyle: {color: 'blue'}, field: 'editMode',pinned: 'left', enableCellChangeFlash:true 
+  ,valueGetter: (params) => {
+    if(params && params.node) {     
+      return  "Borrar"
+    } }}, */
+   { headerName: 'Folder',  enableRowGroup: true,field: 'folder',filter: true, sortable: true,  enableCellChangeFlash:true },
+  { headerName: 'Nombre', enableRowGroup: true, field: 'fileName', sortable: true, filter: true} //,
+/*     { headerName: 'Fecha', field: 'creation_date',
+    valueGetter: (params) => {
+      if (params.node.data.creation_date != undefined) {
+        console.log(params.node.data.creation_date);
+        return "--"
+      }
+     
+       if(params && params.node && params.node.data.creation_date) {
+        return format( fromUnixTime(params.node.data.creation_date.seconds), 'MM/dd/yyyy HH:mm', { locale: esLocale })
+      } 
+  }} */
  ];
 
   export var LiveProgramColumnDefs = [
-    { headerName: 'Conductor', field: 'driver', sortable: true, enableCellChangeFlash:true },
+    { headerName: 'PR', field: 'driver', sortable: true, enableCellChangeFlash:true },
     { headerName: 'Vehículo', field: 'vehicleName', sortable: true, enableCellChangeFlash:true },
-    { headerName: 'Cliente', field: 'customerName', sortable: true, enableRowGroup: true },
+    { headerName: 'Empresa', field: 'customerName', sortable: true, enableRowGroup: true },
     { headerName: 'Fecha Inicio', field: 'startAt',
       valueGetter: (params) => {
         if(params && params.node && params.node.data.startAt) {

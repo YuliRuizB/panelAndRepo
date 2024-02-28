@@ -202,6 +202,10 @@ export interface IBoardingPass {
   isOpenpay?: boolean;
   paidApp?: string;
   id?: string;
+  amountPayment?:string;
+  typePayment?:string;
+  payment?:string; 
+  baja?:boolean;
 }
 
 export interface ICredential {

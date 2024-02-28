@@ -1,9 +1,11 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { map } from 'rxjs/operators';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-list',
@@ -16,13 +18,35 @@ export class ListComponent implements OnInit {
   newProject: boolean = false;
   vendorList: IVendor[] = [];
   objectForm: FormGroup;
+  infoLoad: any = [];
+  userlevelAccess:string;
+ user: any;
 
-  constructor(private modalService: NzModalService, private vendorService: VendorService, private fb: FormBuilder) { }
+  constructor(private modalService: NzModalService,
+    private vendorService: VendorService, 
+    private messageService: NzMessageService,
+    private rolService: RolService,
+      public authService: AuthenticationService,
+    private fb: FormBuilder) { 
+      this.authService.user.subscribe((user) => {
+        this.user = user;
+        if (this.user.rolId != undefined) { // get rol assigned               
+            this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+                this.infoLoad = item;
+                this.userlevelAccess = this.infoLoad.optionAccessLavel;                 
+            });
+        }
+    });
+
+    }
 
   ngOnInit(): void {
     this.getSubscriptions();
     this.createForm();
   }
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+}
 
   createForm() {
     this.objectForm = this.fb.group({
@@ -53,11 +77,11 @@ export class ListComponent implements OnInit {
 
   showNewProject(newProjectContent: TemplateRef<{}>) {
     const modal = this.modalService.create({
-      nzTitle: 'Nuevo Transportista',
+      nzTitle: 'Nuevo Cliente',
       nzContent: newProjectContent,
       nzFooter: [
         {
-          label: 'Crear Transportista',
+          label: 'Crear Cliente',
           type: 'primary',
           disabled: () => {
             return !this.objectForm.valid;
@@ -91,7 +115,13 @@ export class ListComponent implements OnInit {
 
   submitForm() {
     if(this.objectForm.valid) {
-      this.vendorService.createVendor(this.objectForm.value);
+      if (this.userlevelAccess != "3") {
+        this.vendorService.createVendor(this.objectForm.value);
+      } else {
+        this.sendMessage('error', "El usuario no tiene permisos para crear datos, favor de contactar al administrador.");
+      }
+      
+    
     }
   }
 

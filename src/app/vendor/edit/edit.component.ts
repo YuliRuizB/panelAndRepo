@@ -7,6 +7,9 @@ import { map, takeWhile, debounceTime, finalize } from 'rxjs/operators';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { ColumnController } from 'ag-grid-community';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
   selector: 'app-edit',
@@ -39,6 +42,9 @@ export class EditComponent implements OnInit {
   UploadedFileURL: Observable<string>;
   //Uploaded Image List
   images: Observable<any[]>;
+  infoLoad: any = [];
+  userlevelAccess: string;
+  user: any;
 
   constructor(
     private fb: FormBuilder,
@@ -46,9 +52,27 @@ export class EditComponent implements OnInit {
     private vendorService: VendorService,
     private modalService: NzModalService,
     private message: NzMessageService,
+    public authService: AuthenticationService,
+    private rolService: RolService,
     private bucketStorage: AngularFireStorage
   ) {
+
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
+    });
+
   }
+
+  sendMessage(type: string, message: string): void {
+    this.message.create(type, message);
+  }
+
 
   ngOnInit() {
     this.objectSubscription = this.route.params.subscribe(params => {
@@ -75,7 +99,13 @@ export class EditComponent implements OnInit {
       takeWhile(() => this.autosave)
     ).subscribe((values) => {
       if (this.objectForm.valid) {
-        this.vendorService.updateVendor(this.recordId, this.objectForm.value);
+
+        if (this.userlevelAccess != "3") {
+          this.vendorService.updateVendor(this.recordId, this.objectForm.value);
+
+        } else {
+          this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+        }
       }
     })
   }
@@ -84,29 +114,29 @@ export class EditComponent implements OnInit {
     this.objectForm = this.fb.group({
       active: ['', [Validators.required]],
       address: this.fb.group({
-        street: ['', [Validators.required]],
-        number: ['', [Validators.required]],
-        address2: ['', [Validators.required]],
-        address3: ['', [Validators.required]],
-        city: ['', [Validators.required]],
-        state: ['', [Validators.required]],
-        zipcode: ['', [Validators.required]],
+        street: [''],// [Validators.required]],
+        number: [''],// [Validators.required]],
+        address2: [''],// [Validators.required]],
+        address3: [''],// [Validators.required]],
+        city: [''],// [Validators.required]],
+        state: [''],// [Validators.required]],
+        zipcode: [''],// [Validators.required]],
       }),
       name: ['', [Validators.required]],
-      avatar: ['', [Validators.required]],
-      deleted: ['', [Validators.required]],
-      legalName: ['', [Validators.required]],
-      primaryContact: ['', [Validators.required]],
-      rfc: ['', [Validators.required]],
-      status: ['', [Validators.required]],
-      website: ['', [Validators.required]],
+      avatar: [''],// [Validators.required]],
+      deleted: [''],// [Validators.required]],
+      legalName: [''],// [Validators.required]],
+      primaryContact: [''],// [Validators.required]],
+      rfc: [''],// [Validators.required]],
+      status: [''],// [Validators.required]],
+      website: [''],// [Validators.required]],
       primaryEmail: ['', [Validators.required]],
       primaryPhone: ['', [Validators.required]]
     })
   }
 
   patchForm(record: IVendor) {
-    this.objectForm.patchValue({...record})
+    this.objectForm.patchValue({ ...record })
   }
 
   getSubscriptions() {
@@ -128,10 +158,14 @@ export class EditComponent implements OnInit {
       this.objectForm.controls[i].updateValueAndValidity();
     }
 
-    if(this.objectForm.valid) {
-      this.vendorService.updateVendor(this.recordId, this.objectForm.value)
+    if (this.objectForm.valid) {
+      if (this.userlevelAccess != "3") {
+        this.vendorService.updateVendor(this.recordId, this.objectForm.value);
+      } else {
+        this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+      }
     } else {
-      
+
     }
   }
 
@@ -179,10 +213,14 @@ export class EditComponent implements OnInit {
   }
 
   async updatePhotoURL(url) {
-    
+
     console.log("started updatePhotoURL with url: ", url);
     this.objectForm.controls['avatar'].patchValue(url);
-    this.vendorService.updateVendorAvatar(this.recordId, url)
-  }
 
+    if (this.userlevelAccess != "3") {
+      this.vendorService.updateVendorAvatar(this.recordId, url);
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }
+  }
 }

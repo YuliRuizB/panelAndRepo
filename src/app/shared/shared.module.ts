@@ -36,6 +36,7 @@ import { SharedVendorUsersListComponent } from './components/vendor/system/users
 import { SharedUsersQRCodesComponent } from './components/users/boardingPass/qrcodes/qrcodes.component';
 import { SharedUsersCredentialsQRCodesComponent } from './components/users/credentials/qrcodes/qrcodes.component';
 import { MessageCenterComponent } from './components/vendor/messageCenter/messageCenter.component';
+import { PromotionsComponent } from './components/promotions/promotions/promotions.component';
 
 @NgModule({ 
     exports: [
@@ -51,6 +52,7 @@ import { MessageCenterComponent } from './components/vendor/messageCenter/messag
         AgGridModule,
         SharedUsersListComponent,
         SharedProductsListComponent,
+        PromotionsComponent,
         SharedRoutesListComponent,
         SharedStopPointsListComponent,
         SharedStopPointsEditComponent,
@@ -88,6 +90,7 @@ import { MessageCenterComponent } from './components/vendor/messageCenter/messag
         CurrencyPipe,
         SharedUsersListComponent,
         SharedProductsListComponent,
+        PromotionsComponent,
         SharedRoutesListComponent,
         SharedStopPointsListComponent,
         SharedStopPointsEditComponent,

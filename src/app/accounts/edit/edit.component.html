@@ -1,6 +1,6 @@
 <nz-page-header nzBackIcon class="page-header">
   <nz-page-header-title>{{ record.name }}</nz-page-header-title>
-  <nz-page-header-subtitle>Detalles del cliente</nz-page-header-subtitle>
+  <nz-page-header-subtitle>Detalles de la empresa</nz-page-header-subtitle>
   <nz-page-header-content>
 
     <nz-tabset [nzSelectedIndex]="selectedIndex" class="page-header-tab">
@@ -47,6 +47,11 @@
       <nz-tab nzTitle="Productos y Servicios">
         <ng-template nz-tab>
           <app-shared-products-list [accountId]="recordId"></app-shared-products-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Promociones">
+        <ng-template nz-tab>
+          <app-promotions [accountId]="recordId"></app-promotions>
         </ng-template>
       </nz-tab>
     </nz-tabset>

@@ -11,8 +11,11 @@ export class AccountsService {
   constructor(private afs: AngularFirestore) { }
 
   getAccounts() {
-    const accounts = this.afs.collection('customers');
-    return accounts.snapshotChanges();
+    const accounts = this.afs.collection('customers', ref => 
+    ref.orderBy('active', 'desc').orderBy('name', 'desc')
+  );
+  return accounts.snapshotChanges();
+  
   }
 
   getAccount(accountId: string) {

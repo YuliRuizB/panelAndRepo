@@ -2,7 +2,7 @@
   <form nz-form nzLayout="vertical" [formGroup]="objectForm" (ngSubmit)="onSubmit()">
     <nz-card nzType="inner" nzTitle="Información Básica" [nzExtra]="basicTpl" [nzLoading]="loading">
       <div class="media align-items-center">
-        <nz-avatar [nzSize]="80" nzIcon="user" [nzText]="record.name" nzSize="large"
+        <nz-avatar [nzSize]="80" nzIcon="user" style="background-color: white ;  color: #4F6F57;" [nzText]="record.name" nzSize="large"
           nzSrc="http://themenate.com/applicator/dist/assets/images/avatars/thumb-13.jpg"></nz-avatar>
         <div class="m-l-20 m-r-20">
           <h5 class="m-b-5 font-size-18" *ngIf="!!record">{{ record.name }}</h5>
@@ -13,7 +13,7 @@
           </p>
         </div>
         <nz-upload nzName="avatar" [nzShowUploadList]="false" (nzChange)="handleChange($event)">
-          <button nz-button nzType="primary" nzGhost>
+          <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" nzGhost>
             <span>Cambiar imágen</span>
           </button>
         </nz-upload>
@@ -25,7 +25,7 @@
             <nz-form-label nzFor="name">Nombre</nz-form-label>
             <nz-form-control>
               <input nz-input formControlName="name" type="text">
-              <nz-form-explain *ngIf="objectForm.get('name').dirty && objectForm.get('name').errors">Nombre del cliente
+              <nz-form-explain *ngIf="objectForm.get('name').dirty && objectForm.get('name').errors">Nombre de la empresa
                 es obligatorio!</nz-form-explain>
             </nz-form-control>
           </nz-form-item>
@@ -47,7 +47,7 @@
             <nz-form-label nzFor="rfc">RFC</nz-form-label>
             <nz-form-control>
               <input nz-input formControlName="rfc" type="text">
-              <nz-form-explain *ngIf="objectForm.get('rfc').dirty && objectForm.get('rfc').errors">Nombre del cliente es
+              <nz-form-explain *ngIf="objectForm.get('rfc').dirty && objectForm.get('rfc').errors">Nombre de la empresa es
                 obligatorio!</nz-form-explain>
             </nz-form-control>
           </nz-form-item>
@@ -163,7 +163,7 @@
             </nz-form-label>
             <nz-form-control [nzSpan]="12">
               <nz-select name="select-error" formControlName="paymentResponsible">
-                <nz-option nzValue="0" nzLabel="Cliente"></nz-option>
+                <nz-option nzValue="0" nzLabel="Empresa"></nz-option>
                 <nz-option nzValue="1" nzLabel="Usuario"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -175,9 +175,9 @@
           <nz-form-item>
             <nz-form-label nzFor="forceStopPoints" nzRequired>
               <span>
-                Obligatorio subir en la parada definida
+                Obligatorio subir en la estación definida
                 <i nz-icon nz-tooltip
-                  nzTooltipTitle="¿Es obligatorio que el usuario suba exclusivamente en la parada seleccionada?"
+                  nzTooltipTitle="¿Es obligatorio que el usuario suba exclusivamente en la estación seleccionada?"
                   nzType="question-circle" nzTheme="outline"></i>
               </span>
             </nz-form-label>

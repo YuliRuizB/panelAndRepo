@@ -22,16 +22,16 @@
             <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
           </label>
         </nz-radio-group>
-        <button nz-button nzType="primary" (click)="showNewProject(newProjectContent)">
+        <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showNewProject(newProjectContent)">
           <i nz-icon nzType="plus"></i>
-          <span>Nuevo Transportista</span>
+          <span>Nuevo Cliente</span>
         </button>
         <ng-template #newProjectContent>
           <form nz-form nzLayout="vertical" [formGroup]="objectForm">
             <nz-form-item>
               <nz-form-label>Nombre</nz-form-label>
               <nz-form-control>
-                <input type="text" formControlName="name" nz-input placeholder="Nombre con el que identifica al transportista">
+                <input type="text" formControlName="name" nz-input placeholder="Nombre con el que identifica al Cliente">
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
@@ -84,7 +84,7 @@
       <nz-card>
         <div class="d-flex justify-content-between">
           <div class="media">
-            <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]="item.avatar"></nz-avatar>
+            <nz-avatar [nzSize]="40" style="background-color: white ;  color: #4F6F57;" nzShape="square" [nzSrc]="item.avatar"></nz-avatar>
             <div class="m-l-10">
               <h5 class="m-b-0">{{ item.name }}</h5>
               <span class="text-muted font-size-13">{{ item.primaryPhone }}</span>
@@ -135,21 +135,21 @@
     <nz-table #listViewTable [nzData]="vendorList">
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Razón Social</th>
-          <th>Sitio web</th>
-          <th>Contacto</th>
-          <th>Correo</th>
-          <th>Teléfono</th>
+          <th style="color: #4F6F57;">Nombre</th>
+          <th style="color: #4F6F57;">Razón Social</th>
+          <th style="color: #4F6F57;">Sitio web</th>
+          <th style="color: #4F6F57;">Contacto</th>
+          <th style="color: #4F6F57;">Correo</th>
+          <th style="color: #4F6F57;">Teléfono</th>
           <th class="text-center">Status</th>
-          <th></th>
+          <th style="color: #4F6F57;"></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of listViewTable.data">
           <td>
             <div class="media align-items-center">
-              <nz-avatar nzShape="square" [nzSrc]="item.avatar"></nz-avatar>
+              <nz-avatar nzShape="square"  style="background-color: white ;  color: #4F6F57;" [nzSrc]="item.avatar"></nz-avatar>
               <div class="m-l-10">
                 <h5 class="m-b-0">{{item.name}}</h5>
               </div>

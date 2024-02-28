@@ -1,57 +1,59 @@
-<perfect-scrollbar class="side-nav" sideNav>
+<perfect-scrollbar class="side-nav" style=" background-color: white ;" sideNav>
     <ul class="ant-menu ant-menu-root ant-menu-inline side-nav-menu" 
         [ngClass]="{
             'ant-menu-inline-collapsed': isFolded,
             'ant-menu-dark' : isSideNavDark
         }"
-    >   
-        <div *ngFor="let item of menuItems">
+        style=" background-color: white ;">   
+        <div *ngFor="let item of menuItems" style=" background-color: white ; color: black;">
             <li [ngClass]="item.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'"
-                *ngIf="checkValidity(item.roles)" 
+                *ngIf="checkValidity(item.idRol)" 
                 [routerLinkActive]="item.submenu.length > 0 ? 'ant-menu-submenu-open' : 'ant-menu-item-selected'"
-                [routerLinkActiveOptions]="{exact: true}">
-                <a href="javascript:void(0);" class="ant-menu-submenu-title" *ngIf="item.submenu.length > 0">
+                [routerLinkActiveOptions]="{exact: true}" style=" background-color: white ;"> 
+                <a style=" color: #4F6F57;"  href="javascript:void(0);" class="ant-menu-submenu-title" *ngIf="item.submenu.length > 0">
                     <i nz-icon *ngIf="item.iconType == 'nzIcon'" [nzType]="item.icon" [nzTheme]="item.iconTheme"></i>
                     <i *ngIf="item.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[item.iconTheme , item.icon]"></i>
                     <span>{{item.title}}</span>
                     <i class="ant-menu-submenu-arrow"></i>
                 </a>
-                <a [routerLink]="item.path" *ngIf="item.submenu.length <= 0">
+                <a style=" color: #4F6F57; background-color: white ;"  [routerLink]="item.path" *ngIf="item.submenu.length <= 0">
                     <i nz-icon *ngIf="item.iconType == 'nzIcon'" [nzType]="item.icon" [nzTheme]="item.iconTheme"></i>
                     <i nz-icon *ngIf="item.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[item.iconTheme , item.icon]"></i>
                     <span>{{item.title}}</span>
                 </a>
 
                 <!-- Second Level -->
-                <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="item.submenu.length > 0">
-                    <li [ngClass]="subItem.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'" 
-                        *ngFor="let subItem of item.submenu" 
+                <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu"  style=" background-color: white ;" *ngIf="item.submenu.length > 0">
+                    <div  *ngFor="let subItem of item.submenu" style=" background-color: white ;">
+
+                    <li [ngClass]="subItem.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'"   
+                        *ngIf="checkValiditySub(subItem.idRol)"       
                         [routerLinkActive]="subItem.submenu.length > 0 ? 'ant-menu-submenu-open' : 'ant-menu-item-selected'"
-                        [routerLinkActiveOptions]="{exact: true}">
-                        <a href="javascript:void(0);" class="ant-menu-submenu-title p-l-50" *ngIf="subItem.submenu.length > 0">
+                        [routerLinkActiveOptions]="{exact: true}" style=" background-color: white ;">
+                        <a  style=" color: #4F6F57;"  href="javascript:void(0);" class="ant-menu-submenu-title p-l-50" *ngIf="subItem.submenu.length > 0">
                             <i nz-icon *ngIf="subItem.iconType == 'nzIcon'" [nzType]="subItem.icon" [nzTheme]="subItem.iconTheme"></i>
                             <i nz-icon *ngIf="subItem.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[subItem.iconTheme , subItem.icon]"></i>
-                            <span>{{subItem.title}}</span>
+                            <span> {{subItem.title}}</span>
                             <i class="ant-menu-submenu-arrow"></i>
                         </a>
-                        <a [routerLink]="subItem.path" class="p-l-30" *ngIf="subItem.submenu.length <= 0">
+                        <a  style=" color: #4F6F57;"  [routerLink]="subItem.path" class="p-l-30" *ngIf="subItem.submenu.length <= 0">
                             <i nz-icon *ngIf="subItem.iconType == 'nzIcon'" [nzType]="subItem.icon" [nzTheme]="subItem.iconTheme"></i>
                             <i nz-icon *ngIf="subItem.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[subItem.iconTheme , subItem.icon]"></i>
-                            <span>{{subItem.title}}</span>
+                            <span> {{subItem.title}}</span>
                         </a>
 
                         <!-- Third Level -->
-                        <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="subItem.submenu.length > 0">
+                        <ul class="ant-menu ant-menu-inline ant-menu-sub dropdown-menu" *ngIf="subItem.submenu.length > 0" style=" background-color: white ;">
                             <li  [ngClass]="subItem.submenu.length > 0?'ant-menu-submenu ant-menu-submenu-inline':'ant-menu-item'" 
                                 *ngFor="let subItem of subItem.submenu" routerLinkActive="ant-menu-item-selected" 
-                                [routerLinkActiveOptions]="{exact: true}">
-                                <a href="javascript:void(0);" class="ant-menu-submenu-title p-l-50" *ngIf="subItem.submenu.length > 0">
+                                [routerLinkActiveOptions]="{exact: true}" style=" background-color: white ;">
+                                <a  style=" color: #4F6F57;"  href="javascript:void(0);" class="ant-menu-submenu-title p-l-50" *ngIf="subItem.submenu.length > 0">
                                     <i nz-icon *ngIf="subItem.iconType == 'nzIcon'" [nzType]="subItem.icon" [nzTheme]="subItem.iconTheme"></i>
                                     <i nz-icon *ngIf="subItem.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[subItem.iconTheme , subItem.icon]"></i>
                                     <span>{{subItem.title}}</span>
                                     <i class="ant-menu-submenu-arrow"></i>
                                 </a>
-                                <a [routerLink]="subItem.path" class="p-l-50" *ngIf="subItem.submenu.length <= 0">
+                                <a  style=" color: #4F6F57;" [routerLink]="subItem.path" class="p-l-50" *ngIf="subItem.submenu.length <= 0">
                                     <i nz-icon *ngIf="subItem.iconType == 'nzIcon'" [nzType]="subItem.icon" [nzTheme]="subItem.iconTheme"></i>
                                     <i nz-icon *ngIf="subItem.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[subItem.iconTheme , subItem.icon]"></i>
                                     <span>{{subItem.title}}</span>
@@ -59,6 +61,7 @@
                             </li>
                         </ul>
                     </li>
+                    </div>
                 </ul>
             </li>
         </div>

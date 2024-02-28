@@ -83,10 +83,12 @@ export class ProgramService {
           type: a.type,
           time: a.time,
           vehicleId: data.vehicleId,
-          vehicleName: data.vehicleName
+          vehicleName: data.vehicleName,
+          startAtFormat: startAt
         }
       })
     ).subscribe( assignment => {
+      console.log("assignment===========================================");
       console.log(assignment);
       const programRef = this.afs.collection('customers').doc(data.customerId).collection('program');
       return programRef.add(assignment)

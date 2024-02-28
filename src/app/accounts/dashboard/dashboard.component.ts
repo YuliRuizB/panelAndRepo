@@ -6,6 +6,7 @@ import { SummarizeService } from 'src/app/shared/services/summarize.service';
 import { Subscription } from 'rxjs';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,20 +27,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isDeleteVisible = false;
   isOkLoading = false;
   validateForm: FormGroup;
+  infoLoad: any = [];
+  userlevelAccess:string;
 
   constructor(
     private accountsService: AccountsService, 
     private authService: AuthenticationService,
     private summarizedService: SummarizeService,
-    private message: NzMessageService,
+    private messageService: NzMessageService,
     public modalService: NzModalService,
+    public rolService: RolService,
     private fb: FormBuilder
     ) { }
 
   ngOnInit() {
-    this.userSubscription = this.authService.getUser().subscribe( (user) => {
-      console.log(user);
+    this.userSubscription = this.authService.getUser().subscribe( (user) => {      
       this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+            this.infoLoad = item;
+            this.userlevelAccess = this.infoLoad.optionAccessLavel;                 
+        });
+    }
     });
     this.getSubscriptions();
 
@@ -69,12 +78,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     
-    const submitForm = this.accountsService.setAccount(this.validateForm.value);
-    submitForm.then( (result) => {
-      console.log(result);
-      this.isVisible = false;
-      this.isOkLoading = false;
-    }).catch( err => console.log(err));
+    if (this.userlevelAccess != "3") {
+      const submitForm = this.accountsService.setAccount(this.validateForm.value);
+      submitForm.then( (result) => {
+        console.log(result);
+        this.isVisible = false;
+        this.isOkLoading = false;
+      }).catch( err => console.log(err));
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }   
 
   }
 
@@ -84,11 +97,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   deleteAccount(account: any) {
     this.isOkLoading = true;
-    const deleteAccount = this.accountsService.deleteAccount(account.id);
-    deleteAccount.then( (result) => {
-      console.log(result);
-      this.isOkLoading = false;
-    }).catch( err => console.log(err));
+    if (this.userlevelAccess == "1") {
+      const deleteAccount = this.accountsService.deleteAccount(account.id);
+      deleteAccount.then( (result) => {
+        console.log(result);
+        this.isOkLoading = false;
+      }).catch( err => console.log(err));
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+    
+   
   }
 
   getSubscriptions() {
@@ -127,7 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   createBasicMessage(recordCount: number): void {
-    this.message.success(`Se encontraron ${recordCount} registros.`, {
+    this.messageService.success(`Se encontraron ${recordCount} registros.`, {
       nzDuration: 3000
     });
   }
@@ -139,5 +158,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   handleCancel(): void {
     this.isVisible = false;
   }
-
+  
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+}
 }

@@ -6,6 +6,8 @@ import { ThemeConstantService } from '../shared/services/theme-constant.service'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppsService } from '../shared/services/apps.service';
 import { GlobalUsersListComponent } from './users/list/list.component';
+import { RolesComponent } from './roles/roles-dashboard.component';
+import { MyProfileComponent } from './my-profile/my-profile-dashboard.component';
 
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ import { GlobalUsersListComponent } from './users/list/list.component';
   ],
   exports: [],
   declarations: [
-    GlobalUsersListComponent
+    GlobalUsersListComponent,
+    RolesComponent,
+    MyProfileComponent
   ],
   providers: [
     ThemeConstantService,

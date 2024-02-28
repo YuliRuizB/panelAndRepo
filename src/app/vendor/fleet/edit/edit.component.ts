@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { UploadFile } from 'ng-zorro-antd';
+import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { map, takeWhile, debounceTime, finalize, takeUntil, tap } from 'rxjs/operators';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { IVehicle } from 'src/app/shared/interfaces/vehicle.type';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { DriversService } from 'src/app/shared/services/drivers.service';
+import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
   selector: 'app-edit',
@@ -45,12 +46,16 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
   images: Observable<any[]>;
   user: any;
   stopSubscriptions$: Subject<boolean> = new Subject();
+  infoLoad: any = [];
+  userlevelAccess: string;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private vehicleService: VehiclesService,
     private bucketStorage: AngularFireStorage,
+    private messageService: NzMessageService,
+    private rolService: RolService,
     private authService: AuthenticationService,
     private driversService: DriversService
   ) {
@@ -61,13 +66,19 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
       takeUntil(this.stopSubscriptions$)
     ).subscribe(user => {
       this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
     });
 
     this.objectSubscription = this.route.params.pipe(
       takeUntil(this.stopSubscriptions$)
     ).subscribe(params => {
       this.recordId = params['vehicleid']; // (+) converts string 'id' to a number
-      this.vendorId = params['accountid']; 
+      this.vendorId = params['accountid'];
       this.bucketPath += this.recordId;
       this.getSubscriptions(this.vendorId);
     });
@@ -82,6 +93,9 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     this.autosave = false;
   }
 
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+  }
   autoSave() {
     this.objectForm.statusChanges.pipe(
       debounceTime(2000),
@@ -89,21 +103,26 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     ).subscribe((values) => {
       if (this.objectForm.valid) {
         console.log('update values', values);
-        this.vehicleService.updateVehicle(this.vendorId, this.recordId, this.objectForm.value);
+        if (this.userlevelAccess != "3") {
+          this.vehicleService.updateVehicle(this.vendorId, this.recordId, this.objectForm.value);
+        } else {
+          this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+        }
+
       }
     })
   }
 
   createForm() {
     this.objectForm = this.fb.group({
-      active: ['', [Validators.required]],
-      name: ['', [Validators.required]],
+      active: [''],// [Validators.required]],
+      name: [''],// [Validators.required]],
       ac: [false],
       avatar: [''],
       carMaker: [''],
       chassis: [''],
       deviceId: [''],
-      doors: ['', [Validators.required]],
+      doors: [''],// [Validators.required]],
       driver: [''],
       driverId: [''],
       emissions: [''],
@@ -117,9 +136,9 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
       insuranceId: [''],
       insuranceAgentPhone: [''],
       lastService: [''],
-      licensePlate: ['', [Validators.required]],
+      licensePlate: [''], //[Validators.required]],
       model: [''],
-      seats: ['', [Validators.required]],
+      seats: [''],// [Validators.required]],
       type: [''],
       vendor: [''],
       year: [''],
@@ -191,10 +210,15 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
       this.objectForm.controls[i].updateValueAndValidity();
     }
 
-    if(this.objectForm.valid) {
-      this.vehicleService.updateVehicle(this.vendorId, this.recordId, this.objectForm.value);
+    if (this.objectForm.valid) {
+      if (this.userlevelAccess != "3") {
+        this.vehicleService.updateVehicle(this.vendorId, this.recordId, this.objectForm.value);
+      } else {
+        this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+      }
+
     } else {
-      
+
     }
   }
 
@@ -242,10 +266,15 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
   }
 
   async updatePhotoURL(url) {
-    
+
     console.log("started updatePhotoURL with url: ", url);
     this.objectForm.controls['avatar'].patchValue(url);
-    this.vehicleService.updateVehicleAvatar(this.vendorId, this.recordId, url);
+    if (this.userlevelAccess != "3") {
+      this.vehicleService.updateVehicleAvatar(this.vendorId, this.recordId, url);
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }
+
   }
 
 }

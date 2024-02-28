@@ -15,7 +15,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthenticationService,
     public notification: NzNotificationService
-  ) { }
+  ) { 
+  }
 
   submitForm(): void {
     // tslint:disable-next-line: forin
@@ -28,7 +29,7 @@ export class LoginComponent implements OnInit {
       this.authService.signIn( this.loginForm.get('userName').value, this.loginForm.get('password').value);
     } else {
       this.notification.create('error', '¡Oops...!', 'Escriba por favor sus datos para tener acceso');
-    }
+    } 
   }
 
 
@@ -36,6 +37,6 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       userName: [null, [Validators.required]],
       password: [null, [Validators.required]]
-    });
+    }); 
   }
 }

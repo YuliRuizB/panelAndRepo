@@ -9,7 +9,7 @@
         </div>
         <div class="d-flex align-items-center m-l-10">
           <h2 class="m-b-0 m-r-5">{{ summarized.currentAccounts | number: '1.0-2' }}</h2>
-          <span class="text-gray">Clientes</span>
+          <span class="text-gray">Empresas</span>
         </div>
       </div>
       <div class="media align-items-center m-r-40 m-v-5">
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="media align-items-center m-v-5 m-l-10">
-        <button nz-button nzType="primary" (click)="showModal()"><i nz-icon nzType="plus-circle"></i>Nuevo cliente</button>
+        <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;"  (click)="showModal()"><i nz-icon nzType="plus-circle"></i>Nueva Empresa</button>
       </div>
     </div>
   </nz-page-header-extra>
@@ -41,9 +41,9 @@
         <ul>
           <li nz-menu-group nzTitle="Mostrar por">
             <ul>
-              <li nz-menu-item>Clientes</li>
+              <li nz-menu-item>Empresas</li>
               <li nz-menu-item>Rutas</li>
-              <li nz-menu-item>Transportista</li>
+              <li nz-menu-item>Clientes</li>
             </ul>
           </li>
         </ul>
@@ -58,31 +58,22 @@
           </li>
         </ul>
       </li>
-    
-      <li nz-menu-item [routerLink]="['/customers/list']" routerLinkActive="router-link-active">
-        <i nz-icon nzType="user"></i>
-        Usuarios
-      </li>
-      <li nz-menu-item>
-        <i nz-icon nzType="book"></i>
-        Transacciones
-      </li>
     </ul>
   </nz-page-header-footer>
 </nz-page-header>
 <br />
 <nz-empty *ngIf="accountsList.length === 0"></nz-empty>
 <div nz-row [nzGutter]="8">
-  <div nz-col nzSpan="8" *ngFor="let account of accountsList">
+  <div nz-col nzSpan="6" *ngFor="let account of accountsList">
     <nz-card [nzActions]="[actionSetting, actionEdit, actionEllipsis]">
       <nz-skeleton [nzActive]="true" [nzLoading]="loading" [nzAvatar]="{ size: 'large' }">
-        <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="account.name" [nzDescription]="account.address">
+        <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="account.name" >
         </nz-card-meta>
       </nz-skeleton>
     </nz-card>
     <ng-template #avatarTemplate>
       <nz-avatar
-      [ngStyle]="{ 'background-color': '#3f87f5' }"
+      [ngStyle]=""
       [nzText]="account.name"
       nzSize="large"
       style="vertical-align: middle;"
@@ -112,6 +103,10 @@
             <i nz-icon nzType="shopping"></i>
             Productos y servicios
           </li>
+          <li nz-menu-item [routerLink]="['/accounts/edit', account.id,2]" routerLinkActive="router-link-active">
+            <i nz-icon nzType="shopping"></i>
+            Promociones
+          </li>
           <li nz-menu-item [routerLink]="['/accounts/edit', account.id, 3]" routerLinkActive="router-link-active">
             <i nz-icon nzType="clock-circle"></i>
             Rutas y horarios
@@ -126,7 +121,7 @@
     </ng-template>
   </div>
 </div>
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Nuevo cliente" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()"
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Nueva Empresa" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm()"
   [nzOkLoading]="isOkLoading" nzCancelText="Cancelar" nzOkText="Crear" [nzOkDisabled]="!validateForm.valid"
   nzOkType="primary">
   <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
@@ -140,7 +135,7 @@
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address" nzRequired>
         <span>
           Dirección
-          <i nz-icon nz-tooltip nzTitle="Domicilio completo del cliente" nzType="question-circle" nzTheme="outline"></i>
+          <i nz-icon nz-tooltip nzTitle="Domicilio completo de la Empresa" nzType="question-circle" nzTheme="outline"></i>
         </span>
       </nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ingrese el domicilio!">
@@ -149,7 +144,7 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phoneNumber">Teléfono</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ingrese el teléfono de contacto con el cliente.">
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ingrese el teléfono de contacto con la empresa.">
         <input nz-input formControlName="phoneNumber" id="phoneNumber" />
       </nz-form-control>
     </nz-form-item>

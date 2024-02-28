@@ -1,13 +1,20 @@
 {
   "projects": {
-    "default": "bus2u-dev",
-    "adminbus2u": "bus2u-834e8"
+    "default": "appsAnd",
+    "adminbus2u": "appsand-a02f0"
   },
   "targets": {
     "bus2u-834e8": {
       "hosting": {
         "admin-bus2u-dev": [
           "admin-bus2u-dev"
+        ]
+      }
+    },
+    "appsAnd": {
+      "hosting": {
+        "enlink": [
+          "appsand-a02f0"
         ]
       }
     }

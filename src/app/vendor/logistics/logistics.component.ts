@@ -14,6 +14,8 @@ import { IActivityLog, ColumnDefs, LiveProgramColumnDefs } from 'src/app/logisti
 import { LogisticsService } from 'src/app/logistics/services.service';
 import { GeoJson, FeatureCollection } from 'src/app/logistics/map';
 import { LiveService } from 'src/app/shared/services/live.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 am4core.useTheme(am4themes_animated);
 
@@ -28,6 +30,9 @@ export class LogisticsComponent implements OnInit {
 
   @ViewChild('map', { static: true }) mapElement: ElementRef;
 
+  dateRangeForm: FormGroup;
+  startDate: Date;
+  endDate: Date;
 
   visible = false;
   vMessage = false;
@@ -55,8 +60,8 @@ export class LogisticsComponent implements OnInit {
   rowData: IActivityLog[];
   rowFleetData: any[];
   activityList: IActivityLog[];
-  startDate: Date;
-  endDate: Date;
+  //startDate: Date;
+  //endDate: Date;
 
   private chart: am4charts.XYChart;
   chartData: any;
@@ -65,17 +70,38 @@ export class LogisticsComponent implements OnInit {
 
   constructor(
     private logisticsService: LogisticsService,
+    private notification: NzNotificationService,
+    private fb: FormBuilder,
     private liveService: LiveService,
     private zone: NgZone
   ) {
     this.markers = [] as GeoJson[];
     this.startDate = startOfToday()
     this.endDate = endOfToday();
+
+    this.dateRangeForm = this.fb.group({
+      startDate: [startOfToday()], // Default to the start of today
+      endDate: [endOfToday()]     // Default to the end of today
+    });
+
   }
 
+  onDateRangeChange(): void {
+    // Access the selected start and end dates from the form group
+    this.startDate = this.dateRangeForm.get('startDate').value;
+    this.endDate = this.dateRangeForm.get('endDate').value; 
+    if (this.startDate && this.endDate) {
+     this.loadData();
+    }
+    else {
+      this.notification.create('error', 'Error', 'Se Requiere un rango de fechas');
+    }
+  }
+  
+  
   ngOnInit() {
     this.markers = this.logisticsService.getMarkers(this.startDate, this.endDate);
-    this.loadData();
+   
     this.initializeMap();
   }
 
@@ -88,8 +114,6 @@ export class LogisticsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-
-
     // Add data
     // chart.data = this.chartData;
 
@@ -464,6 +488,8 @@ export class LogisticsComponent implements OnInit {
        //   console.log(result);
           this.rowFleetData = result;
         });
+
+
   }
 
   onGridReady(params) {

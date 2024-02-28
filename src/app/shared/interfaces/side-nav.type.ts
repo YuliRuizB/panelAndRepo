@@ -5,5 +5,6 @@ export interface SideNavInterface {
     iconTheme: "" | "fab" | "far" | "fas" | "fill" | "outline" | "twotone";
     icon: string,
     submenu : SideNavInterface[];
+    idRol?:string;
     roles?: string[];
 }

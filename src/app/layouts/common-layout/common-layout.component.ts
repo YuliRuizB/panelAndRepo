@@ -35,9 +35,9 @@ export class CommonLayoutComponent implements OnInit {
         }
         return null;
       })
-    ).subscribe((data: any) => {
+    ).subscribe((data: any) => {      
       this.contentHeaderDisplay = data;
-    });
+     });
   }
 
   ngOnInit() {
@@ -56,7 +56,8 @@ export class CommonLayoutComponent implements OnInit {
     let label = '', path = '/', display = null;
 
     if (route.routeConfig) {
-      if (route.routeConfig.data) {
+     
+     if (route.routeConfig.data) {
         label = route.routeConfig.data['title'];
         path += route.routeConfig.path;
       }

@@ -1,7 +1,7 @@
-<div class="container-fluid h-100" style="background-image: url('assets/images/others/login-3.png')">
+<div class="container-fluid h-100" style=" background-color: white ; color: black; background-image: url('assets/images/others/login-3.png')">
   <div class="d-flex h-100 p-v-15 flex-column justify-content-between">
     <div class="d-none d-md-flex p-h-40">
-      <img src="assets/images/logo/logo.png" alt="">
+      <img src="assets/images/logo/andlogo.png" alt="">
     </div>
     <div class="container">
       <div class="row align-items-center">
@@ -9,8 +9,8 @@
           <nz-result nzStatus="warning" nzTitle="Verificar la cuenta."
             nzSubTitle="Es indispensable verificar que la cuenta de correo electrónico que registraste sea tuya. Cuando te registraste te enviamos un correo con un link de verificación. Si no te llegó puedes solicitar al sistema que la vuelva a enviar presionando el botón Reenviar Correo. Cuando hayas verificado tu cuenta, presiona el botón Ingresar para que tengas acceso al portal.">
             <div nz-result-extra>
-              <button nz-button nzType="primary" [routerLink]="['/authentication/login']">Ya verifiqué mi cuenta</button>
-              <button nz-button (click)="authService.sendVerificationMail()">Reenviar Correo</button>
+              <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"  [routerLink]="['/authentication/login']">Ya verifiqué mi cuenta</button>
+              <button nz-button   style=" background-color: #4F6F57; color: #f6f3ea;" (click)="authService.sendVerificationMail()">Reenviar Correo</button>
             </div>
           </nz-result>
         </div>

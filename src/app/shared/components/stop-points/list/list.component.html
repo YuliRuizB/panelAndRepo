@@ -1,13 +1,17 @@
 <div class="site-page-header-ghost-wrapper" *ngIf="!!item">
   <nz-page-header [nzGhost]="false">
     <nz-page-header-title>Detalles de la ruta</nz-page-header-title>
-    <nz-page-header-subtitle>Listado de las paradas de esta ruta</nz-page-header-subtitle>
+    <nz-page-header-subtitle>Listado de las estaciones de esta ruta</nz-page-header-subtitle>
     <nz-page-header-extra>
       <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
         <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
       </button>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="openPanelPDF(item)">
+            <i nz-icon nzType="printer" theme="outline"></i>
+            <span class="m-l-10">Generar Documento</span>
+          </li>
           <li nz-menu-item *ngIf="!item.active" (click)="toggleActive(item)">
             <i nz-icon nzType="eye" theme="outline"></i>
             <span class="m-l-10">Activar</span>
@@ -39,7 +43,7 @@
       <div class="row">
         <div class="col-md-5">
           <nz-input-group [nzPrefix]="searchPrefix">
-            <input type="text" nz-input placeholder="Buscar parada">
+            <input type="text" nz-input placeholder="Buscar estación">
           </nz-input-group>
           <ng-template #searchPrefix>
             <i class="opacity-04" nz-icon nzType="search"></i>
@@ -50,9 +54,9 @@
     <div class="col-md-6">
       <div class="text-md-right m-v-10">
         
-        <button nz-button nzType="primary" (click)="showModalCreate()">
+        <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModalCreate()">
           <i nz-icon nzType="plus"></i>
-          <span>Agregar parada</span>
+          <span>Agregar estación</span>
         </button>
       </div>
     </div>
@@ -68,16 +72,16 @@
       <th colspan="2">Día</th>
       <th colspan="2">Tarde</th>
       <th colspan="2">Noche</th>
-      <th></th>
+      <th style="color: #4F6F57;"></th>
     </tr>
     <tr>
-      <th>Hora</th>
-      <th>Minutos</th>
-      <th>Hora</th>
-      <th>Minutos</th>
-      <th>Hora</th>
-      <th>Minutos</th>
-      <th></th>
+      <th style="color: #4F6F57;">Hora</th>
+      <th style="color: #4F6F57;">Minutos</th>
+      <th style="color: #4F6F57;">Hora</th>
+      <th style="color: #4F6F57;">Minutos</th>
+      <th style="color: #4F6F57;">Hora</th>
+      <th style="color: #4F6F57;">Minutos</th>
+      <th style="color: #4F6F57;"></th>
     </tr>
   </thead>
   <tbody>
@@ -104,7 +108,12 @@
           <i nz-icon nzType="ellipsis" nzTooltipTitle="Más información" nzTooltipPlacement="topLeft" nz-tooltip></i>
         </a>
         <nz-dropdown-menu #menu="nzDropdownMenu">
+          
           <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="openPanelPDF(data)">
+            <i nz-icon nzType="printer" theme="outline"></i>
+            <span class="m-l-10">Generar Documento</span>
+          </li>
             <li *ngIf="!data.active" nz-menu-item (click)="toggleActive(data)">
               <i nz-icon nzType="check-circle"></i>
               Activar
@@ -128,3 +137,47 @@
     </tr>
   </tbody>
 </nz-table>
+
+<nz-modal [(nzVisible)]="isPdfVisible" nzTitle="Imprimir Estación" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOkPDF()">
+  <div id="documentoPDF"  class="documentPDF">
+    <table class="tableStyle">
+      <tr > 
+        <td colspan="3">
+          <div style="display:flex; justify-content: center;align-items: center;">
+            <img src="assets/images/logo/andlogo.png" alt="">
+          </div>
+        </td>
+      </tr>
+      <tr > 
+        <td colspan="3">
+          <div style="display:flex; justify-content: center;align-items: center;">
+            <h1>Estación: {{pdfTitle}}</h1>
+          </div>
+        </td>
+      </tr>
+      <tr > 
+        <td colspan="3">
+          <div style="display:flex; justify-content: center;align-items: center;">
+            <h4>Orden: {{pdfOrder}}</h4>
+          </div>
+        </td>
+      </tr>
+      <tr > 
+        <td colspan="3">
+          <div style="display:flex; justify-content: center;align-items: center;">
+            <h4>{{pdfDescription}}</h4>
+          </div>
+        </td>
+      </tr>
+      <tr > 
+        <td colspan="3">
+          <div style="display:flex; justify-content: center;align-items: center;">
+            <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
+              qrc-value="{{stopId}}" qrc-class="qrCode-size"
+              qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+          </div>
+        </td>
+      </tr>
+    </table>
+</div>
+</nz-modal>

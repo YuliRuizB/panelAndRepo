@@ -8,8 +8,8 @@
   
     <!--extra-->
     <nz-page-header-extra>
-      <button nz-button (click)="showModal()">Nuevo Usuario</button>
-      <!-- <button nz-button nzType="primary" (click)="showModal()">Importar desde archivo</button> -->
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModal()">Nuevo Usuario</button>
+      <!-- <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModal()">Importar desde archivo</button> -->
     </nz-page-header-extra>
   
     <!--content-->
@@ -119,12 +119,12 @@
             <nz-form-control [nzSm]="14"
             [nzXs]="24" nzHasFeedback>
               <nz-select name="select-error" formControlName="role">
-                <nz-option nzValue="vendor" nzLabel="Transportista"></nz-option>
+                <nz-option nzValue="vendor" nzLabel="CLientes"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
          
-          <button nz-button nzType="primary"  type="submit" [nzLoading]="isSavingUsers" (click)="done()" *ngIf="!isDone">
+          <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"  type="submit" [nzLoading]="isSavingUsers" (click)="done()" *ngIf="!isDone">
             <span>Crear Usuario</span>
           </button>
 

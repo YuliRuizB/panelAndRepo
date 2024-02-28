@@ -27,7 +27,7 @@
               <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
             </label>
           </nz-radio-group>
-          <button nz-button nzType="primary" (click)="showModal($event)">
+          <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModal($event)">
             <i nz-icon nzType="plus"></i>
             <span>Nuevo Vehículo</span>
           </button>
@@ -82,7 +82,7 @@
         <nz-card>
           <div class="d-flex justify-content-between">
             <div class="media">
-              <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]="item.avatar"></nz-avatar>
+              <nz-avatar [nzSize]="40" style="background-color: white ;  color: #4F6F57;" nzShape="square" [nzSrc]="item.avatar"></nz-avatar>
               <div class="m-l-10">
                 <h5 class="m-b-0">{{ item.name }}</h5>
                 <span class="text-muted font-size-13">{{ item.carMaker }}</span>

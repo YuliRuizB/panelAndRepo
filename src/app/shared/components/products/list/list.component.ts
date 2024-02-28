@@ -7,6 +7,9 @@ import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { map } from 'rxjs/operators';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { UsersService } from 'src/app/shared/services/users.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-shared-products-list',
@@ -21,6 +24,9 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
   sub: Subscription;
   productsList: Product[] = [];
   validateForm: FormGroup;
+  infoLoad: any = [];
+  userlevelAccess:string;
+ user: any;
 
   constructor(
     private usersService: CustomersService,
@@ -28,7 +34,20 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
     private modalService: NzModalService,
     public messageService: NzMessageService,
     private productsService: ProductsService,
+    private rolService: RolService,
+    private userService: UsersService,
+    public authService: AuthenticationService,
     private fb: FormBuilder) {
+
+      this.authService.user.subscribe((user) => {
+        this.user = user;
+        if (this.user.rolId != undefined) { // get rol assigned               
+            this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+                this.infoLoad = item;
+                this.userlevelAccess = this.infoLoad.optionAccessLavel;                 
+            });
+        }
+    });
 
   }
 
@@ -82,16 +101,26 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
 
   }
 
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+}
+
+
   submitForm() {
     if (this.validateForm.valid) {
-      this.productsService.setProduct(this.accountId, this.validateForm.value).then(() => {
-        this.resetForm();
-        this.modalService.closeAll();
-        this.messageService.success(`Todo salió bien.`, {
-          nzPauseOnHover: true,
-          nzDuration: 3000
-        });
-      })
+      if (this.userlevelAccess != "3") {
+        this.productsService.setProduct(this.accountId, this.validateForm.value).then(() => {
+          this.resetForm();
+          this.modalService.closeAll();
+          this.messageService.success(`Todo salió bien.`, {
+            nzPauseOnHover: true,
+            nzDuration: 3000
+          });
+        })
+      } else {
+        this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+      }
+      
     }
   }
 
@@ -113,12 +142,17 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
   }
   
   deleteProduct(product:Product) {
-    this.productsService.deleteProduct(this.accountId, product.id).then(() => {
-      this.messageService.success(`El ${product.type} ${product.name} ha sido eliminado.`, {
-        nzPauseOnHover: true,
-        nzDuration: 3000
-      });
-    })
+    if (this.userlevelAccess == "1") {
+      this.productsService.deleteProduct(this.accountId, product.id).then(() => {
+        this.messageService.success(`El ${product.type} ${product.name} ha sido eliminado.`, {
+          nzPauseOnHover: true,
+          nzDuration: 3000
+        });
+      })
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }
+  
   }
 
   showNewModal(newContent: TemplateRef<{}>) {

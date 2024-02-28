@@ -202,11 +202,11 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
 
   public columnFleetDefsAsign: (ColDef) [] =[
-    { headerName: 'Cliente', width:170, field: 'customerName',
+    { headerName: 'Empresa', width:170, field: 'customerName',
       filter: true,checkboxSelection: true, headerCheckboxSelection: true,
       headerCheckboxSelectionFilteredOnly: true , sortable: true,enableCellChangeFlash:true },
     { headerName: 'Ruta',width:130, field: 'routeName', sortable: true, enableCellChangeFlash:true },
-    { headerName: 'Conductor',width:200,field: 'driverName', sortable: true,
+    { headerName: 'PR',width:200,field: 'driverName', sortable: true,
     cellEditor: 'agRichSelectCellEditor',
     editable:true,
     cellEditorParams: {values: this.arrDrivers.sort()},
@@ -370,7 +370,6 @@ export class ProgramComponent implements OnInit, OnDestroy {
       this.user = user;
       this.vendorID = user.vendorId;
       this.getSubscriptions(user.vendorId);
-
       this.onSelectDrivers(user.vendorId);
     })
   }

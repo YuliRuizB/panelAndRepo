@@ -6,8 +6,9 @@ export const ROUTES: SideNavInterface[] = [
         title: 'Principal',
         iconType: 'nzIcon',
         iconTheme: 'outline',
-        icon: 'dashboard',
-        roles: ['admin'],
+        idRol: 'PP6jeKT4ZlySNRGT7S3Y',
+        icon: 'home',
+       // roles: ['admin','comercial','administracion','operacion'],
         submenu: [
             {
                 path: '/dashboard/default',
@@ -15,32 +16,83 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: '',
                 icon: '',
                 iconTheme: '',
+                idRol: 'LOjYgBhCOl20fyajfgLp',
                 submenu: []
             },
             {
-                path: '/dashboard/sales',
-                title: 'Ventas',
+                path: '/dashboard/quality',
+                title: 'Calidad',
                 iconType: '',
-                icon: '',
+                icon: '', 
                 iconTheme: '',
+                idRol: 'FUUUPXbCS8KDWGWerj3Z',
                 submenu: []
             },
             {
-                path: '/logistics/main',
-                title: 'Logística',
+                path: '/dashboard/reports',
+                title: 'Reportes',
                 iconType: '',
                 icon: '',
                 iconTheme: '',
+                idRol: '6t4q4tFEiqT3utK9XWDi',
+                submenu: []
+            },
+        ]
+    },
+    {
+        path: '',
+        title: 'Comercial',
+        iconType: 'nzIcon',
+        iconTheme: 'outline',
+        idRol: 'r8bv5GZVS9wwMvvaCm9a',
+        icon: 'shop',       
+        submenu: [
+          /*   {
+                path: '/vendor/logistics',
+                title: 'En vivo',
+                iconType: 'nzIcon',
+                icon: 'environment',
+                iconTheme: 'outline',
+                idRol: 'N6haaZR254lOYKtZSZ4a',
+                submenu: []
+            } */
+        ]
+    },
+    {
+        path: '',
+        title: 'Administración',
+        iconType: 'nzIcon',
+        iconTheme: 'outline',
+        idRol: '7B4MX1pimUfITP1JwPqw',
+        icon: 'global',
+      //  roles: ['admin','vendor'],
+        submenu: [
+            {
+                path: '/admin/payments',
+                title: 'Pagos',
+                iconType: 'nzIcon',
+                icon: 'profile',
+                iconTheme: 'outline',
+                idRol: 'YaaZhwAVJYw8oFWHIZ3h',
+                submenu: []
+            },{
+                path: '/admin/organigrama',
+                title: 'Organigrama de Rutas',
+                iconType: 'nzIcon',
+                icon: 'profile',
+                iconTheme: 'outline',
+                idRol: 'T2dnL8BKEykzs6oP7vAZ',
                 submenu: []
             },
             {
-                path: '/dashboard/projects',
-                title: 'Servicios',
-                iconType: '',
-                icon: '',
-                iconTheme: '',
+                path: '/admin/evidence',
+                title: 'Evidencias',
+                iconType: 'nzIcon',
+                icon: 'profile',
+                iconTheme: 'outline',
+                idRol: 'w0Qg3s4GhGEliUSrfJmB',
                 submenu: []
-            },
+            }
         ]
     },
     {
@@ -48,8 +100,9 @@ export const ROUTES: SideNavInterface[] = [
         title: 'Logística',
         iconType: 'nzIcon',
         iconTheme: 'outline',
+        idRol: 'r8bv5GZVS9wwMvvaCm9a',
         icon: 'global',
-        roles: ['admin','vendor'],
+      //  roles: ['admin','vendor'],
         submenu: [
             {
                 path: '/vendor/logistics',
@@ -57,6 +110,7 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: 'nzIcon',
                 icon: 'environment',
                 iconTheme: 'outline',
+                idRol: 'N6haaZR254lOYKtZSZ4a',
                 submenu: []
             },
             {
@@ -65,6 +119,7 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: 'nzIcon',
                 icon: 'profile',
                 iconTheme: 'outline',
+                idRol:'HqLseV1Dw0QHjZtjlM39',
                 submenu: []
             },
             {
@@ -73,6 +128,7 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: 'nzIcon',
                 icon: 'form',
                 iconTheme: 'outline',
+                idRol:'hw5ENLMNNjdo73kuWGh7',
                 submenu: []
             },
             {
@@ -81,6 +137,7 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: 'nzIcon',
                 icon: 'car',
                 iconTheme: 'outline',
+                idRol:'G9l9JNQD1UEvevr2ZLC0',
                 submenu: []
             },
             {
@@ -89,22 +146,25 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: 'nzIcon',
                 icon: 'build',
                 iconTheme: 'outline',
+                idRol:'e5qwn7ttKegGvGJ8eTcU',
                 submenu: []
             },
-            {
+            /* {
                 path: '/vendor/guards',
                 title: 'Guardias',
                 iconType: 'nzIcon',
                 icon: 'alert',
                 iconTheme: 'outline',
+                idRol: '6t4q4tFEiqT3utK9XWDi',
                 submenu: []
-            },
+            }, */
             {
                 path: '/vendor/users',
                 title: 'Usuarios',
                 iconType: 'nzIcon',
                 icon: 'solution',
                 iconTheme: 'outline',
+                idRol: 'NNaY0RK2JHnMFlXgxxvP',
                 submenu: []
             }
         ]
@@ -114,8 +174,9 @@ export const ROUTES: SideNavInterface[] = [
         title: 'CRM',
         iconType: 'nzIcon',
         iconTheme: 'outline',
+        idRol: 'XxKPVPJtpBbGTzHBsIbT',
         icon: 'shop',
-        roles: ['admin'],
+      //  roles: ['admin'],
         submenu: [
             // {
             //     path: '/accounts/main',
@@ -148,15 +209,17 @@ export const ROUTES: SideNavInterface[] = [
         title: 'Sistema',
         iconType: 'nzIcon',
         iconTheme: 'outline',
+        idRol: '4w3lNlD2Y2zVI18eXxby',
         icon: 'file',
-        roles: ['admin'],
+    //    roles: ['admin'],
         submenu: [
             {
                 path: '/vendor/list',
-                title: 'Transportistas',
+                title: 'Clientes',
                 iconType: '',
                 icon: '',
                 iconTheme: '',
+                idRol: 'WL4xhAtcgBYKPtC977SP',
                 submenu: []
             },
             {
@@ -165,6 +228,7 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: '',
                 icon: '',
                 iconTheme: '',
+                idRol:'G9l9JNQD1UEvevr2ZLC0',
                 submenu: []
             },
             {
@@ -173,6 +237,7 @@ export const ROUTES: SideNavInterface[] = [
                 iconType: '',
                 icon: '',
                 iconTheme: '',
+                idRol: 'e5qwn7ttKegGvGJ8eTcU',
                 submenu: []
             }
         ]
@@ -182,10 +247,11 @@ export const ROUTES: SideNavInterface[] = [
         title: 'Configuración',
         iconType: 'nzIcon',
         iconTheme: 'outline',
+        idRol: 'QlE2Q7Z6KiaFb3EHslyn',
         icon: 'setting',
-        roles: ['admin'],
+      //  roles: ['admin'],
         submenu: [
-            {
+           /*  {
                 path: '/authentication/login-1',
                 title: 'Servicios',
                 iconType: '',
@@ -208,13 +274,32 @@ export const ROUTES: SideNavInterface[] = [
                 icon: '',
                 iconTheme: '',
                 submenu: []
-            },
+            }, */
             {
-                path: '/global/users/dashboard',
-                title: 'Usuarios',
+                path: '/global/roles/dashboard',
+                title: 'Roles',
                 iconType: '',
                 icon: '',
                 iconTheme: '',
+                idRol: 'zXUdtKTWhNNWE7xcbUYe',
+                submenu: []
+            },
+            {
+                path: '/global/users/dashboard',
+                title: 'Perfiles',
+                iconType: '',
+                icon: '',
+                iconTheme: '',
+                idRol: 'eeTeXw40uLOUq4dXuSnQ',
+                submenu: []
+            },
+            {
+                path: '/global/my-profile/dashboard',
+                title: 'Mi Perfil',
+                iconType: '',
+                icon: '',
+                iconTheme: '',
+                idRol: 'ttOv6Pj2ue6eSsMCt6qv',
                 submenu: []
             }
         ]

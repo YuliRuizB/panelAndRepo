@@ -22,7 +22,7 @@
             <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
           </label>
         </nz-radio-group>
-        <button nz-button nzType="primary" (click)="createDriverModal()"><i nz-icon nzType="plus"></i>Agregar</button>
+        <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="createDriverModal()"><i nz-icon nzType="plus"></i>Agregar</button>
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@
       <nz-card>
         <div class="d-flex justify-content-between">
           <div class="media">
-            <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]="item.photoURL"></nz-avatar>
+            <nz-avatar [nzSize]="40" nzShape="square"  style="background-color: white ;  color: #4F6F57;" [nzSrc]="item.photoURL"></nz-avatar>
             <div class="m-l-10">
               <h5 class="m-b-0">{{ item.displayName }}</h5>
               <span class="text-muted font-size-13">{{ item.employeeId }}</span>
@@ -93,20 +93,20 @@
     <nz-table #listViewTable [nzData]="driversList">
       <thead>
         <tr>
-          <th>Id Empleado</th>
-          <th>Nombre(s)</th>
-          <th>Apellido(s)</th>
-          <th>Usuario</th>
-          <th>Teléfono</th>
-          <th>Activo</th>
-          <th></th>
+          <th style="color: #4F6F57;">Id Empleado</th>
+          <th style="color: #4F6F57;">Nombre(s)</th>
+          <th style="color: #4F6F57;">Apellido(s)</th>
+          <th style="color: #4F6F57;">Usuario</th>
+          <th style="color: #4F6F57;">Teléfono</th>
+          <th style="color: #4F6F57;">Activo</th>
+          <th style="color: #4F6F57;"></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of listViewTable.data">
           <td>
             <div class="media align-items-center">
-              <nz-avatar nzShape="square" [nzSrc]="item.photoURL"></nz-avatar>
+              <nz-avatar nzShape="square" style="background-color: white ;  color: #4F6F57;" [nzSrc]="item.photoURL"></nz-avatar>
               <div class="m-l-10">
                 <h5 class="m-b-0">{{item.displayName}}</h5>
               </div>

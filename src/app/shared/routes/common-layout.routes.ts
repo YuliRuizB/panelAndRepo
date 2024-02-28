@@ -26,9 +26,13 @@ export const CommonLayout_ROUTES: Routes = [
         loadChildren: () => import('../../logistics/logistics.module').then(m => m.LogisticsModule)
     },
     {
+        path: 'admin',
+        loadChildren: () => import('../../admin/admin.module').then(m => m.AdminModule)
+    },
+    {
         path: 'vendor',
         data: {
-            title: 'Transportistas'
+            title: 'Clientes'
           },
         loadChildren: () => import('../../vendor/vendor.module').then(m => m.VendorModule)
     }

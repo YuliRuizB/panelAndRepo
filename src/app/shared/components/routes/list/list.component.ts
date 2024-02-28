@@ -77,10 +77,10 @@ export class SharedRoutesListComponent implements OnInit, OnDestroy {
             nzTitle: '¿Está la información completa?',
             nzOnOk: () => {
               this.objectForm.get('customerId').setValue(this.accountId);
-              console.log(this.objectForm.value)
-              console.log(this.objectForm.valid)
+             // console.log(this.objectForm.value)
+             // console.log(this.objectForm.valid)
               if (this.objectForm.valid) {
-                console.log(this.objectForm.value);
+               // console.log(this.objectForm.value);
                 this.routesService.setRoute(this.accountId, this.objectForm.value)
                   .then(() => {
                     this.modalService.closeAll();
@@ -96,7 +96,7 @@ export class SharedRoutesListComponent implements OnInit, OnDestroy {
   }
 
   getSubscriptions() {
-    console.log(this.accountId);
+   // console.log(this.accountId);
     this.sub = this.routesService.getRoutes(this.accountId).pipe(
       map(actions => actions.map(a => {
         const id = a.payload.doc.id;
@@ -105,7 +105,7 @@ export class SharedRoutesListComponent implements OnInit, OnDestroy {
       }))
     ).subscribe((routes: IRoute[]) => {
       this.routesList = routes;
-      console.log(this.routesList);
+     // console.log(this.routesList);
       routes.forEach( (route) => {
         this.tabs.push({
           name: route.name,

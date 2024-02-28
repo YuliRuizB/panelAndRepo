@@ -21,14 +21,14 @@
       </div>
     </div>
     <div class="col-lg-4 text-right">
-      <!-- <button nz-button nzType="primary" (click)="showModal()">
+      <!-- <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModal()">
         <i nz-icon nzType="plus" theme="outline"></i>
         <span>Nueva asignación</span>
       </button> -->
     </div>
   </div>
   <div class="row m-b-30">
-    <p>Nota: Las asignaciones que no aparezcan, es debido a que no tienen usuarios activos.</p>
+    <p>Nota: Las asignaciones que no aparezcan, es debido a que es requerido que la ruta tenga por lo menos un pase de abordar activo.</p>
   </div>
   <!-- <ng-template #noResultTemplate>
     <nz-empty [nzNotFoundImage]="
@@ -38,7 +38,7 @@
         <span>¡No has creado ninguna asignación aún!</span>
       </ng-template>
       <ng-template #footerTpl>
-        <button nz-button nzType="primary" (click)="showModal()">Nueva asignación</button>
+        <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="showModal()">Nueva asignación</button>
       </ng-template>
     </nz-empty>
   </ng-template> -->
@@ -96,7 +96,7 @@
         </div>
         <div class="col-md-6 col-sm-12">
           <nz-form-item>
-            <nz-form-label nzFor="round">Conductor</nz-form-label>
+            <nz-form-label nzFor="round">PR</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="program" nzAllowClear nzPlaceHolder="Seleccionar">
                 <nz-option nzValue="jack" nzLabel="Jack"></nz-option>

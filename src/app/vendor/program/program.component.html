@@ -63,7 +63,7 @@
       <div class="col">     
       </div>
       <div class="col">
-        <button nz-button nzType="primary" (click)="refreshTable()"  style="margin-top:5px; display: block; margin-left: auto; margin-right: 0;">Actualizar</button>
+        <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="refreshTable()"  style="margin-top:5px; display: block; margin-left: auto; margin-right: 0;">Actualizar</button>
       </div>
     </div>
   </div>
@@ -85,7 +85,7 @@
         Asignaciones pendientes {{ numAssing }}
       </div>
       <div  style="margin-left: 26px" class="col-">
-        <a nz-dropdown [nzDropdownMenu]="menuClient"> Cliente
+        <a nz-dropdown [nzDropdownMenu]="menuClient"> Empresa
           <i nz-icon nzType="down"></i>
         </a>
         <a nz-dropdown [nzDropdownMenu]="menuRoute"> Ruta
@@ -106,7 +106,7 @@
         Ruta: {{routePath}}
       </div>
       <div style="margin-left: 33px;" class="col-">
-        <button nz-button nzType="primary" (click)="handleSearch()"><i nz-icon nzType="search"></i>
+        <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;"  (click)="handleSearch()"><i nz-icon nzType="search"></i>
           Buscar</button>
       </div>
     </div>
@@ -135,8 +135,8 @@
     {{this.arrVehicle.sort()}}
   </div>
   <ng-template #modalFooter>
-    <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Programar</button>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button> 
+    <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleOk()" [nzLoading]="isConfirmLoading">Programar</button>
+    <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleCancel()">Cancelar</button> 
   </ng-template>
 </nz-modal>
 <nz-modal [(nzVisible)]="isEditModalVisible" nzTitle="Editar Programacion ( {{ date | date: 'mediumDate' }} )"
@@ -144,7 +144,7 @@
   <div>
     <form nz-form [formGroup]="signupForm">
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="customerName">Cliente</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="customerName">Empresa</nz-form-label>
         <nz-form-control  [nzSm]="16" [nzXs]="24" >
           <input [disabled]="true" type="text" nz-input formControlName="customerName" id="customerName"/>
         </nz-form-control>
@@ -156,7 +156,7 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="driver">Conductor</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="driver">PR</nz-form-label>
         <nz-form-control [nzSm]="16" [nzXs]="24" >
           <button nz-button nz-dropdown [nzDropdownMenu]="menuDriverEdit">
             - Seleccionar - 
@@ -188,8 +188,8 @@
     </form>
   </div>
   <ng-template #modalFooterEdit>
-    <button nz-button nzType="primary" (click)="handleOKEdit()" [nzLoading]="isConfirmLoading">Aceptar</button>
-    <button nz-button nzType="default" (click)="handleCancelEdit()">Cancelar</button>
+    <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleOKEdit()" [nzLoading]="isConfirmLoading">Aceptar</button>
+    <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleCancelEdit()">Cancelar</button>
   </ng-template>
 </nz-modal>
 

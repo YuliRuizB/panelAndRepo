@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd';
+import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
   selector: 'app-fleet',
@@ -26,10 +28,17 @@ export class FleetComponent implements OnInit, OnDestroy {
   columnDefs = columnDefs;
   vehicleForm: FormGroup;
   user: any;
+  infoLoad: any = [];
+  userlevelAccess: string;
 
   popupParent: any;
 
-  constructor(private devicesService: DevicesService, private fb: FormBuilder, private authService: AuthenticationService, private router: Router) {
+  constructor(private devicesService: DevicesService,
+    private fb: FormBuilder,
+    private authService: AuthenticationService,
+    private messageService: NzMessageService,
+    private rolService: RolService,
+    private router: Router) {
     this.popupParent = document.querySelector('body');
   }
 
@@ -42,8 +51,18 @@ export class FleetComponent implements OnInit, OnDestroy {
       })
     ).subscribe(user => {
       this.user = user;
-      console.log(user);
+      //console.log(user);
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
     });
+  }
+
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
   }
 
   ngOnDestroy() {
@@ -108,14 +127,22 @@ export class FleetComponent implements OnInit, OnDestroy {
     this.isOkLoading = true;
     console.log(this.vehicleForm.value);
     console.log(this.vehicleForm.valid);
-    this.devicesService.addDevice(this.user.vendorId, this.vehicleForm.value).then(() => {
-      this.isOkLoading = false;
-      this.isVisible = false;
-    })
-      .catch(err => {
+
+    if (this.userlevelAccess != "3") {
+
+      this.devicesService.addDevice(this.user.vendorId, this.vehicleForm.value).then(() => {
         this.isOkLoading = false;
-        console.log(err);
-      });
+        this.isVisible = false;
+      })
+        .catch(err => {
+          this.isOkLoading = false;
+          console.log(err);
+        });
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para agregar datos, favor de contactar al administrador.");
+    }
+
+
   }
 
   getContextMenuItems(params) {

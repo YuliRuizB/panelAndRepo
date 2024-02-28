@@ -1,172 +1,92 @@
-<nz-page-header class="site-page-header">
+<nz-page-header>
+
+  <!--avatar-->
+  <nz-avatar style="background-color: white ;  color: #4F6F57;"  nz-page-header-avatar nzSrc="https://avatars0.githubusercontent.com/u/22736418?s=88&v=4">
+  </nz-avatar>
 
   <!--title-->
-  <nz-page-header-title>Usuarios</nz-page-header-title>
+  <nz-page-header-title>Cuentas de Empresas</nz-page-header-title>
 
   <!--subtitle-->
-  <nz-page-header-subtitle>Usuarios de este cliente</nz-page-header-subtitle>
+  <nz-page-header-subtitle>Listado de cuentas de la empresa  And</nz-page-header-subtitle>
+
+  <!--tags-->
+  <nz-page-header-tags>
+    <nz-tag [nzColor]="'blue'">Empresas</nz-tag>
+  </nz-page-header-tags>
 
   <!--extra-->
   <nz-page-header-extra>
-    <button nz-button>Nuevo Usuario</button>
-    <button nz-button nzType="primary" (click)="showModal()">Importar desde archivo</button>
+    <button  style=" background-color: #4F6F57; color: #f6f3ea;" nz-button>Agregar</button>
+    <button  style=" background-color: #4F6F57; color: #f6f3ea;" nz-button>Editar</button>
+    <button  style=" background-color: #4F6F57; color: #f6f3ea;" nz-button>Kardex</button>
+    <button   nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
+      <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
+    </button>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item>Desactivar cuenta</li>
+        <li nz-menu-item>Eliminar cuenta</li>
+        <li nz-menu-item>Exportar a excel</li>
+      </ul>
+    </nz-dropdown-menu>
   </nz-page-header-extra>
 
   <!--content-->
   <nz-page-header-content>
-    <div nz-row>
+    <div class="wrap">
       <div class="content">
-        <div class="col-md-4 col-sm-12">
-          <nz-input-group [nzSuffix]="suffixIconSearch">
-            <input type="text" nz-input placeholder="Buscar ..." />
-          </nz-input-group>
-          <ng-template #suffixIconSearch>
-            <i nz-icon nzType="search"></i>
-          </ng-template>
+        <div class="content">
+          <p nz-paragraph>
+            Los usuarios de And pertenecen a una cuenta. Esta determina los productos y servicios a
+            los que los usuarios tienen acceso.
+          </p>
+          <p nz-paragraph>
+            Ant Design's design team preferred to design with the HSB color model, which makes it easier
+            for
+            designers to have a clear psychological expectation of color when adjusting colors, as well
+            as
+            facilitate communication in teams.
+          </p>
+          <p class="content-link">
+            <a>
+              <img src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg" alt="start" />Quick
+              Start
+            </a>
+            <a>
+              <img src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg" alt="info" />Product
+              Info
+            </a>
+            <a>
+              <img src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg" alt="doc" />Product Doc
+            </a>
+          </p>
         </div>
+      </div>
+      <div class="extra-content">
+        <img src="https://gw.alipayobjects.com/mdn/mpaas_user/afts/img/A*KsfVQbuLRlYAAAAAAAAAAABjAQAAAQ/original"
+          alt="content" />
       </div>
     </div>
   </nz-page-header-content>
 </nz-page-header>
-<br />
-<ag-grid-angular style="width: 100%; height: 450px;" class="ag-theme-material" [rowData]="usersList" [paginationPageSize]="pageSize"
-  [getContextMenuItems]="getContextMenuItems" [columnDefs]="columnDefs" [gridOptions]="gridOptions" [onGridReady]="onGridReady"
-  [popupParent]="popupParent">
-</ag-grid-angular>
-<button nz-button nz-dropdown [nzDropdownMenu]="menu4">
-  {{ pageSize }} / página
-  <i nz-icon nzType="down"></i>
-</button>
-<nz-dropdown-menu #menu4="nzDropdownMenu">
-  <ul nz-menu>
-    <li (click)="setPaginationPageSize(20)" nz-menu-item>20 por página</li>
-    <li (click)="setPaginationPageSize(50)" nz-menu-item>50 por página</li>
-    <li (click)="setPaginationPageSize(100)" nz-menu-item>100 por página</li>
-  </ul>
-</nz-dropdown-menu>
 
-<!-- Modal -->
-
-
-<nz-modal [(nzVisible)]="isVisible" [nzWidth]="1020" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
-  (nzOnCancel)="handleCancel()">
-  <ng-template #modalTitle>
-    Importar Usuarios desde archivo
-  </ng-template>
-
-  <ng-template #modalContent>
-    <nz-steps [nzCurrent]="current">
-      <nz-step nzTitle="Seleccionar Archivo"></nz-step>
-      <nz-step nzTitle="Validar"></nz-step>
-      <nz-step nzTitle="Crear"></nz-step>
-    </nz-steps>
-
-    <div class="steps-content overflow-auto">
-
-      <div *ngIf="current == 0">
-        <nz-upload nzType="drag" [nzMultiple]="false" nzAccept=".csv" nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          (nzChange)="handleChange($event)">
-          <p class="ant-upload-drag-icon">
-            <i nz-icon nzType="inbox"></i>
-          </p>
-          <p class="ant-upload-text">Click o arrastrar para subir archivo</p>
-          <p class="ant-upload-hint">
-            El archivo debe ser en formato CSV. Es sólo para usuarios sin aplicación móvil. Para coincidir correctamente, por favor descargue primero el archivo de
-            ejemplo.
-          </p>
-        </nz-upload>
-      </div>
-
-      <div *ngIf="current == 1">
-
-        <nz-table #basicTable [nzPageSize]="5" nzSize="small" [nzData]="csvRecords" >
-          <thead>
-            <tr>
-              <th>Nombre(s)</th>
-              <th>Apellido(s)</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>No Empleado</th>
-              <th>Servicio</th>
-              <th>Ruta</th>
-              <th>Turno</th>
-              <th>Parada</th>
-              <th>Crear Pase</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td>{{data.firstName}}</td>
-              <td>{{data.lastName}}</td>
-              <td>{{data.phone}}</td>
-              <td>{{data.email}}</td>
-              <td>{{ data.employeeId }}</td>
-              <td>{{ data.service }}</td>
-              <td>{{ data.routeName }}</td>
-              <td>{{ data.round }}</td>
-              <td>{{ data.stop }}</td>
-              <td>{{ data.createBoardingPass? 'Si' : 'No' }}</td>
-            </tr>
-          </tbody>
-        </nz-table>
-      </div>
-
-      <div *ngIf="current == 2">
-        <h3 *ngIf="!isDone">{{ csvRecords.length }} usuarios serán creados en el sistema. </h3>
-
-        <nz-table #basicTable [nzSize]="'small'" [nzPageSize]="5" [nzData]="csvRecords" *ngIf="isSavingUsers">
-          <thead>
-            <tr>
-              <th>Nombre(s)</th>
-              <th>Apellido(s)</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>No Empleado</th>
-              <th>Ruta</th>
-              <th>Turno</th>
-              <th>Parada</th>
-              <th>Servicio</th>
-              <th>Crear Pase</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td>{{data.firstName}}</td>
-              <td>{{data.lastName}}</td>
-              <td>{{data.phone}}</td>
-              <td>{{data.email}}</td>
-              <td>{{ data.employeeId }}</td>
-              <td>{{ data.routeName }}</td>
-              <td>{{ data.round }}</td>
-              <td>{{ data.stop }}</td>
-              <td>{{ data.service }}</td>
-              <td>{{ data.createBoardingPass }}</td>
-            </tr>
-          </tbody>
-        </nz-table>
-      </div>
-
+  <div nz-row nzGutter="8" nzAlign="bottom" nzJustify="end" nzType="flex">
+    <div nz-col nzSpan="8">
+      <nz-input-group nzSize="large" [nzSuffix]="suffixIconSearch">
+        <input type="text" nz-input placeholder="input search text" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <i nz-icon nzType="search"></i>
+      </ng-template>
     </div>
-
-  </ng-template>
-
-  <ng-template #modalFooter>
-    <div class="steps-action">
-      <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
-        <span>Anterior</span>
-      </button>
-
-      <a class="p-10" href="assets/data/csv-example/users1.csv" *ngIf="current == 0 && csvRecords.length == 0" nz-button nzType="link">Descargar archivo ejemplo</a>
-
-      <button nz-button nzType="default" (click)="next()" *ngIf="current < 2 && csvRecords.length > 0">
-        <span>Siguiente</span>
-      </button>
-      <button nz-button nzType="primary"  [nzLoading]="isSavingUsers" (click)="done()" *ngIf="current === 2 && !isDone">
-        <span>Crear Usuarios</span>
-      </button>
-      <button nz-button nzType="primary"  (click)="handleOk()" *ngIf="current === 2 && isDone">
-        <span>Terminar</span>
-      </button>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <ag-grid-angular style="width: 100%; height: 350px;" class="ag-theme-material" [rowData]="accountsList"
+        [columnDefs]="columnDefs" [popupParent]="popupParent">
+      </ag-grid-angular>
     </div>
-  </ng-template>
-</nz-modal>
+  </div>
+  <br />
+  <br />

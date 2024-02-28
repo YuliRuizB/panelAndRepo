@@ -93,6 +93,7 @@ export class RoutesService {
           )
         }),
         map(([customers, routes]) => {
+          console.log("rutasgetroutesbycustomer");
           console.log(routes);
           return routes.map((route:any) => {
             const customer = _.filter(customers, (c) => {
@@ -111,10 +112,12 @@ export class RoutesService {
   }
 
   getAuthorizedRoutes(vendorId: string) {
+    console.log("sssaqui?");
     console.log(vendorId);
     this.joined$ = this.afs.collection('vendors').doc(vendorId).collection('routesAccess').valueChanges({ idField: 'id'})
       .pipe(
         switchMap((permissions:any) => {
+          console.log(permissions);
           const routeIds = _.uniq(permissions.map(p => p.routeId))
           console.log(routeIds.length);
           return routeIds.length === 0 ? of([]) :
@@ -130,20 +133,28 @@ export class RoutesService {
           )
         }),
         map(([permissions, routes]) => {
-          console.log(typeof routes);
-          return typeof routes != "undefined" ? routes.map((route:any) => {
-            const permission = _.filter(permissions, (p) => {
-              return route.routeId === p.routeId
-            });
-            return {
-              ...route,
-              permission: permission[0].active || false,
-              permissionId: permission[0].id,
-              customerId: permission[0].customerId || '',
-              customerName: permission[0].customerName || ''
-            }
-          }) : of([])
-        })
+          console.log("parte2");
+          console.log(routes); // Log the routes array
+          
+          return typeof routes !== "undefined" ? routes
+            .filter((route: any) => route) // Remove undefined values from routes
+            .map((route: any) => {
+              console.log(route);
+              const permission = _.filter(permissions, (p) => {
+                return route && route.routeId === p.routeId;
+              });
+        
+              // Ensure that permission[0] is defined before accessing its properties
+              return permission[0] ? {
+                ...route,
+                permission: permission[0].active || false,
+                permissionId: permission[0].id,
+                customerId: permission[0].customerId || '',
+                customerName: permission[0].customerName || ''
+              } : null; // Return null for cases where permission[0] is undefined
+            }).filter((result: any) => result !== null) // Remove null values from the result array
+            : of([]);
+        })       
       )
       return this.joined$;
   }

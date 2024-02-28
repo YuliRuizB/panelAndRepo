@@ -3,6 +3,7 @@ import { ThemeConstantService } from '../../services/theme-constant.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/shared/interfaces/user.type';
+import { RolService } from '../../services/roles.service';
 
 @Component({
     selector: 'app-header',
@@ -12,13 +13,26 @@ import { User } from 'src/app/shared/interfaces/user.type';
 export class HeaderComponent implements OnInit {
 
     user: any;
+    userRol:string = "";
+    infoLoad:any = [];
 
     constructor(
         private themeService: ThemeConstantService,
+        private rolService: RolService, 
         public authService: AuthenticationService
     ) {
         this.authService.user.subscribe( (user) => {
-            this.user = user;
+            this.user = user;  
+            console.log(this.user);   
+            if(this.user != null){
+             if( this.user.rolId != undefined) { // get rol assigned               
+                this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {                    
+                    this.infoLoad = item;
+                    this.userRol = this.infoLoad.description;
+                   });
+            }
+            }        
+            
         });
     }
 

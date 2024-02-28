@@ -35,8 +35,8 @@
   </div>
 </nz-drawer>
 
-<button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="open()">Alertas</button>
-<button nz-button style="margin-bottom: 1em;" nzType="primary" (click)="openMessage()">Mensajes</button>
+<button nz-button style="margin-bottom: 1em; background-color: #4F6F57; color: #f6f3ea;" (click)="open()">Alertas</button>
+<button nz-button style="margin-bottom: 1em; background-color: #4F6F57; color: #f6f3ea;" (click)="openMessage()">Mensajes</button>
 
 <div class="row">
   <div class="col-lg-6 col-sm-12">
@@ -125,7 +125,7 @@
             <h5 class="mb-0">Ejecución del Programa</h5>
           </div>
           <div class="m-t-30">
-            <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowFleetData"
+             <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowFleetData"
               [onGridReady]='onGridReady' [columnDefs]="columnFleetDefs" [defaultColDef]="defaultColDef" [groupIncludeFooter]="true" [sideBar]="true">
             </ag-grid-angular>
           </div>
@@ -141,6 +141,19 @@
             <h5 class="mb-0">Actividad de los usuarios</h5>
           </div>
           <div class="m-t-30">
+            <!-- Date Range Form -->
+            <form [formGroup]="dateRangeForm" (ngSubmit)="onDateRangeChange()">
+              <!-- Start Date Picker -->
+              <nz-date-picker formControlName="startDate"></nz-date-picker>
+              
+              <!-- End Date Picker -->
+              <nz-date-picker formControlName="endDate"></nz-date-picker>
+  
+              <!-- Submit Button -->
+              <button nz-button style=" background-color: #4F6F57; color: #f6f3ea;" type="submit">Aceptar</button>
+            </form>
+  
+            <!-- Ag-Grid Component -->
             <ag-grid-angular #agGrid style="width: 100%; height: 500px;" class="ag-theme-material" [rowData]="rowData"
               [onGridReady]='onGridReady' [columnDefs]="columnDefs" [groupIncludeFooter]="true" [sideBar]="true">
             </ag-grid-angular>
@@ -148,5 +161,5 @@
         </nz-card>
       </div>
     </div>
-  </nz-tab>
+  </nz-tab> 
 </nz-tabset>

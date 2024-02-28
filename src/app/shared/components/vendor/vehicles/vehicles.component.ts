@@ -7,6 +7,8 @@ import * as _ from 'lodash';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router } from '@angular/router';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-shared-vendor-vehicles',
@@ -28,10 +30,16 @@ export class SharedVendorVehiclesComponent implements OnInit {
   columnDefs = columnDefs;
   vehicleForm: FormGroup;
   user: any;
+  userlevelAccess: string;
+  infoLoad: any = [];
 
   popupParent: any;
 
-  constructor(private devicesService: DevicesService, private fb: FormBuilder, private authService: AuthenticationService, private router: Router) {
+  constructor(private devicesService: DevicesService,
+    private fb: FormBuilder, private authService: AuthenticationService,
+    private rolService: RolService,
+    private messageService: NzMessageService,
+    private router: Router) {
     this.popupParent = document.querySelector('body');
   }
 
@@ -45,6 +53,12 @@ export class SharedVendorVehiclesComponent implements OnInit {
     ).subscribe(user => {
       this.user = user;
       console.log(user);
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
     });
   }
 
@@ -67,6 +81,10 @@ export class SharedVendorVehiclesComponent implements OnInit {
       console.log(this.devicesList);
     })
   }
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+  }
+
 
   searchByValue() {
     this.initializeList();
@@ -113,18 +131,29 @@ export class SharedVendorVehiclesComponent implements OnInit {
     this.isOkLoading = true;
     console.log(this.vehicleForm.value);
     console.log(this.vehicleForm.valid);
-    this.devicesService.addDevice(this.vendorId, this.vehicleForm.value).then(() => {
-      this.isOkLoading = false;
-      this.isVisible = false;
-    })
-      .catch(err => {
+    if (this.userlevelAccess != "3") {
+      this.devicesService.addDevice(this.vendorId, this.vehicleForm.value).then(() => {
         this.isOkLoading = false;
-        console.log(err);
-      });
+        this.isVisible = false;
+      })
+        .catch(err => {
+          this.isOkLoading = false;
+          console.log(err);
+        });
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para agregar datos, favor de contactar al administrador.");
+    }
+
   }
 
   deletePermission(data) {
-    this.devicesService.deleteDevice(this.vendorId, data.id);
+    if (this.userlevelAccess == "1") {
+      this.devicesService.deleteDevice(this.vendorId, data.id);
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+
+
   }
 
   cancelDelete() {

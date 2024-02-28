@@ -115,7 +115,7 @@ export class MessageCenterComponent implements OnInit {
       this.checkOptionsRoute.forEach(item => {
         item.checked = false;
       });
-      this.createMessage('error', 'No has seleccionado un cliente.');
+      this.createMessage('error', 'No has seleccionado una empresa.');
     }
   }
 
@@ -134,7 +134,7 @@ export class MessageCenterComponent implements OnInit {
             const dataMessage = {
               createdAt: new Date(),
               from: 'FyXKSXsUbYNtAbWL7zZ66o2f1M92',
-              fromName: 'Bus2U Informa General',
+              fromName: 'Apps And Informa General',
               msg: this.InputMessage,
               requestId: 'suhB7YFAh6PYXCRuJhfD',
              // token: 'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
@@ -142,12 +142,12 @@ export class MessageCenterComponent implements OnInit {
               token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,
               uid: eachUserMessage.uid,
               email: eachUserMessage.email,
-              title: 'Bus2U Informa General',
+              title: 'Apps And Informa General',
               body: this.InputMessage
             }
             const notifMessage = {
               timestamp: new Date(),
-              title: 'Bus2U Informa General',
+              title: 'Apps And Informa General',
               email: eachUserMessage.email,
               body: this.InputMessage,
               token: eachUserMessage.token,//'dXf-sDaPH4U:APA91bGiTZ1H8jzNXEexZW65A8QUzNOqV77-vKquP6qZ535IyWWQ7m0PUFCI-3g-qXRvrvuo8-VJgkwF317YHegZh6oNUCHlylU1PoA_aM_5bJw44xNUChtV1sO30ge4VSx6MK2InIzr',//eachUserMessage.token,

@@ -9,8 +9,10 @@ import * as _ from 'lodash';
 import { AssignmentType } from 'src/app/shared/interfaces/assignment.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
-import { NzNotificationService } from 'ng-zorro-antd';
+import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { addMinutes, set } from 'date-fns';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-shared-customer-vendor-assignments',
@@ -40,13 +42,29 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   currentSelected: any;
   programForm: FormGroup;
   assigmentType: AssignmentType
+  infoLoad: any = [];
+  userlevelAccess: string;
+  user: any;
 
   constructor(
     private notification: NzNotificationService,
     private routesService: RoutesService,
     private vendorsService: VendorService,
+    private messageService: NzMessageService,
+    private rolService: RolService,
+    public authService: AuthenticationService,
     private fb: FormBuilder
   ) {
+    this.authService.user.subscribe((user) => {
+      this.user = user;
+      if (this.user.rolId != undefined) { // get rol assigned               
+        this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+          this.infoLoad = item;
+          this.userlevelAccess = this.infoLoad.optionAccessLavel;
+        });
+      }
+    });
+
     this.createForm();
     console.log(this.assigmentType);
   }
@@ -150,7 +168,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     const stopBeginHourArray = data.stopBeginHour.split(':');
     const stopEndHourArray = data.stopEndHour.split(':');
 
-    console.log(set(data.time.toDate(), { hours: stopBeginHourArray[0], minutes: stopBeginHourArray[1]}));
+    console.log(set(data.time.toDate(), { hours: stopBeginHourArray[0], minutes: stopBeginHourArray[1] }));
 
     this.programForm.patchValue({
       active: data.active,
@@ -167,11 +185,11 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
       stopBeginId: data.stopBeginId,
       stopBeginName: data.stopBeginName,
       stopBeginHour: data.stopBeginHour,
-      stopBeginHourT: set(data.time.toDate(), { hours: stopBeginHourArray[0], minutes: stopBeginHourArray[1]}),
+      stopBeginHourT: set(data.time.toDate(), { hours: stopBeginHourArray[0], minutes: stopBeginHourArray[1] }),
       stopEndId: data.stopEndId,
       stopEndName: data.stopEndName,
       stopEndHour: data.stopEndHour,
-      stopEndHourT: set(data.time.toDate(), { hours: stopEndHourArray[0], minutes: stopEndHourArray[1]}),
+      stopEndHourT: set(data.time.toDate(), { hours: stopEndHourArray[0], minutes: stopEndHourArray[1] }),
       time: (data.time).toDate(),
       type: data.type,
       customerName: data.customerName,
@@ -196,14 +214,22 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     this.currentSelectedId = null;
     this.currentSelected = null;
   }
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+}
 
   showModalDelete(data) {
     console.log(data);
-    this.routesService.deleteRouteAssignments(this.accountId, data.routeId, data.id).then(() => {
-      this.isCreateVisible = false;
-      this.isEditMode = false;
-    })
-      .catch(err => console.log(err));
+    if (this.userlevelAccess == "1") {
+      this.routesService.deleteRouteAssignments(this.accountId, data.routeId, data.id).then(() => {
+        this.isCreateVisible = false;
+        this.isEditMode = false;
+      })
+        .catch(err => console.log(err));
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+   
   }
 
   showModalEdit(data) {
@@ -211,7 +237,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     this.currentSelected = data;
     this.patchForm(data);
     console.log(data);
-    
+
     setTimeout(() => {
       this.isCreateVisible = true;
     }, 100);
@@ -229,18 +255,18 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     // console.log(this.programForm.value);
 
     this.programForm.get('customerId').setValue(this.accountId);
-    
+
     // const program = this.programForm.get('program').value;
 
     const stopBeginHourDate = new Date(this.programForm.controls['stopBeginHourT'].value);
-      const stopEndHourDate = new Date(this.programForm.controls['stopEndHourT'].value);
-      const stopBeginHour = [stopBeginHourDate.getHours(), String(stopBeginHourDate.getMinutes()).padStart(2, '0')].join(':');
-      const stopEndHour = [stopEndHourDate.getHours(), String(stopEndHourDate.getMinutes()).padStart(2, '0')].join(':');
+    const stopEndHourDate = new Date(this.programForm.controls['stopEndHourT'].value);
+    const stopBeginHour = [stopBeginHourDate.getHours(), String(stopBeginHourDate.getMinutes()).padStart(2, '0')].join(':');
+    const stopEndHour = [stopEndHourDate.getHours(), String(stopEndHourDate.getMinutes()).padStart(2, '0')].join(':');
 
-      this.programForm.controls['stopBeginHour'].setValue(stopBeginHour);
-      this.programForm.controls['stopEndHour'].setValue(stopEndHour);
-      
-      console.log(stopBeginHour, stopEndHour);
+    this.programForm.controls['stopBeginHour'].setValue(stopBeginHour);
+    this.programForm.controls['stopEndHour'].setValue(stopEndHour);
+
+    console.log(stopBeginHour, stopEndHour);
     // if(program == 'M') {
     //   this.onStopPointSelected(this.programForm.get('stopBeginId').value, 'stopBeginName','stopBeginHour');
     //   this.onStopPointSelected(this.programForm.get('stopEndId').value, 'stopEndName','stopEndHour');
@@ -248,34 +274,42 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     //   this.onStopPointSelected(this.programForm.get('stopBeginId').value, 'stopBeginName','stopEndHour');
     //   this.onStopPointSelected(this.programForm.get('stopEndId').value, 'stopEndName','stopBeginHour');
     // }
-    
-    if( this.programForm.get('stopBeginHour').value == '' || this.programForm.get('stopEndHour').value == '') {
+
+    if (this.programForm.get('stopBeginHour').value == '' || this.programForm.get('stopEndHour').value == '') {
       return this.notification.create(
         'error',
         'Problema con la información',
-        'No están definidos los tiempos entre paradas de esta ruta para el turno seleccionado'
+        'No están definidos los tiempos entre estación de esta ruta para el turno seleccionado'
       );
     }
 
     if (!this.isEditMode) {
+      if (this.userlevelAccess != "3") {      
       this.routesService.setRouteAssignments(this.accountId, this.programForm.get('routeId').value, this.programForm.value).then(() => {
         this.isCreateVisible = false;
         this.isEditMode = false;
       })
         .catch(err => console.log(err));
       console.log(this.programForm.value);
-      
-      
-    } else {
-      this.routesService.updateRouteAssignment(this.accountId, this.programForm.get('routeId').value, this.currentSelectedId, this.programForm.value).then(() => {
-        this.isCreateVisible = false;
-        this.isEditMode = false;
-        this.currentSelectedId = null;
-      })
-        .catch(err => console.log(err));
-      console.log(this.programForm.value);
-    }
 
+      } else {
+        this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+      }
+
+
+    } else {
+      if (this.userlevelAccess != "3") {
+        this.routesService.updateRouteAssignment(this.accountId, this.programForm.get('routeId').value, this.currentSelectedId, this.programForm.value).then(() => {
+          this.isCreateVisible = false;
+          this.isEditMode = false;
+          this.currentSelectedId = null;
+        })
+          .catch(err => console.log(err));
+        console.log(this.programForm.value);
+      } else {
+        this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+      }      
+    }
   }
 
   checkChange(formControl: string, event: boolean) {
@@ -290,11 +324,11 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id, ...data }
-    })))
-    .subscribe( (stopPoints:IStopPoint[]) => {
-      this.stopPointsList = stopPoints;
-      this.loading = false;
-    });
+      })))
+      .subscribe((stopPoints: IStopPoint[]) => {
+        this.stopPointsList = stopPoints;
+        this.loading = false;
+      });
   }
 
   onStopPointSelected(event, field, timeSelection) {
@@ -305,40 +339,32 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
     const program = this.programForm.controls['program'].value;
     const selector = field;
     let time = '';
-    if(program == 'M') {
-      if(selector == 'stopBeginName') {
+    if (program == 'M') {
+      if (selector == 'stopBeginName') {
         time = 'stopBeginHourT';
       } else {
         time = 'stopEndHourT';
       }
     } else {
-      if(selector == 'stopEndName') {
+      if (selector == 'stopEndName') {
         time = 'stopBeginHourT';
       } else {
         time = 'stopEndHourT';
       }
     }
-    
+
     console.log(commitmentTime, program, event, field, time);
-    
+
     if (event) {
       const recordArray = _.filter(this.stopPointsList, s => {
         return s.id == event;
       });
       const record = recordArray[0];
-      
+
       console.log(record);
       let round = this.programForm.controls['round'].value;
       console.log(round);
-      this.programForm.controls[field].setValue(record.name);
-
-      // if( this.programForm.get('stopBeginHour').value == '' || this.programForm.get('stopEndHour').value == '') {
-      //   return this.notification.create(
-      //     'error',
-      //     'Problema con la información',
-      //     'No están definidos los tiempos entre paradas de esta ruta para el turno seleccionado'
-      //   );
-      // }
+      this.programForm.controls[field].setValue(record.name);     
 
       switch (round) {
         case 'Día':

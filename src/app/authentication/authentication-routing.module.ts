@@ -5,6 +5,7 @@ import { SignupComponent } from './signup/signup.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { PleaseVerifyEmailComponent } from './please-verify-email/please-verify-email.component';
+import { preRegisterComponent } from './preRegister/preRegister.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,13 @@ const routes: Routes = [
       {
         path: 'signup',
         component: SignupComponent,
+        data: {
+          title: 'Signup'
+        }
+      },
+      {
+        path: 'preRegister',
+        component: preRegisterComponent,
         data: {
           title: 'Signup'
         }

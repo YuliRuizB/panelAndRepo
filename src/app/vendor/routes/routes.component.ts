@@ -129,6 +129,7 @@ export class RoutesComponent implements OnInit {
       console.log(user);
       this.getRoutes();
       this.initializeGrid();
+      console.log("fin");
     });
   }
 
@@ -251,6 +252,7 @@ export class RoutesComponent implements OnInit {
   }
 
   getRoutes() {
+    console.log(this.user.customerId);
     this.routesService.getRoutes(this.user.customerId).pipe(
       map(actions => actions.map(a => {
         const id = a.payload.doc.id;
@@ -258,6 +260,7 @@ export class RoutesComponent implements OnInit {
         return { id: id, ...data }
       }))
     ).subscribe((routes) => {
+      console.log("todoBien");
       console.log(routes);
       this.routesList = routes;
     });

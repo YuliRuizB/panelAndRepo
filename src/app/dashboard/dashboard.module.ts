@@ -4,9 +4,10 @@ import { SharedModule } from '../shared/shared.module';
 import { DashboardRoutingModule } from "./dashboard-routing.module";
 import { ThemeConstantService } from '../shared/services/theme-constant.service';
 import { NgChartjsModule } from 'ng-chartjs';
-
 import { DefaultDashboardComponent } from './default/default-dashboard.component';
 import { WithBreadcrumbDashboardComponent } from './with-breadcrumb/with-breadcrumb-dashboard.component';
+import { QualityDashboardComponent } from './quality/quality-dashboard.component';
+import { ReportsDashboardComponent } from './reports/reports-dashboard.component';
 
 
 @NgModule({
@@ -19,6 +20,8 @@ import { WithBreadcrumbDashboardComponent } from './with-breadcrumb/with-breadcr
     exports: [],
     declarations: [
         DefaultDashboardComponent,
+        QualityDashboardComponent,
+        ReportsDashboardComponent,
         WithBreadcrumbDashboardComponent
     ],
     providers: [

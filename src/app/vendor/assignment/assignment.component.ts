@@ -99,8 +99,7 @@ export class AssignmentComponent implements OnInit, OnDestroy {
   getSubscriptions(vendorId: string) {
     this.vendorRoutesSubscription = this.usersService.getBoardingPassesByRoute(vendorId).pipe(
       takeUntil(this.stopSubscriptions$)
-    ).subscribe(data => {
-      console.log(data);
+    ).subscribe(data => {     
       this.createNestedTableData(data);
     })
   }

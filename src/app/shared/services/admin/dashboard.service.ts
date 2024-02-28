@@ -27,7 +27,7 @@ export class DashboardService {
   }
 
   sendtoDeviceMessage(infoToSend:any) {
-    console.log('function');
+   // console.log('function');
        const sendFCMNotification =  this.aff.httpsCallable('sendToDeviseMessage');
        sendFCMNotification(infoToSend).toPromise().then((respone:any) => {
         console.log(respone);
@@ -35,14 +35,14 @@ export class DashboardService {
   }
 
   setChatMessage(data:object) {
-    console.log(data);
+    //console.log(data);
     const key = this.afs.createId();
     //console.log('key '+ key );
     const sendChatMessage = this.afs.collection('chatMessages').doc(key);
     return sendChatMessage.set(data);
   }
   setMessage(data:object,idUser:string) {
-    console.log(data);
+    //console.log(data);
    const key = this.afs.createId();
     //console.log('key '+ key );
     const sendMessage = this.afs.collection('users').doc(idUser).collection('messages').doc(key);
@@ -50,7 +50,7 @@ export class DashboardService {
   }
 
   getUserChatMessages(userId:string, limit?: number){
-    console.log('userChatMessages:'+userId);
+    //console.log('userChatMessages:'+userId);
     return this.afs.collection('chatMessages', (ref) => 
     ref
     .where('uid', '==', userId)

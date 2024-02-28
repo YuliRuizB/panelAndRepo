@@ -7,6 +7,9 @@ import { DriversService } from 'src/app/shared/services/drivers.service';
 import { ProgramService } from 'src/app/shared/services/program.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import * as _ from 'lodash';
+import { RolService } from 'src/app/shared/services/roles.service';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-shared-vehicle-assignments',
@@ -21,33 +24,45 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
   @Input() assignmentId: string;
   @Input() routeId: string;
   @Input() routeName: string;
-
   stopSubscription$: Subject<boolean> = new Subject();
   loading: boolean = true;
   isModalVisible: boolean = false;
   isSelectDayVisible: boolean = false;
-
   selectedAssignment: any;
-
   programSelectedDate: Date = new Date();
   vehicleAssignmentsList: any[] = [];
-  vehicleAssignmentSubscription: Subscription;
-  
+  vehicleAssignmentSubscription: Subscription;  
   vehiclesList: any[] = [];
   vehiclesSubscription: Subscription;
-
   driversList: any[] = [];
   driversSubscription: Subscription;
-
   assignmentForm: FormGroup;
+  infoLoad: any = [];
+  userlevelAccess:string;
+ user: any;
+
 
   constructor(
     private routesService: RoutesService,
     private vehiclesService: VehiclesService,
+    private rolService: RolService,
+  public authService: AuthenticationService,
+  private messageService: NzMessageService,
     private driversService: DriversService,
     private programService: ProgramService,
     private fb: FormBuilder
-    ) { }
+    ) { 
+      this.authService.user.subscribe((user) => {
+        this.user = user;
+        if (this.user.rolId != undefined) { // get rol assigned               
+            this.rolService.getRol(this.user.rolId).valueChanges().subscribe(item => {
+                this.infoLoad = item;
+                this.userlevelAccess = this.infoLoad.optionAccessLavel;                 
+            });
+        }
+    });
+
+    }
 
   ngOnInit() {
     
@@ -71,10 +86,13 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
       vehicleName: ['', [Validators.required ]],
       vehicleCapacity: [0],
       driverId: ['', [Validators.required ]],
-      driverName: ['', [Validators.required ]]
+      driverName: ['', [Validators.required ]],
+
     })
   }
-
+  sendMessage(type: string, message: string): void {
+    this.messageService.create(type, message);
+}
   getSubscriptions() {
     this.vehicleAssignmentSubscription = this.routesService.getRouteVehicleAssignments(this.customerId, this.routeId, this.assignmentId, this.vendorId).pipe(
       takeUntil(this.stopSubscription$),
@@ -84,6 +102,8 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
         return { id, ...data}
       }))
     ).subscribe( assignments => {
+      console.log("assignments");
+      console.log(assignments);
       this.vehicleAssignmentsList = assignments;
       this.loading = false;
     });
@@ -127,12 +147,17 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
 
   handleOk() {
     console.log(this.assignmentForm.value);
-    if(this.assignmentForm.valid) {
-      this.routesService.setRouteVehicleAssignments(this.customerId, this.routeId, this.assignmentForm.value);
-      this.isModalVisible = false;
+    if (this.userlevelAccess != "3") {
+      if(this.assignmentForm.valid) {
+        this.routesService.setRouteVehicleAssignments(this.customerId, this.routeId, this.assignmentForm.value);
+        this.isModalVisible = false;
+      } else {
+        console.log('form is invalid');
+      }
     } else {
-      console.log('form is invalid');
-    }
+      this.sendMessage('error', "El usuario no tiene permisos para actualizar datos, favor de contactar al administrador.");
+    }  
+    
   }
 
   toggleActive(data) {
@@ -162,6 +187,7 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
     data.customerName = this.customerName;
     data.routeName = this.routeName;
     console.log('full data is: ', data);
+    
     this.programService.setProgram(data);
     this.selectedAssignment = null;
     this.isSelectDayVisible = false;
@@ -169,10 +195,16 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
 
   deleteAssignment(data) {
     this.loading = true;
-    this.routesService.deleteRouteVehicleAssignments(this.customerId, this.routeId, data.id).then( () => {
-      this.loading = false;
-    })
-    .catch( err => console.log(err));
+    if (this.userlevelAccess == "1") {
+      this.routesService.deleteRouteVehicleAssignments(this.customerId, this.routeId, data.id).then( () => {
+        this.loading = false;
+      })
+      .catch( err => console.log(err));
+    } else {
+      this.sendMessage('error', "El usuario no tiene permisos para borrar datos, favor de contactar al administrador.");
+    }
+    
+   
   }
 
   onDriverSelected(event, field) {

@@ -96,7 +96,7 @@ export class PayeeComponent implements OnInit {
       type: 'doc'
     },
     {
-      name: 'Logo.png',
+      name: 'andLogo.png',
       size: '128 KB',
       type: 'image'
     }

@@ -9,6 +9,7 @@ import { SignupComponent } from './signup/signup.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { PleaseVerifyEmailComponent } from './please-verify-email/please-verify-email.component';
+import { preRegisterComponent } from './preRegister/preRegister.component';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { PleaseVerifyEmailComponent } from './please-verify-email/please-verify-
   declarations: [
     LoginComponent,
     SignupComponent,
+    preRegisterComponent,
     VerifyEmailComponent,
     ForgotPasswordComponent,
     PleaseVerifyEmailComponent

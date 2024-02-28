@@ -22,7 +22,7 @@
             <i class="font-size-16" nz-icon nzType="ordered-list" theme="outline"></i>
           </label>
         </nz-radio-group>
-        <button nz-button nzType="primary" (click)="addNewRoute(newProjectContent)">
+        <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"(click)="addNewRoute(newProjectContent)">
           <i nz-icon nzType="plus"></i>
           <span>Agregar ruta</span>
         </button>
@@ -43,11 +43,11 @@
             <div class="row">
               <div class="col-md-12">
                 <nz-form-item>
-                  <nz-form-label>Cliente</nz-form-label>
+                  <nz-form-label>Empresa</nz-form-label>
                   <nz-form-control>
                     <nz-form-control>
                       <nz-select formControlName="customerId" (ngModelChange)="setCustomerName($event)" class="w-100"
-                        nzPlaceHolder="Selecciona cliente">
+                        nzPlaceHolder="Selecciona la empresa">
                         <nz-option *ngFor="let item of accountsList" [nzLabel]="item.name" [nzValue]="item.id">
                         </nz-option>
                       </nz-select>
@@ -68,7 +68,7 @@
       <nz-card>
         <div class="d-flex justify-content-between">
           <div class="media">
-            <nz-avatar [nzSize]="40" nzShape="square" [nzSrc]="item.imageUrl"></nz-avatar>
+            <nz-avatar [nzSize]="40" nzShape="square" style="background-color: white ;  color: #4F6F57;" [nzSrc]="item.imageUrl"></nz-avatar>
             <div class="m-l-10">
               <h5 class="m-b-0">{{item.name}}</h5>
               <span class="text-muted font-size-13">{{item.customerName}}</span>
@@ -124,19 +124,19 @@
     <nz-table #listViewTable [nzData]="routesList">
       <thead>
         <tr>
-          <th>Cliente</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Paradas</th>
+          <th style="color: #4F6F57;">Empresa</th>
+          <th style="color: #4F6F57;">Nombre</th>
+          <th style="color: #4F6F57;">Descripción</th>
+          <th style="color: #4F6F57;">Estaciones</th>
           <th class="text-center">Status</th>
-          <th></th>
+          <th style="color: #4F6F57;"></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of listViewTable.data">
           <td>
             <div class="media align-items-center">
-              <nz-avatar nzShape="square" [nzSrc]="item.imageUrl"></nz-avatar>
+              <nz-avatar nzShape="square"  style="background-color: white ;  color: #4F6F57;" [nzSrc]="item.imageUrl"></nz-avatar>
               <div class="m-l-10">
                 <h5 class="m-b-0">{{item.customerName }}</h5>
               </div>
@@ -190,13 +190,13 @@
   </nz-card>
 </div>
 
-<nz-modal [(nzVisible)]="duplicateVisible" nzTitle="Duplicar ruta para cliente" (nzOnCancel)="handleCancel()">
+<nz-modal [(nzVisible)]="duplicateVisible" nzTitle="Duplicar ruta para la empresa" (nzOnCancel)="handleCancel()">
   <div class="row">
     <div class="col-sm-12">
       <form nz-form>
         <nz-form-item>
-          <nz-form-label nzFor="customerId">Cliente</nz-form-label>
-          <nz-select [(ngModel)]="duplicateCustomerId" name="duplicateCustomerId" nzAllowClear (ngModelChange)="onCustomerChange($event)" nzPlaceHolder="Selecciona el cliente">
+          <nz-form-label nzFor="customerId">Empresa</nz-form-label>
+          <nz-select [(ngModel)]="duplicateCustomerId" name="duplicateCustomerId" nzAllowClear (ngModelChange)="onCustomerChange($event)" nzPlaceHolder="Selecciona la empresa">
             <nz-option *ngFor="let o of accountsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
                 nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
           </nz-select>
@@ -205,7 +205,7 @@
     </div>
   </div>
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
-    <button nz-button nzType="primary" (click)="createDuplicated()" [nzLoading]="isDuplicateLoading">Duplicar</button>
+    <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"(click)="handleCancel()">Cancelar</button>
+    <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="createDuplicated()" [nzLoading]="isDuplicateLoading">Duplicar</button>
   </div>
 </nz-modal>

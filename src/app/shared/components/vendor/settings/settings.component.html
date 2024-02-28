@@ -1,13 +1,13 @@
-<button *ngIf="userCanUpdate" class="media align-items-right m-t-10 m-r-10" nz-button nzType="primary"
+<button *ngIf="userCanUpdate" class="media align-items-right m-t-10 m-r-10" nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"
   (click)="showModal()"><i nz-icon nzType="plus"></i>Asignar ruta</button>
 <nz-table #basicTable [nzData]="vendorRoutesList" [nzLoading]="loading" *ngIf="userCanUpdate">
   <thead>
     <tr>
-      <th>Cliente</th>
+      <th style="color: #4F6F57;">Empresa</th>
       <th nzShowExpand>Nombre</th>
-      <th>Descripción</th>
-      <th>Activa</th>
-      <th>Habilitada</th>
+      <th style="color: #4F6F57;">Descripción</th>
+      <th style="color: #4F6F57;">Activa</th>
+      <th style="color: #4F6F57;">Habilitada</th>
       <th *ngIf="userCanUpdate"></th>
     </tr>
   </thead>
@@ -71,7 +71,7 @@
   </div>
 
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
-    <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Habilitar Ruta</button>
+    <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleCancel()">Cancelar</button>
+    <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="handleOk()" [nzLoading]="isConfirmLoading">Habilitar Ruta</button>
   </div>
 </nz-modal>

@@ -13,7 +13,7 @@
           <a href="https://ng.ant.design">{{ item.title }}</a>
         </ng-template>
         <ng-template #ellipsisAction>
-          <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0">
+          <button nz-button nzNoAnimation nz-dropdown [nzDropdownMenu]="menu" style="border: none; padding: 0; background-color: #4F6F57; color: #f6f3ea;">
             <i nz-icon nzType="ellipsis" nzTheme="outline" style="font-size: 20px; vertical-align: top;"></i>
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -42,7 +42,7 @@
     </nz-list-item>
   </ng-template>
 </ul>
-<button *ngIf="vehicleAssignmentsList.length == 0 && !loading" nz-button nzType="primary"
+<button *ngIf="vehicleAssignmentsList.length == 0 && !loading" nz-button  style=" background-color: #4F6F57; color: #f6f3ea;"
   (click)="showModal()">Asignar</button>
 
 <nz-modal [(nzVisible)]="isModalVisible" nzTitle="Asignación" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
@@ -60,7 +60,7 @@
     <nz-form-item>
       <nz-form-label>Operador</nz-form-label>
       <nz-form-control>
-        <nz-select formControlName="driverId" nzAllowClear nzPlaceHolder="Selecciona el conductor"
+        <nz-select formControlName="driverId" nzAllowClear nzPlaceHolder="Selecciona el PR"
           (ngModelChange)="onDriverSelected($event, 'driverName')">
           <nz-option *ngFor="let o of driversList" nzCustomContent [nzLabel]="o.displayName" [nzValue]="o.id"><i nz-icon
               nzType="user"></i> {{ o.displayName }}</nz-option>

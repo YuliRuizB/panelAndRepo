@@ -18,7 +18,7 @@ export class AppComponent implements OnInit{
       if (user) {
         
       }
-    })
+    }) 
   }
 
 }

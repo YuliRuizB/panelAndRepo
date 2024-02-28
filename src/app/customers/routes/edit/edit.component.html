@@ -1,14 +1,14 @@
 <div class="page-header has-tab">
   <div class="d-md-flex m-b-15 align-items-center justify-content-between">
     <div class="media align-items-center m-b-15">
-      <nz-avatar nzShape="square" [nzSize]="70" [nzSrc]="objectForm.controls.imageUrl.value"></nz-avatar>
+      <nz-avatar nzShape="square"  style="background-color: white ;  color: #4F6F57;" [nzSize]="70" [nzSrc]="objectForm.controls.imageUrl.value"></nz-avatar>
       <div class="m-l-15">
         <h4 class="m-b-0">{{ objectForm.controls.name.value }}</h4>
         <!-- <p class="text-muted m-b-0">Code: #5325</p> -->
       </div>
     </div>
     <div class="m-b-15">
-      <button nz-button nzType="primary" (click)="saveForm()">
+      <button nz-button  style=" background-color: #4F6F57; color: #f6f3ea;" (click)="saveForm()">
         <i nz-icon nzType="save" theme="outline"></i>
         <span>Actualizar</span>
       </button>
@@ -53,8 +53,8 @@
           </div>
           <div class="col-md-12">
           <nz-form-item>
-            <nz-form-label nzFor="customerId">Cliente</nz-form-label>
-            <nz-select formControlName="customerId" nzAllowClear nzPlaceHolder="Selecciona el cliente" (ngModelChange)="onCustomerChange($event)">
+            <nz-form-label nzFor="customerId">Empresa</nz-form-label>
+            <nz-select formControlName="customerId" nzAllowClear nzPlaceHolder="Selecciona la empresa" (ngModelChange)="onCustomerChange($event)">
               <nz-option *ngFor="let o of accountsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon nzType="flag"></i> {{ o.name }} <br/> {{ o.description }}</nz-option>
             </nz-select>
           </nz-form-item>
@@ -62,7 +62,7 @@
         </div>
       </nz-card>
     </nz-tab>
-    <nz-tab nzTitle="Paradas">
+    <nz-tab nzTitle="Estaciones">
       <nz-card>
         <app-shared-stoppoints-list [accountId]="accountId" [routeId]="routeId"></app-shared-stoppoints-list>
       </nz-card>
