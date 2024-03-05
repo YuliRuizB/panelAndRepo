@@ -116,10 +116,6 @@ import { PromotionsComponent } from './components/promotions/promotions/promotio
         ThemeConstantService,
         NoticeService,
         TableService
-    ],
-    entryComponents: [
-        SharedStopPointsEditComponent,
-        SharedStopPointsNewComponent
     ]
 })
 

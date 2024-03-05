@@ -47,10 +47,6 @@ import { BajaUsuarioComponent } from './bajaUsuario/bajaUsuario.component';
         PageNotFoundComponent,
         ExternalPrivacyComponent
     ],
-    entryComponents: [
-        TermsComponent,
-        PrivacyComponent
-    ],
     providers: [
         ThemeConstantService
     ]
