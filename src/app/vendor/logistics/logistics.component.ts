@@ -14,7 +14,7 @@ import { IActivityLog, ColumnDefs, LiveProgramColumnDefs } from 'src/app/logisti
 import { LogisticsService } from 'src/app/logistics/services.service';
 import { GeoJson, FeatureCollection } from 'src/app/logistics/map';
 import { LiveService } from 'src/app/shared/services/live.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 
 am4core.useTheme(am4themes_animated);
@@ -30,7 +30,7 @@ export class LogisticsComponent implements OnInit {
 
   @ViewChild('map', { static: true }) mapElement: ElementRef;
 
-  dateRangeForm: FormGroup;
+  dateRangeForm: UntypedFormGroup;
   startDate: Date;
   endDate: Date;
 
@@ -71,7 +71,7 @@ export class LogisticsComponent implements OnInit {
   constructor(
     private logisticsService: LogisticsService,
     private notification: NzNotificationService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private liveService: LiveService,
     private zone: NgZone
   ) {

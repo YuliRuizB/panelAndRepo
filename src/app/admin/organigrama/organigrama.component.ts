@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CustomersService } from 'src/app/customers/services/customers.service';
@@ -23,8 +23,8 @@ export class OrganigramaComponent implements OnInit {
   usersCollection: AngularFirestoreCollection<any>;
   accountId$ = new Subject<string>();
   routeId$ = new Subject<string>();
-  validateForm: FormGroup;
-  validateFormP: FormGroup;
+  validateForm: UntypedFormGroup;
+  validateFormP: UntypedFormGroup;
   stopSubscription$: Subject<any> = new Subject();
   routes: any ;
   routesP : any;
@@ -50,7 +50,7 @@ rowDataPush: any  = [];
   constructor( private afs: AngularFirestore,
     private usersService: UsersService, 
     private routesService: RoutesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private customersService: CustomersService) { 
      
       this.defaultColDef = {

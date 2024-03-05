@@ -4,7 +4,7 @@ import { CustomersService } from 'src/app/customers/services/customers.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Product } from 'src/app/shared/interfaces/product.type';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { map } from 'rxjs/operators';
 import { RolService } from 'src/app/shared/services/roles.service';
@@ -23,7 +23,7 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
   view: string = 'cardView';
   sub: Subscription;
   productsList: Product[] = [];
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
   infoLoad: any = [];
   userlevelAccess:string;
  user: any;
@@ -37,7 +37,7 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
     private rolService: RolService,
     private userService: UsersService,
     public authService: AuthenticationService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
       this.authService.user.subscribe((user) => {
         this.user = user;

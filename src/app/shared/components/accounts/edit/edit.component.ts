@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AccountsService } from 'src/app/shared/services/accounts.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, map, tap } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd';
@@ -16,7 +16,7 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 export class SharedAccountEditComponent implements OnInit, OnDestroy {
 
   @Input('accountId') accountId: string;
-  objectForm: FormGroup;
+  objectForm: UntypedFormGroup;
   stopSubscription$: Subject<boolean> = new Subject();
   loading: boolean = true;
   record;
@@ -31,7 +31,7 @@ export class SharedAccountEditComponent implements OnInit, OnDestroy {
     private rolService: RolService,
      private userService: UsersService,
       public authService: AuthenticationService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.authService.user.subscribe((user) => {
       this.user = user;

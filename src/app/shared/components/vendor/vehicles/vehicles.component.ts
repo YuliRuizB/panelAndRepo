@@ -4,7 +4,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IVehicle, columnDefs } from 'src/app/shared/interfaces/vehicle.type';
 import * as _ from 'lodash';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router } from '@angular/router';
 import { RolService } from 'src/app/shared/services/roles.service';
@@ -28,7 +28,7 @@ export class SharedVendorVehiclesComponent implements OnInit {
   isVisible: boolean = false;
   isOkLoading: boolean = false;
   columnDefs = columnDefs;
-  vehicleForm: FormGroup;
+  vehicleForm: UntypedFormGroup;
   user: any;
   userlevelAccess: string;
   infoLoad: any = [];
@@ -36,7 +36,7 @@ export class SharedVendorVehiclesComponent implements OnInit {
   popupParent: any;
 
   constructor(private devicesService: DevicesService,
-    private fb: FormBuilder, private authService: AuthenticationService,
+    private fb: UntypedFormBuilder, private authService: AuthenticationService,
     private rolService: RolService,
     private messageService: NzMessageService,
     private router: Router) {

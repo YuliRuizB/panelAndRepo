@@ -5,7 +5,7 @@ import { takeUntil, map } from 'rxjs/operators';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { ProgramService } from 'src/app/shared/services/program.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import * as _ from 'lodash';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -36,7 +36,7 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
   vehiclesSubscription: Subscription;
   driversList: any[] = [];
   driversSubscription: Subscription;
-  assignmentForm: FormGroup;
+  assignmentForm: UntypedFormGroup;
   infoLoad: any = [];
   userlevelAccess:string;
  user: any;
@@ -50,7 +50,7 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
   private messageService: NzMessageService,
     private driversService: DriversService,
     private programService: ProgramService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
     ) { 
       this.authService.user.subscribe((user) => {
         this.user = user;

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
@@ -18,7 +18,7 @@ import { RolService } from 'src/app/shared/services/roles.service';
 })
 export class VehicleEditComponent implements OnInit, OnDestroy {
 
-  objectForm: FormGroup;
+  objectForm: UntypedFormGroup;
   objectSubscription: Subscription;
   recordId: any;
   vendorId: any;
@@ -50,7 +50,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
   userlevelAccess: string;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private vehicleService: VehiclesService,
     private bucketStorage: AngularFireStorage,

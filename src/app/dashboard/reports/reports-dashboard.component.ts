@@ -8,7 +8,7 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import * as _ from 'lodash';
-import { Form, FormBuilder, FormGroup } from '@angular/forms';
+import { Form, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { GridReadyEvent, SideBarDef } from 'ag-grid-community';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
@@ -59,14 +59,14 @@ export class ReportsDashboardComponent implements OnInit {
   joined$: Observable<any>;
   cCollection: AngularFirestoreCollectionGroup<any>;
   productsListV:any;
-  validateForm: FormGroup;
-  validateFormTurn:FormGroup;
-  validateFormPase: FormGroup;
-  validateFormAnticipos:FormGroup;
-  validateFormCV:FormGroup;
-  validateFormCVByRoute:FormGroup;
-  signupForm: FormGroup;
-  signupFormCV:FormGroup;
+  validateForm: UntypedFormGroup;
+  validateFormTurn:UntypedFormGroup;
+  validateFormPase: UntypedFormGroup;
+  validateFormAnticipos:UntypedFormGroup;
+  validateFormCV:UntypedFormGroup;
+  validateFormCVByRoute:UntypedFormGroup;
+  signupForm: UntypedFormGroup;
+  signupFormCV:UntypedFormGroup;
   shift: any = [];
   public rowSelection = 'multiple';
   isModalVisible: boolean = false;
@@ -79,7 +79,7 @@ export class ReportsDashboardComponent implements OnInit {
 
   constructor(  private usersService: UsersService, 
       private productsService: ProductsService ,
-      private fb: FormBuilder,
+      private fb: UntypedFormBuilder,
       private routesService: RoutesService,
       private msg: NzMessageService,
       private authService: AuthenticationService,

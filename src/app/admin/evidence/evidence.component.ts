@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup } from '@angular/forms';
 import { NzTabComponent } from 'ng-zorro-antd';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -23,8 +23,8 @@ export class EvidenceComponent implements OnInit {
   loadingevidenceInfo =false;
   loadingevidenceInfoDriver = false;
   stopSubscription$: Subject<any> = new Subject();
-  dateFilterForm: FormGroup;
-  dateFilterFormDriver: FormGroup;
+  dateFilterForm: UntypedFormGroup;
+  dateFilterFormDriver: UntypedFormGroup;
   userlevelAccess: string;
   infoLoad: any = [];
   driversList:any;
@@ -36,7 +36,7 @@ export class EvidenceComponent implements OnInit {
     private datePipe: DatePipe,
     public authService: AuthenticationService,
     private rolService: RolService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
       this.authService.user.subscribe((user) => {
         this.user = user;  

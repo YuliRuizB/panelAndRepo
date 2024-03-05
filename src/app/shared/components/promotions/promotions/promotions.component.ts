@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { GridOptions } from 'ag-grid-community';
 import { NzMessageService, UploadChangeParam } from 'ng-zorro-antd';
 import { Observable, Subscription } from 'rxjs';
@@ -21,10 +21,10 @@ export class PromotionsComponent implements OnInit {
   sub: Subscription;
   user: any;
   userlevelAccess:string;
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
   infoLoad: any = [];
-  programForm: FormGroup;
-  programEditForm:FormGroup;
+  programForm: UntypedFormGroup;
+  programEditForm:UntypedFormGroup;
   isCreateVisible: boolean = false;
   isEditMode: boolean = false;
   currentSelectedId: string;
@@ -69,7 +69,7 @@ export class PromotionsComponent implements OnInit {
     private bucketStorage: AngularFireStorage, 
     private messageService: NzMessageService,
     private promotionsService: PromotionService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) { 
     this.authService.user.subscribe((user) => {
       this.user = user;

@@ -27,7 +27,7 @@ import { AssignmentsService } from 'src/app/shared/services/assignments.service'
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { variable } from '@angular/compiler/src/output/output_ast';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
 
 am4core.useTheme(am4themes_animated);
@@ -113,7 +113,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   numAssingPro:string = "(0)";
   regSelected: string = "(0)";
   regFound:string;
-  signupForm: FormGroup;
+  signupForm: UntypedFormGroup;
 
   private chart: am4charts.XYChart;
   chartData: any;
@@ -167,7 +167,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
     private vehiclesService: VehiclesService,
     private driversService: DriversService,
     private zone: NgZone,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private nzMessageService: NzMessageService,
   ) {
     this.markers = [] as GeoJson[];

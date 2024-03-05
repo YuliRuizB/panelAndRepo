@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AngularFireStorage, AngularFireUploadTask } from "@angular/fire/storage";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { NzMessageService, UploadFile } from "ng-zorro-antd";
 import { Observable } from "rxjs";
 import { finalize, map } from "rxjs/operators";
@@ -18,7 +18,7 @@ export class MyProfileComponent implements OnInit {
     user: any;
     userRol: string = "";
     infoLoad: any = [];
-    validateForm: FormGroup;
+    validateForm: UntypedFormGroup;
     avatarUrl: string = "http://themenate.com/applicator/dist/assets/images/avatars/thumb-13.jpg";
     uploading: boolean = false;
     bucketPath: string = 'vendors/';
@@ -37,7 +37,7 @@ export class MyProfileComponent implements OnInit {
     //Uploaded Image List
     images: Observable<any[]>;
 
-    constructor(private rolService: RolService, private fb: FormBuilder,
+    constructor(private rolService: RolService, private fb: UntypedFormBuilder,
         private bucketStorage: AngularFireStorage,
         private userService: UsersService,
         private messageService: NzMessageService,
@@ -133,7 +133,7 @@ export class MyProfileComponent implements OnInit {
         Promise.resolve().then(() => this.validateForm.controls.checkPassword.updateValueAndValidity());
     }
 
-    confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+    confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
         if (!control.value) {
             return { required: true };
         } else if (control.value !== this.validateForm.controls.password.value) {

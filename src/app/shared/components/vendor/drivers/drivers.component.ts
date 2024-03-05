@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -26,9 +26,9 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
   responseUpdate: string = "";
   modalName: string = "Agregar PR";
 
-  signupForm: FormGroup;
-  signupFormEdit: FormGroup;
-  signupFormPassword: FormGroup;
+  signupForm: UntypedFormGroup;
+  signupFormEdit: UntypedFormGroup;
+  signupFormPassword: UntypedFormGroup;
   infoLoad: any = [];
   userlevelAccess: string;
   user: any;
@@ -38,7 +38,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
     private nzMessageService: NzMessageService,
     private rolService: RolService,
     public authService: AuthenticationService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.authService.user.subscribe((user) => {
       this.user = user;
@@ -247,7 +247,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
     setTimeout(() => this.signupForm.controls.verifyPassword1.updateValueAndValidity());
   }
 
-  confirmValidatorPass = (control: FormControl): { [s: string]: boolean } => {
+  confirmValidatorPass = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { error: true, required: true };
     } else if (control.value !== this.signupFormPassword.controls.password.value) {
@@ -255,7 +255,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
     }
     return {};
   };
-  confirmValidator = (control: FormControl): { [s: string]: boolean } => {
+  confirmValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { error: true, required: true };
     } else if (control.value !== this.signupForm.controls.password.value) {

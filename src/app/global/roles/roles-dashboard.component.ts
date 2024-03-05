@@ -1,6 +1,6 @@
 import { Component, OnInit   } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NzMessageService, TransferItem } from 'ng-zorro-antd';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -32,8 +32,8 @@ interface formRol {
     sub: Subscription;
     isAddVisible:boolean = false;
     isEditVisible:boolean = false;
-    validateAddRolForm:FormGroup;
-    validateEditRolForm:FormGroup ;
+    validateAddRolForm:UntypedFormGroup;
+    validateEditRolForm:UntypedFormGroup ;
     currentRolSelected;
     currendUidSelected
     roldata:any;
@@ -54,7 +54,7 @@ interface formRol {
    
 
     constructor(public msg: NzMessageService ,
-       private fb: FormBuilder,
+       private fb: UntypedFormBuilder,
        private afs: AngularFirestore,
        private rolService: RolService) {}
     

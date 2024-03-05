@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NzModalService, NzMessageService, UploadFile } from 'ng-zorro-antd';
@@ -18,7 +18,7 @@ import { RolService } from 'src/app/shared/services/roles.service';
 })
 export class EditComponent implements OnInit {
 
-  objectForm: FormGroup;
+  objectForm: UntypedFormGroup;
   objectSubscription: Subscription;
   recordId: any;
   selectedIndex: number = 0;
@@ -47,7 +47,7 @@ export class EditComponent implements OnInit {
   user: any;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private vendorService: VendorService,
     private modalService: NzModalService,

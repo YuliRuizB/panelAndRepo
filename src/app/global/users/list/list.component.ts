@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
@@ -34,7 +34,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
   isUserSelected = false;
   isDriverSelected = false;
   isBoardingPassSelected = false;
-  validateEditForm: FormGroup;
+  validateEditForm: UntypedFormGroup;
   stopPointsList: any = [];
   isEditUserVisible = false;
   isCustomersVisible = false;
@@ -76,7 +76,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
     private msg: NzMessageService,
     private vendorService: VendorService,
     public authService: AuthenticationService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
     this.authService.user.subscribe((user) => {
       this.user = user;
       if (this.user.rolId != undefined) { // get rol assigned               

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as firebase from 'firebase/app';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { IBoardingPass } from 'src/app/customers/classes/customers';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { NzModalService, UploadFile } from 'ng-zorro-antd';
@@ -153,10 +153,10 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
 
 
 
-  validateForm: FormGroup;
-  credentialForm: FormGroup;
-  validateEditForm: FormGroup;
-  validateLiqForm: FormGroup;
+  validateForm: UntypedFormGroup;
+  credentialForm: UntypedFormGroup;
+  validateEditForm: UntypedFormGroup;
+  validateLiqForm: UntypedFormGroup;
   checked = false;
   routes: any = [];
   userRoutes: any = [];
@@ -238,7 +238,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     private customersService: CustomersService,
     public modalService: NzModalService,
     private productsService: ProductsService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private routesService: RoutesService,
     private dashboardService: DashboardService,
     private rolService: RolService,

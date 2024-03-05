@@ -12,7 +12,7 @@ import { NgxCsvParser } from 'ngx-csv-parser';
 import { NgxCSVParserError } from 'ngx-csv-parser';
 import { map } from 'rxjs/operators';
 
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
@@ -46,7 +46,7 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
   header = true;
   isSavingUsers: boolean = false;
   isDone: boolean = false;
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
   infoLoad: any = [];
   userlevelAccess: string;
   user: any;
@@ -58,7 +58,7 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
     private ngxCsvParser: NgxCsvParser,
     private rolService: RolService,
     public authService: AuthenticationService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.authService.user.subscribe((user) => {
       this.user = user;
@@ -115,7 +115,7 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
     Promise.resolve().then(() => this.validateForm.controls.checkPassword.updateValueAndValidity());
   }
 
-  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+  confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
     } else if (control.value !== this.validateForm.controls.password.value) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NzModalService, NzNotificationService } from 'ng-zorro-antd';
 import { TermsComponent } from 'src/app/shared/template/terms/terms.component';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -17,7 +17,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 
 export class preRegisterComponent implements OnInit {
 
-  signUpForm: FormGroup;
+  signUpForm: UntypedFormGroup;
   isLoadingOne = false;
   stopSubscription$: Subject<any> = new Subject();
   userRoutes: any = [];
@@ -28,7 +28,7 @@ export class preRegisterComponent implements OnInit {
   
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private afs: AngularFirestore,
     private modalService: NzModalService,
     private customersService: CustomersService,
@@ -99,7 +99,7 @@ export class preRegisterComponent implements OnInit {
     Promise.resolve().then(() => this.signUpForm.controls.checkPassword.updateValueAndValidity());
   }
 
-  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+  confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
     } else if (control.value !== this.signUpForm.controls.password.value) {

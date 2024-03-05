@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { CellEditingStartedEvent, ColDef, GridReadyEvent } from 'ag-grid-community';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
@@ -37,7 +37,7 @@ export class QualityDashboardComponent implements OnInit {
   // Uploaded File URL
   UploadedFileURL: Observable<string>;
   fileListInfo: any;
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
 
   rowFleetData: any[];
   columnFleetDefsProgram = QualityColumnDef;
@@ -61,7 +61,7 @@ export class QualityDashboardComponent implements OnInit {
 
   constructor(private msg: NzMessageService,
     private bucketStorage: AngularFireStorage,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private rolService: RolService,
     public authService: AuthenticationService,
     private qualityService: QualityService) {
