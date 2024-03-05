@@ -45,7 +45,7 @@
     "ng": "^0.0.0",
     "ng-chartist": "^1.1.1",
     "ng-chartjs": "0.0.7",
-    "ng-zorro-antd": "^13.4.0",
+    "ng-zorro-antd": "^15.0.3",
     "ngx-csv-parser": "0.0.3",
     "ngx-highlightjs": "^2.1.1",
     "ngx-infinite-scroll": "^6.0.1",
