@@ -725,9 +725,9 @@
                     </app-shared-usage-history>
                 </nz-tab>
                 <nz-tab nzTitle="Código QR">
-                    <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-                    qrc-value="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" qrc-class="qrCode-size"
-                    qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+                    <ngx-qrcode [elementType]="elementType" 
+                    [value]="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" cssClass="qrCode-size"
+                    errorCorrectionLevel="Q"></ngx-qrcode>
                    {{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}} 
                 </nz-tab>
                 <nz-tab nzTitle="Credencial">
@@ -761,9 +761,9 @@
                         </div>
                       </div>
                       <div style="display:flex; justify-content: center;align-items: center;">
-                        <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-                        qrc-value="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" qrc-class="qrCode-size"
-                        qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+                        <ngx-qrcode [elementType]="elementType" 
+                        [value]="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" cssClass="qrCode-size"
+                        errorCorrectionLevel="Q"></ngx-qrcode>
                       </div>
                     </nz-card>
                         <ng-template #avatarTemplate>

@@ -172,9 +172,9 @@
       <tr > 
         <td colspan="3">
           <div style="display:flex; justify-content: center;align-items: center;">
-            <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-              qrc-value="{{stopId}}" qrc-class="qrCode-size"
-              qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+            <ngx-qrcode [elementType]="elementType" 
+              [value]="{{stopId}}" cssClass="qrCode-size"
+              errorCorrectionLevel="Q"></ngx-qrcode>
           </div>
         </td>
       </tr>
