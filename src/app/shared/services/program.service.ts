@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { firestore } from 'firebase';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+//import { firestore } from 'firebase';
+import { Timestamp } from 'firebase/firestore';
 import { take, map } from 'rxjs/operators';
 import { addDays, addMinutes } from 'date-fns';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root'
@@ -51,10 +52,10 @@ export class ProgramService {
           customerId: data.customerId,
           customerName: data.customerName,
           driver: data.driverName,
-          driverConfirmationAt: firestore.Timestamp.fromDate(driverConfirmationAt),
+          driverConfirmationAt: Timestamp.fromDate(driverConfirmationAt),
           driverConfirmedAt: null,
           driverId: data.driverId,
-          endAt: firestore.Timestamp.fromDate(endAt),
+          endAt: Timestamp.fromDate(endAt),
           endedAt: null,
           geofenceBegin: a.stopBeginId,
           geofenceEnd: a.stopEndId,
@@ -75,7 +76,7 @@ export class ProgramService {
           routeDescription: data.routeName,
           routeId: data.routeId,
           routeName: data.routeName,
-          startAt: firestore.Timestamp.fromDate(startAt),
+          startAt: Timestamp.fromDate(startAt),
           started: false,
           startedAt: null,
           troubleMessage: null,
@@ -87,9 +88,7 @@ export class ProgramService {
           startAtFormat: startAt
         }
       })
-    ).subscribe( assignment => {
-      console.log("assignment===========================================");
-      console.log(assignment);
+    ).subscribe( assignment => {     
       const programRef = this.afs.collection('customers').doc(data.customerId).collection('program');
       return programRef.add(assignment)
       .then(() => this.sendMessage('success', 'La Programación ha sido generada. Favor de Actualizar la tabla.'))
@@ -121,7 +120,7 @@ export class ProgramService {
         driverId: data.value.driverId ,
         vehicleId: data.value.vehicleId ,
         vehicleName:data.value.vehicleName})
-        .then(() => this.sendMessage('success', 'La Programación ha sido modificada. Favor de Actualizar la tabla.'))
+        .then(() => this.messageService.success('La Programación ha sido modificada. Favor de Actualizar la tabla.'))
         .catch(err => this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`));
   }
 

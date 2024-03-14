@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection, DocumentReference } from '@angular/fire/compat/firestore';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import * as firebase from 'firebase/app';
+//import * as firebase from 'firebase/app';
+import { Timestamp } from 'firebase/firestore';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ICredential } from '../classes/customers';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -92,7 +93,7 @@ export class CustomersService {
 
   setUserDisabled(uid: string, disabled: boolean) {
     this.user = this.usersCollection.doc(uid);
-    const lastUpdatedAt = firebase.firestore.Timestamp.fromDate( new Date);
+    const lastUpdatedAt = Timestamp.fromDate(new Date());
     this.user.update({ disabled, lastUpdatedAt })
       .then(() => this.sendMessage('success', 'La cuenta ha sido modificada.'))
       .catch(err => this.sendMessage('error', `¡Oops! Algo salió mal ... ${err}`));
@@ -198,7 +199,7 @@ export class CustomersService {
   activatePurchase(uid: string, purchaseId: string, active: boolean) {
     this.user = this.usersCollection.doc(uid);   
     this.purchase = this.user.collection('boardingPasses').doc(purchaseId);
-    const lastUpdatedAt = firebase.firestore.Timestamp.fromDate(new Date());
+    const lastUpdatedAt = Timestamp.fromDate(new Date());
     this.purchase.update({active, lastUpdatedAt})
       .then(() => {
         this.sendMessage('success', '¡Listo!');
@@ -369,7 +370,7 @@ export class CustomersService {
   getUserCredentials(uid: string) {
     const userCredentials = this.usersCollection.doc(uid).collection('credentials');
     return userCredentials.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

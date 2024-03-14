@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { switchMap } from 'rxjs/operators';
 import { Observable, BehaviorSubject, combineLatest} from 'rxjs';

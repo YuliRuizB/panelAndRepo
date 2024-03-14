@@ -9,7 +9,7 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import * as _ from 'lodash';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-shared-vehicle-assignments',
@@ -96,7 +96,7 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
   getSubscriptions() {
     this.vehicleAssignmentSubscription = this.routesService.getRouteVehicleAssignments(this.customerId, this.routeId, this.assignmentId, this.vendorId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data}
@@ -110,7 +110,7 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
 
     this.vehiclesSubscription = this.vehiclesService.getVendorVehicles(this.vendorId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data}
@@ -123,7 +123,7 @@ export class SharedVehicleAssignmentsComponent implements OnInit, OnDestroy {
 
     this.driversSubscription = this.driversService.getDrivers(this.vendorId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data}

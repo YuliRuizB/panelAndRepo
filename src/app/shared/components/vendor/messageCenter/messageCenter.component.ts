@@ -1,8 +1,8 @@
-import { removeSummaryDuplicates, ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ColumnController, _ } from 'ag-grid-community';
-import { isTemplateRef, NzMessageService } from 'ng-zorro-antd';
+//import { isTemplateRef } from 'ng-zorro-antd/';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { Subject } from 'rxjs';
 import { single } from 'rxjs-compat/operator/single';
@@ -81,7 +81,7 @@ export class MessageCenterComponent implements OnInit {
   ngOnInit() {
     this.accountsService.getAccounts().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -228,7 +228,7 @@ export class MessageCenterComponent implements OnInit {
       this.listofRecordsAfected.forEach(singleRow => {
         this.messageCenterService.getUserByRouteRound(singleRow.round, singleRow.routeId).snapshotChanges().pipe(
           take(1),
-          map(actions => {
+          map((actions:any) => {
             if (actions.toString()) {
               return actions.map(a => {
                 const data = a.payload.doc.data() as any;

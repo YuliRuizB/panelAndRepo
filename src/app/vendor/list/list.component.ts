@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { map } from 'rxjs/operators';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
@@ -64,7 +65,7 @@ export class ListComponent implements OnInit {
 
   getSubscriptions() {
     this.vendorService.getVendors().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }

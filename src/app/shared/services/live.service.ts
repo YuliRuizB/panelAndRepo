@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { endOfDay, startOfDay, startOfToday, addDays } from 'date-fns';
 import { map } from 'rxjs/operators';
 
@@ -14,7 +14,7 @@ export class LiveService {
     const today = startOfToday();
     const liveProgram = this.afs.collectionGroup('live', ref => ref.where('startAt','>=',today).orderBy('startAt','desc'));
     return liveProgram.snapshotChanges().pipe(
-      map(actions => actions.map( a => {
+      map((actions:any) => actions.map( a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+//import * as firebase from 'firebase/app';
+import { GeoPoint } from 'firebase/firestore';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Observable, combineLatest, of, observable, EMPTY } from 'rxjs';
@@ -42,7 +43,7 @@ export class RoutesService {
     }
     routeObj.routeId = key;
     const route = this.afs.collection('customers').doc(routeObj.newCustomerId).collection('routes').doc(key);
-    const stops = firebase.firestore().collection('customers').doc(routeSource.customerId).collection('routes').doc(routeSource.routeId).collection('stops');
+    /* const stops = firebase.firestore().collection('customers').doc(routeSource.customerId).collection('routes').doc(routeSource.routeId).collection('stops');
     return stops.get().then( querySnapShot => {
       console.log(querySnapShot.docs);
       route.set(newRoute).then( () => {
@@ -55,8 +56,25 @@ export class RoutesService {
           });
         }
       })
-    })
+    }) */
+    const stops = this.afs.collection('customers').doc(routeSource.customerId).collection('routes').doc(routeSource.routeId).collection('stops');
 
+    return stops.get().toPromise().then(querySnapShot => {
+      console.log(querySnapShot.docs);
+      return route.set(newRoute).then(() => {
+        if (!querySnapShot.empty) {
+          const newStopsRef = this.afs.collection('customers').doc(routeObj.newCustomerId).collection('routes').doc(key).collection('stops');
+          const docs = querySnapShot.docs;
+          const promises: Promise<DocumentReference<any>>[] = docs.map(doc => {
+            const document = doc.data();
+            return newStopsRef.add(document);
+          });
+    
+          return Promise.all(promises) as unknown as Promise<void>;
+        }
+        return Promise.resolve();
+      });
+    });
   }
 
   toggleActiveRoute(customerId: string, routeId: string, routeObj: any) {
@@ -193,7 +211,7 @@ export class RoutesService {
 
   getVendorRoutes(vendorId: string) {
     return this.getRoutesArray(vendorId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         return a.payload.doc.data().routeId;
       })),
       switchMap(permissions => {
@@ -326,7 +344,8 @@ export class RoutesService {
       round2: object.round2,
       round3: object.round3
     };
-    wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
+    //wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
+    wrappedData.geopoint = new GeoPoint(+object.latitude, +object.longitude);
     console.log(wrappedData);
     const stopPoint = this.afs.collection('customers').doc(accountId).collection('routes').doc(routeId).collection('stops').doc(object.id);
     return stopPoint.update(wrappedData);
@@ -342,7 +361,8 @@ export class RoutesService {
       round2MinutesSinceStart: object.round2MinutesSinceStart,
       round3MinutesSinceStart: object.round3MinutesSinceStart
     };
-    wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
+    //wrappedData.geopoint = new firebase.firestore.GeoPoint(+object.latitude, +object.longitude);
+    wrappedData.geopoint = new GeoPoint(+object.latitude, +object.longitude);
     console.log(wrappedData);
     const stopPoint = this.afs.collection('customers').doc(accountId).collection('routes').doc(routeId).collection('stops').doc(object.id);
     return stopPoint.set(wrappedData);

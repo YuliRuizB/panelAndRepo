@@ -3,7 +3,7 @@ import { AccountsService } from 'src/app/shared/services/accounts.service';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, map, tap } from 'rxjs/operators';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -108,7 +108,7 @@ export class SharedAccountEditComponent implements OnInit, OnDestroy {
 
     this.accountsService.getAccount(this.accountId).pipe(
       takeUntil(this.stopSubscription$),
-      map(a => {
+      map((a:any) => {
         const id = a.payload.id;
         const data = a.payload.data() as any;
         return { id, ...data }

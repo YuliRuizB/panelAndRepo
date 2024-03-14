@@ -8,7 +8,7 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router } from '@angular/router';
 import { RolService } from 'src/app/shared/services/roles.service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-shared-vendor-vehicles',
@@ -70,7 +70,7 @@ export class SharedVendorVehiclesComponent implements OnInit {
   getSubscriptions(vendorId) {
     this.devicesService.getDevices(vendorId).pipe(
       takeUntil(this.stopSubscriptions$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const data = a.payload.doc.data() as IVehicle;
         const id = a.payload.doc.id;
         return { id: id, ...data }

@@ -9,7 +9,8 @@ import * as _ from 'lodash';
 import { AssignmentType } from 'src/app/shared/interfaces/assignment.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
-import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { addMinutes, set } from 'date-fns';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -82,7 +83,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
 
     this.routesService.getRoutes(this.accountId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -94,7 +95,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
 
     this.routesService.getCustomerVendorAssignments(this.accountId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBaseProgram;
         return { id, ...data }
@@ -107,7 +108,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
 
     this.vendorsService.getVendors().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IVendor;
         return { id, ...data }
@@ -320,7 +321,7 @@ export class SharedCustomerVendorAssignmentsComponent implements OnInit {
   onRouteSelected(routeId: string) {
     this.routesService.getRouteStopPoints(this.accountId, routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id, ...data }

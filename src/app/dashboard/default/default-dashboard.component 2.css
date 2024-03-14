@@ -1,0 +1,52 @@
+.footer{
+    height: 100% !important;
+    position:absolute;
+    padding: 0px 25px;
+    display:flex;
+    justify-content: space-between;
+    background-color: white ;
+  }
+  .body {
+      overflow-y: auto;
+      padding: 15px 25px;
+      position: relative;
+      width: 100%;
+      background-color: white ;
+  }
+  .rounded-margins {
+    margin: 10px;
+    border-radius: 20px;
+    background-color: white ;
+    background-image: url('../../../assets/images/logo/andLogo.png');
+  }
+  .background-image {
+    width: 100%;
+    background: url('../../../assets/images/logo/andlogoSL.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .table {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .column {
+    width: 33.33%;
+    box-sizing: border-box;
+    padding: 5px;
+  }
+  .cell {
+    border: 1px solid black;
+    padding: 5px;
+  }
+
+  .custom-label-style {
+    color: #4F6F57 !important; 
+    font-weight: bold !important;
+    border: 1px solid black;
+    background-color: white  !important;
+  }
+  
+  .custom-value-style {
+    color: #4F6F57;  /* Add additional styles as needed */
+    background-color: white  !important;
+  }

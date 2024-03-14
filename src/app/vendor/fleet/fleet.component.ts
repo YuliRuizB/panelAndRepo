@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
@@ -73,7 +73,7 @@ export class FleetComponent implements OnInit, OnDestroy {
   getSubscriptions(vendorId) {
     this.devicesService.getDevices(vendorId).pipe(
       takeUntil(this.stopSubscriptions$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const data = a.payload.doc.data() as IVehicle;
         const id = a.payload.doc.id;
         return { id: id, ...data }

@@ -254,7 +254,7 @@ export class RoutesComponent implements OnInit {
   getRoutes() {
     console.log(this.user.customerId);
     this.routesService.getRoutes(this.user.customerId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }

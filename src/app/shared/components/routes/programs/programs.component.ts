@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { AssignmentType } from 'src/app/shared/interfaces/assignment.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -77,7 +77,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
     this.routesService.getRouteAssignments(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBaseProgram;
         return { id, ...data }
@@ -89,7 +89,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
     this.routesService.getRouteStopPoints(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id, ...data }
@@ -101,7 +101,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
     this.vendorsService.getVendors().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IVendor;
         return { id, ...data }

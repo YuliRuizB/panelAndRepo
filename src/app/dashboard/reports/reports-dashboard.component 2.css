@@ -1,0 +1,29 @@
+.footer{
+    height: 100% !important;
+    position:absolute;
+    padding: 0px 25px;
+    display:flex;
+    justify-content: space-between;
+  }
+  .body {
+      overflow-y: auto;
+      padding: 15px 25px;
+      position: relative;
+      width: 100%;
+  }
+  /* Add this CSS for horizontal alignment */
+.horizontal-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .form-item {
+    margin-right: 10px; /* Adjust the spacing between form items */
+  }
+  

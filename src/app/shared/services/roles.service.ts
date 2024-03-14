@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
-import { NzMessageService } from 'ng-zorro-antd';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, take } from 'rxjs/operators';
 
 export interface IFormRol {
@@ -39,7 +39,7 @@ export class RolService {
     const activityLogRef = this.afs.collection('roles').doc(uid).collection('forms');
     return activityLogRef.stateChanges().pipe(
       take(1),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return {id, ...data}

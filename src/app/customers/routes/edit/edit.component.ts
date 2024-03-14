@@ -76,7 +76,7 @@ export class RouteEditComponent implements OnInit, OnDestroy {
   getSubscriptions() {
     this.routesService.getRoute(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(a => {
+      map((a:any) => {
         const id = a.payload.id;
         const data = a.payload.data() as any;
         return { id, ...data }
@@ -90,7 +90,7 @@ export class RouteEditComponent implements OnInit, OnDestroy {
 
     this.accountsService.getAccounts().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

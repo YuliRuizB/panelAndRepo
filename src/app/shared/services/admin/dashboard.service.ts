@@ -1,8 +1,8 @@
-import { CompileShallowModuleMetadata } from '@angular/compiler';
+//import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
-import { NzNotificationService } from 'ng-zorro-antd';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class DashboardService {
   getDashboardItems() {
     return this.dashboardItems;
   }
-
+  
   sendtoDeviceMessage(infoToSend:any) {
    // console.log('function');
        const sendFCMNotification =  this.aff.httpsCallable('sendToDeviseMessage');
@@ -56,7 +56,7 @@ export class DashboardService {
     .where('uid', '==', userId)
    // .limit(limit).orderBy('createdAt')
     ).snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

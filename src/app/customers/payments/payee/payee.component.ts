@@ -199,7 +199,7 @@ export class PayeeComponent implements OnInit {
     });
 
     this.customersService.getRoutes().snapshotChanges().pipe(
-      map(actions => actions.map( (a: any) => {
+      map((actions:any) => actions.map( (a: any) => {
         const data = a.payload.doc.data();
         const id = a.payload.doc.id;
         return { id, ...data };

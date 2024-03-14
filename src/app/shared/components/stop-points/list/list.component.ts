@@ -3,9 +3,10 @@ import { Subscription, Subject } from 'rxjs';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { SharedStopPointsNewComponent } from '../new/new.component';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { SharedStopPointsEditComponent } from '../edit/edit.component';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { UsersService } from 'src/app/shared/services/users.service';
@@ -133,7 +134,7 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
 
   getSubscriptions() {
     this.sub = this.routesService.getRouteStopPoints(this.accountId, this.routeId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id: id, ...data }
@@ -145,7 +146,7 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
 
     this.routesService.getRoute(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscriptions$),
-      map(a => {
+      map((a:any) => {
         const id = a.payload.id;
         const data = a.payload.data() as IStopPoint;
         return { id: id, ...data }

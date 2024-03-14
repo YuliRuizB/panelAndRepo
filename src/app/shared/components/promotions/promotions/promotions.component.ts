@@ -1,14 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { GridOptions } from 'ag-grid-community';
-import { NzMessageService, UploadChangeParam } from 'ng-zorro-antd';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Subscription } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { PromotionService } from 'src/app/shared/services/promotions.service';
 import { RolService } from 'src/app/shared/services/roles.service';
-import { UploadFile } from 'ng-zorro-antd/upload';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'app-promotions',
@@ -97,7 +98,7 @@ export class PromotionsComponent implements OnInit {
   this.createForm();
   }
 
-  handlePreview = (file: UploadFile) => {
+  handlePreview = (file: NzUploadFile) => {
     this.previewImage = file.url || file.thumbUrl;
     this.previewVisible = true;
   };
@@ -142,7 +143,7 @@ export class PromotionsComponent implements OnInit {
   ngOnInit() {  
     console.log(this.accountId);
     this.sub = this.promotionsService.getPromotionsList(this.accountId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -222,7 +223,7 @@ export class PromotionsComponent implements OnInit {
       }
     }
   }
-  handleChange2({ file, fileList }: UploadChangeParam): void {
+  handleChange2({ file, fileList }: NzUploadChangeParam): void {
     const status = file.status;
     if (status !== 'uploading') {
       console.log(file, fileList);

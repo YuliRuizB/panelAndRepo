@@ -3,7 +3,7 @@ import { DriversService } from 'src/app/shared/services/drivers.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
@@ -101,7 +101,7 @@ export class SharedVendorDriversComponent implements OnInit, OnDestroy {
 
   getSubscriptions() {
     this.driversService.getDrivers(this.vendorId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }

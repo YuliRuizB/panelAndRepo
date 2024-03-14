@@ -1,0 +1,113 @@
+<div style="margin: buttom 15px;">
+  <div class="site-page-header-ghost-wrapper">
+    <nz-page-header [nzGhost]="false">
+      <nz-page-header-title>Evidencias</nz-page-header-title>
+      <nz-page-header-subtitle></nz-page-header-subtitle>
+    </nz-page-header>
+    <div class="body">
+      <nz-tabset>
+        <nz-tab nzTitle="Evidencias Generales">
+          <div style="margin-bottom: 10px;" [formGroup]="dateFilterForm">
+            <label for="selectedDate"> Selecciona una Fecha: </label>
+            <input type="date" id="selectedDate" formControlName="selectedDate" (change)="onDateChange()">
+          </div>
+          <div>
+            <nz-table #basicTable [nzData]="evidenceInfo" nzPageSize="50" [nzLoading]="loadingevidenceInfo"
+              [nzLoadingDelay]="500" *ngIf="evidenceInfo">
+              <thead>
+                <tr>
+                  <th style="color: #4F6F57;">PR</th>
+                  <th style="color: #4F6F57;">Fecha</th>
+                  <th style="color: #4F6F57;">Comentarios </th>
+                  <th style="color: #4F6F57;">Audio</th>
+                  <th style="color: #4F6F57;">...</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                  <td>
+                    {{ data.displayName }}
+                  </td>
+                  <td>{{ data.dateTimeStamp.toDate() | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td>
+                    {{ data.comentario }}
+                  </td>
+                  <td>
+                    <a href="{{data.imageUrl}}">Ver Evidencia</a>
+                  </td>
+                  <td>
+                    <app-audio-player [audioUrl]="data.audioUrl"></app-audio-player>
+                  </td>
+                </tr>
+              </tbody>
+
+            </nz-table>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Evidencias por PR" >
+          <div style="margin-bottom: 10px;" [formGroup]="dateFilterFormDriver">
+            <nz-form-label style="width: 160px;"> Selecciona una Fecha</nz-form-label> 
+            <input type="date" id="selectedDate" formControlName="selectedDate" (change)="onDateChangeDriver()">
+          </div>
+          <div [formGroup]="dateFilterFormDriver">    
+              <nz-form-control>
+                <nz-form-label style="width: 160px;">Clientes</nz-form-label>
+                <nz-select  style="width: 450px;" formControlName="vendorId" nzAllowClear nzPlaceHolder="Selecciona la estación"
+                  (ngModelChange)="onVendorSelected($event, 'vendorName')">
+                  <nz-option *ngFor="let o of vendorsList" nzCustomContent [nzLabel]="o.name" [nzValue]="o.id"><i nz-icon
+                      nzType="flag"></i> {{ o.name }} <br /> {{ o.description }}</nz-option>
+                </nz-select>
+              </nz-form-control>
+                <nz-form-control>
+                  <nz-form-label style="width: 160px;">PR</nz-form-label>   
+                  <nz-select  style="width: 450px;" formControlName="driver" nzAllowClear (ngModelChange)="onDriverSelected($event, 'vendorName')"
+                  nzPlaceHolder="Seleccione un PR">
+                    <nz-option *ngFor="let d of driversList" [nzValue]="d.id" [nzLabel]="d.displayName"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+          </div>
+          <div>
+            <nz-table #basicTableDriver [nzData]="evidenceInfoDriver" nzPageSize="50" [nzLoading]="loadingevidenceInfoDriver"
+              [nzLoadingDelay]="500" *ngIf="evidenceInfoDriver">
+              <thead>
+                <tr>
+                  <th style="color: #4F6F57;">PR</th>
+                  <th style="color: #4F6F57;">Fecha</th>
+                  <th style="color: #4F6F57;">Comentarios </th>
+                  <th style="color: #4F6F57;">Audio</th>
+                  <th style="color: #4F6F57;">...</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of basicTableDriver.data">
+                  <td>
+                    {{ data.displayName }}
+                  </td>
+                  <td>{{ data.dateTimeStamp.toDate() | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td>
+                    {{ data.comentario }}
+                  </td>
+                  <td>
+                    <a href="{{data.imageUrl}}">Ver Evidencia</a>
+                  </td>
+                  <td>
+                    <app-audio-player [audioUrl]="data.audioUrl"></app-audio-player>
+                  </td>
+                </tr>
+              </tbody>
+
+            </nz-table>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Evidencias por Programa">
+
+
+        </nz-tab>
+        <nz-tab nzTitle="Evidencias por Ruta">
+
+
+        </nz-tab>
+      </nz-tabset>
+    </div>
+  </div>
+</div>

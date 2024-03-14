@@ -1,6 +1,7 @@
-import * as firebase from 'firebase/app';
+//import * as firebase from 'firebase/app';
 import { formatDistanceToNow, format } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
+import { FieldValue } from 'firebase/firestore';
 
 export interface IVehicle {
     id: string;
@@ -21,8 +22,8 @@ export interface IVehicle {
     insuranceAgent: string;
     insuranceAgentId: string;
     insuranceAgentPhone: string;
-    insuranceValidFrom: firebase.firestore.Timestamp;
-    insuranceValidTo: firebase.firestore.Timestamp;
+    insuranceValidFrom: FieldValue;
+    insuranceValidTo: FieldValue;
     insuranceId: string;
     name: string;
     licensePlate: string;

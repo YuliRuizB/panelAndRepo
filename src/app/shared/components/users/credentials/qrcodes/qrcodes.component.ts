@@ -32,12 +32,12 @@ export class SharedUsersCredentialsQRCodesComponent implements OnInit, OnDestroy
   getSubscriptions() {
     this.customersService.getAccountUsersWithCredential(this.accountId, 'user').pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
       })),
-      tap(users => {
+      tap((users:any) => {
         console.log('users', users);
         
         this.userCredentials = users;

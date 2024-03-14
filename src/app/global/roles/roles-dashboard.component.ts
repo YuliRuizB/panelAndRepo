@@ -1,7 +1,8 @@
 import { Component, OnInit   } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { NzMessageService, TransferItem } from 'ng-zorro-antd';
+import { TransferItem } from 'ng-zorro-antd/transfer';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { RolService } from 'src/app/shared/services/roles.service';
@@ -82,7 +83,7 @@ interface formRol {
     geRolesList() {
       this.rolesCollection = this.afs.collection<any>('roles', ref => ref.orderBy('name'));
       this.roles = this.rolesCollection.snapshotChanges().pipe(
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }
@@ -121,7 +122,7 @@ interface formRol {
     getFormRol(uid:string){
       this.formRolCollection = this.afs.collection('roles').doc(uid).collection('forms', ref => ref.orderBy('name'));
       this.roles = this.formRolCollection.snapshotChanges().pipe(
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }
@@ -138,7 +139,7 @@ interface formRol {
       // Call forms getAllForms
       this.formCollection = this.afs.collection<any>('form', ref => ref.orderBy('name'));
       this.forms = this.formCollection.snapshotChanges().pipe(
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }
@@ -195,7 +196,7 @@ interface formRol {
           if (ret.list[0]["direction"] == 'right') {
             this.formRolCollection = this.afs.collection('roles').doc(this.rolSelectedID).collection('forms', ref => ref.where('idForm', "==", ret.list[0]["idForm"]));
             this.roles = this.formRolCollection.snapshotChanges().pipe(
-              map(actions => actions.map(a => {
+              map((actions:any) => actions.map(a => {
                 const id = a.payload.doc.id;
                 const data = a.payload.doc.data() as any;
                 return { id, ...data }

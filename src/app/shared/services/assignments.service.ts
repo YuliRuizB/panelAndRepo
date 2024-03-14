@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { getFirestore, doc, setDoc, DocumentData } from 'firebase/firestore';
+
+//import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +50,7 @@ export class AssignmentsService {
   }
 
   batchCreateAssignment(batchAssignments: Array<any>) {
-    const batch = firebase.firestore().batch();
+    const batch = this.afs.firestore.batch();
     batchAssignments.forEach( (assignment: any) => {
       batch.set(assignment, {merge: true});
     });

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { NzModalService, NzNotificationService } from 'ng-zorro-antd';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { TermsComponent } from 'src/app/shared/template/terms/terms.component';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { RoutesService } from 'src/app/shared/services/routes.service';
@@ -9,7 +10,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
 import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 @Component({
   templateUrl: './signup.component.html'
@@ -100,7 +101,7 @@ export class SignupComponent implements OnInit {
     });
     
     this.customers$ = this.cCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data };
@@ -158,7 +159,7 @@ export class SignupComponent implements OnInit {
   fillCustomerRouteEditUser(customerID) {
     this.routesService.getRoutes(customerID).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

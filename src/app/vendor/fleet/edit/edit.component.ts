@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { NzMessageService, UploadFile } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { map, takeWhile, debounceTime, finalize, takeUntil, tap } from 'rxjs/operators';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { IVehicle } from 'src/app/shared/interfaces/vehicle.type';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -181,7 +182,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
   getSubscriptions(vendorId: string) {
     this.vehicleService.getVehicle(vendorId, this.recordId).pipe(
       takeUntil(this.stopSubscriptions$),
-      map(a => {
+      map((a:any) => {
         const id = a.payload.id;
         const data = a.payload.data() as any;
         return { id: id, ...data }
@@ -193,7 +194,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     })
     this.driversService.getDrivers(vendorId).pipe(
       takeUntil(this.stopSubscriptions$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }
@@ -232,7 +233,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  handleChange(info: { file: UploadFile }): void {
+  handleChange(info: { file: NzUploadFile }): void {
     this.getBase64(info.file.originFileObj, (img: string) => {
       this.avatarUrl = img;
       console.log(img);

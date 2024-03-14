@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { NzMessageService } from 'ng-zorro-antd';
-
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Injectable({
   providedIn: 'root'
 })

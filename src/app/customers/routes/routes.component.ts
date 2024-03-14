@@ -1,5 +1,8 @@
 import { Component, OnInit, TemplateRef, OnDestroy } from '@angular/core';
-import { NzModalService, NzModalRef, NzMessageService } from 'ng-zorro-antd';
+import {  NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Subject } from 'rxjs';
@@ -43,7 +46,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
     private messageService: NzMessageService,
     private rolService: RolService,
     private fb: UntypedFormBuilder,
-    private modal: NzModalService
+    private modal: NzModalModule
   ) { }
 
   ngOnInit() {
@@ -87,7 +90,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
     });
     this.accountsService.getAccounts().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

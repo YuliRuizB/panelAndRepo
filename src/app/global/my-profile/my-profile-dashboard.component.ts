@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { AngularFireStorage, AngularFireUploadTask } from "@angular/fire/storage";
+import { AngularFireStorage, AngularFireUploadTask } from "@angular/fire/compat/storage";
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
-import { NzMessageService, UploadFile } from "ng-zorro-antd";
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable } from "rxjs";
 import { finalize, map } from "rxjs/operators";
 import { AuthenticationService } from "src/app/shared/services/authentication.service";
@@ -152,7 +153,7 @@ export class MyProfileComponent implements OnInit {
         reader.readAsDataURL(img);
     }
 
-    handleChange(info: { file: UploadFile }): void {
+    handleChange(info: { file: NzUploadFile }): void {
         this.getBase64(info.file.originFileObj, (img: string) => {
             this.avatarUrl = img;
             console.log(img);

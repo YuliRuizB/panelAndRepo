@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { PaymentMethodsService } from 'src/app/shared/services/payment-methods.service';
 import { Subject } from 'rxjs';
 import { takeUntil, map, tap } from 'rxjs/operators';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
@@ -61,12 +61,12 @@ export class SharedAccountPaymentMethodsComponent implements OnInit {
   getSubscriptions() {
     this.paymentMethodsService.getAccountPaymentMethods(this.accountId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
       })),
-      tap(paymentMethods => {
+      tap((paymentMethods:any) => {
         this.accountPaymentMethods = paymentMethods;
         if(paymentMethods.length == 0) {
           this.createDefaultPaymentMethods();

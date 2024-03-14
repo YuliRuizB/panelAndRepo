@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/app';
+import { GeoPoint } from 'firebase/firestore';
 
 export interface IRoute {
     id: string;
@@ -16,7 +16,7 @@ export interface IStopPoint {
     id: string;
     active: boolean;
     description: string;
-    geopoint: firebase.firestore.GeoPoint;
+    geopoint:GeoPoint;
     imageUrl: string;
     name: string;
     order: number;

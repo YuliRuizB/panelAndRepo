@@ -1,7 +1,9 @@
-import { Component, OnInit  } from '@angular/core';
+import { Component, OnInit, ViewChild  } from '@angular/core';
 import { ThemeConstantService } from '../../shared/services/theme-constant.service';
 import { AppsService } from '../../shared/services/apps.service';
-import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd';
+import {  NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { NzDropDownDirective } from 'ng-zorro-antd/dropdown';
+//import { NzContextMenuService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-payments',
@@ -9,7 +11,7 @@ import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd';
   styleUrls: ['./payments.component.css']
 })
 export class PaymentsComponent implements OnInit {
-
+    @ViewChild('dropdown') dropdown: any;
     files: [];
 
     themeColors = this.colorConfig.get().colors;
@@ -26,22 +28,26 @@ export class PaymentsComponent implements OnInit {
     colorPurple = this.themeColors.purple;
 
     constructor(
-        private colorConfig: ThemeConstantService,
-        private fileManagerSvc: AppsService,
-        private nzContextMenuService: NzContextMenuService ) {
+        private colorConfig: ThemeConstantService,      
+        private fileManagerSvc: AppsService ) {
     }
 
     ngOnInit(): void {
-    }
+    }  //TODO
 
     changeView() {
         this.listView = !this.listView;
     }
 
-    contextMenu($event: MouseEvent, contextDropdownTpl: NzDropdownMenuComponent, selected: string): void {
-        this.nzContextMenuService.create($event, contextDropdownTpl);
-        this.selectedFile = selected;
+    contextMenu(event: MouseEvent, fileName: string): void {
+        //contextMenu(event: MouseEvent, contextDropdownTpl: NzDropdownMenuComponent, fileName: string): void {
+        //this.nzContextMenuService.create($event, contextDropdownTpl);
+        event.preventDefault();
+        //this.selectedFile = fileName;
+        this.selectedFile = fileName;
         this.isDetailsOpen = true;
+        //this.contextDropdown.create(event);
+        this.dropdown.nzVisible = true;
     }
 
     selectFile(selected: string) {
@@ -54,7 +60,7 @@ export class PaymentsComponent implements OnInit {
     }
 
     close(): void {
-        this.nzContextMenuService.close();
+       // this.nzContextMenuService.close();
     }
 
     closeContentDetails() {

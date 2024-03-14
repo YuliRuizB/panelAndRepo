@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import 'firebase/firestore'
 import { Observable, of } from 'rxjs';
 import { bufferCount, mergeMap, reduce, switchMap, take } from 'rxjs/operators';

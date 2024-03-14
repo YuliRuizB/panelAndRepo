@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
-import { redirectUnauthorizedTo, canActivate, redirectLoggedInTo } from '@angular/fire/auth-guard';
+import { redirectUnauthorizedTo, AuthPipe, redirectLoggedInTo } from '@angular/fire/auth-guard';
 
 import { FullLayoutComponent } from './layouts/full-layout/full-layout.component';
 import { CommonLayoutComponent } from './layouts/common-layout/common-layout.component';
@@ -22,7 +22,7 @@ const appRoutes: Routes = [
     {
         path: '',
         component: CommonLayoutComponent,
-        ...canActivate(redirectUnauthorizedToLogin),
+        canActivate: [redirectUnauthorizedToLogin] as AuthPipe[],
         children: CommonLayout_ROUTES
     },
     {

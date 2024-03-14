@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, Input, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Product } from 'src/app/shared/interfaces/product.type';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { map } from 'rxjs/operators';
@@ -130,7 +131,7 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
 
   getSubscriptions() {
     this.sub = this.usersService.getAccountProducts(this.accountId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as Product;
         return { id:id, ...data }

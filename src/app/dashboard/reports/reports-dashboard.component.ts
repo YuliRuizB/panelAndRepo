@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreCollectionGroup } from '@angular/fire/firestore';
+
+import { AngularFirestore, AngularFirestoreCollection ,AngularFirestoreCollectionGroup,AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -12,7 +13,7 @@ import { Form, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { GridReadyEvent, SideBarDef } from 'ag-grid-community';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   templateUrl: './reports-dashboard.component.html',
@@ -487,7 +488,7 @@ export class ReportsDashboardComponent implements OnInit {
       this.getSubscriptionsByRoute(user.vendorId);
       this.cCollection = this.afs.collectionGroup<any>('products', ref => ref.where('active','==',true));
       this.productsListV = this.cCollection.snapshotChanges().pipe(
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }
