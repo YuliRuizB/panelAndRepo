@@ -5,7 +5,7 @@ export interface UserCredentials {
     token?: string;
 }
 
-export interface User {
+export interface User1 {
     uid?: string;
     email?: string;
     displayName?: string;

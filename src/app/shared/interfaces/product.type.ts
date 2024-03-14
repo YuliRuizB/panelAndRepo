@@ -1,16 +1,17 @@
-import * as firebase from 'firebase/app';
+//import * as firebase from 'firebase/app';
+import { Timestamp } from 'firebase/firestore';
 
 export interface Product {
     id: string;
     active: boolean;
     category: string;
-    date_created: firebase.firestore.Timestamp;
+    date_created: Timestamp;
     description: string;
     type: string;
     name: string;
     price: number;
-    validFrom: firebase.firestore.Timestamp;
-    validTo: firebase.firestore.Timestamp;
+    validFrom: Timestamp;
+    validTo: Timestamp;
     isTaskIn: boolean;
     isTaskOut: boolean;
     timesSold?: number;

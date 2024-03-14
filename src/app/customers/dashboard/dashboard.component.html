@@ -76,7 +76,7 @@
           <div class="conversation-header justify-content-between" *ngIf="isUserSelected">
             <ng-container>
               <div class="media align-items-center">
-                <a [routerLink]="" class="m-r-20 d-md-none d-block text-dark font-size-18 m-t-5">
+                <a [routerLink]="[]" class="m-r-20 d-md-none d-block text-dark font-size-18 m-t-5">
                   <i nz-icon type="left-circle" theme="outline"></i>
                 </a>
                 <div>
@@ -481,9 +481,9 @@
                 </app-shared-usage-history>
               </nz-tab>
               <nz-tab nzTitle="Código QR">
-                <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-                qrc-value="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" qrc-class="qrCode-size"
-                  qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+                <ngx-qrcode [elementType]="elementType"
+                [value]="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" cssClass="qrCode-size"
+                errorCorrectionLevel="Q"></ngx-qrcode>
                 {{currentUserSelected.uid}}-{{lastPurchase.id}}
               </nz-tab>
               <nz-tab nzTitle="Soporte">

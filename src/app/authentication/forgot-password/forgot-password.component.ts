@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 })
 export class ForgotPasswordComponent implements OnInit {
 
-  loginForm: FormGroup;
+  loginForm: UntypedFormGroup;
 
   submitForm(): void {
     // tslint:disable-next-line: forin
@@ -24,7 +24,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public authService: AuthenticationService
     ) {
   }

@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { NzModalService, NzMessageService, UploadFile } from 'ng-zorro-antd';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { map, takeWhile, debounceTime, finalize } from 'rxjs/operators';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { ColumnController } from 'ag-grid-community';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { RolService } from 'src/app/shared/services/roles.service';
@@ -18,7 +20,7 @@ import { RolService } from 'src/app/shared/services/roles.service';
 })
 export class EditComponent implements OnInit {
 
-  objectForm: FormGroup;
+  objectForm: UntypedFormGroup;
   objectSubscription: Subscription;
   recordId: any;
   selectedIndex: number = 0;
@@ -47,7 +49,7 @@ export class EditComponent implements OnInit {
   user: any;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private vendorService: VendorService,
     private modalService: NzModalService,
@@ -141,7 +143,7 @@ export class EditComponent implements OnInit {
 
   getSubscriptions() {
     this.vendorService.getVendor(this.recordId).pipe(
-      map(a => {
+      map((a:any) => {
         const id = a.payload.id;
         const data = a.payload.data() as any;
         return { id: id, ...data }
@@ -179,7 +181,7 @@ export class EditComponent implements OnInit {
     return false;
   }
 
-  handleChange(info: { file: UploadFile }): void {
+  handleChange(info: { file: NzUploadFile }): void {
     this.getBase64(info.file.originFileObj, (img: string) => {
       this.avatarUrl = img;
       console.log(img);

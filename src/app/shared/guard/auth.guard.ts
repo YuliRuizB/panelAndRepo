@@ -4,7 +4,7 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 import { Observable } from 'rxjs';
 import { tap, map, take } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { User } from 'src/app/shared/interfaces/user.type';
+import { User1 } from 'src/app/shared/interfaces/user.type';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
     let role = next.data.role as Array<string>;
     return this.auth.user.pipe(
       take(1),
-      map((user: User) => _.includes(user.roles, role[0])),
+      map((user: User1) => _.includes(user.roles, role[0])),
       tap((hasRole) => {
         if (!hasRole) {
           console.log('Access to this area requires an different user role level. Access denied.');
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
 
     return this.auth.user.pipe(
       take(1),
-      map((user: User) => _.includes(user.roles,"admin")),
+      map((user: User1) => _.includes(user.roles,"admin")),
       tap((isAdmin) => {
         if (!isAdmin) {
           console.log('Access to this area requires an different user role level. Access denied.');

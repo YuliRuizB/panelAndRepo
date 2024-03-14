@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Subscription, Subject } from 'rxjs';
 import { ProductsService } from 'src/app/shared/services/products.service';
@@ -13,7 +14,7 @@ import { DashboardService } from 'src/app/shared/services/admin/dashboard.servic
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
-export const months = {
+export const months = { 
   0: 'Enero',
   1: 'Febrero',
   2: 'Marzo',
@@ -128,8 +129,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isModalCredentialVisible = false;
   isConfirmLoading = false;
 
-  validateForm: FormGroup;
-  credentialForm: FormGroup;
+  validateForm: UntypedFormGroup;
+  credentialForm: UntypedFormGroup;
   checked = false;
   routes: any = [];
   products: any = [];
@@ -177,7 +178,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private messageService: NzMessageService,
     private rolService: RolService,
     public authService: AuthenticationService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private dashboardService: DashboardService
   ) {
     this.authService.user.subscribe((user) => {
@@ -605,7 +606,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoadingUsers = true;
     this.usersCollection = this.afs.collection<any>('users', ref => ref.orderBy('displayName'));
     this.users = this.usersCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -619,12 +620,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const customersCollection = this.afs.collection('customers', ref => ref.orderBy('name'));
     customersCollection.snapshotChanges().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
       })),
-      tap(customers => {
+      tap((customers:any) => {
         this.customersList = customers;
         return customers;
       })
@@ -704,7 +705,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       nzTitle: '¿Está seguro de eliminar esta cuenta?',
       nzContent: '<b style="color: red;">Toda la información relacionada a esta cuenta será eliminada permanentemente.</b>',
       nzOkText: 'Eliminar',
-      nzOkType: 'danger',
       nzOnOk: () => {
         if (this.userlevelAccess == "1") {
           this.customersService.deleteUser(this.currentUserSelected.uid);
@@ -782,7 +782,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getLatestPurchases(userId) {
     this.loadingLatestPurchases = true;
     this.customersService.getLatestUserPurchases(userId, 10).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBoardingPass;
         return { id, ...data };
@@ -889,12 +889,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.usersByAccount.forEach(item => {
       this.customersService.getLatestValidUserPurchases(item.uid).pipe(
         take(1),
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }
         })),
-        tap((boardingPasses) => {
+        tap((boardingPasses:any) => {
           console.log(item.displayName, ' has a valid BPass ?', boardingPasses.length);
 
           this.mapOfCredentialsCheckedId[item.uid] = boardingPasses.length > 0;

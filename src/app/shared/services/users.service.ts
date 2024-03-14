@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
 import { switchMap, map, take, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { of, combineLatest, Observable } from 'rxjs';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageDataOptions, NzMessageService } from 'ng-zorro-antd/message';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  joined$: Observable<any>;
-  user: AngularFirestoreDocument<any>;
-  usersCollection: AngularFirestoreCollection<any>;
+  joined$: Observable<any>;   
+   user: AngularFirestoreDocument<any>;
+   usersCollection: AngularFirestoreCollection<any>;
 
-  constructor(private afs: AngularFirestore, private message: NzMessageService) { }
-
+  constructor(private afs: AngularFirestore, private message: NzMessageService) { 
+    
+  }
   getBoardingPassesByRoute(vendorId: string) {
     const today = new Date();
     this.joined$ = this.afs.collectionGroup('routesAccess', ref => ref.where('active', '==', true)).valueChanges()

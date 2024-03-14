@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NzModalService, NzNotificationService } from 'ng-zorro-antd';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { TermsComponent } from 'src/app/shared/template/terms/terms.component';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { RoutesService } from 'src/app/shared/services/routes.service';
@@ -9,7 +10,7 @@ import { Subject, Subscription } from 'rxjs';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
 import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 @Component({
   templateUrl: './preRegister.component.html'
@@ -17,7 +18,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 
 export class preRegisterComponent implements OnInit {
 
-  signUpForm: FormGroup;
+  signUpForm: UntypedFormGroup;
   isLoadingOne = false;
   stopSubscription$: Subject<any> = new Subject();
   userRoutes: any = [];
@@ -28,7 +29,7 @@ export class preRegisterComponent implements OnInit {
   
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private afs: AngularFirestore,
     private modalService: NzModalService,
     private customersService: CustomersService,
@@ -65,7 +66,7 @@ export class preRegisterComponent implements OnInit {
  
     this.cCollection = this.afs.collection<any>('customers', ref => ref.where('active','==',true));
     this.customers = this.cCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -99,7 +100,7 @@ export class preRegisterComponent implements OnInit {
     Promise.resolve().then(() => this.signUpForm.controls.checkPassword.updateValueAndValidity());
   }
 
-  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+  confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
     } else if (control.value !== this.signUpForm.controls.password.value) {
@@ -129,7 +130,7 @@ export class preRegisterComponent implements OnInit {
   fillCustomerRouteEditUser(customerID) {
     this.routesService.getRoutes(customerID).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

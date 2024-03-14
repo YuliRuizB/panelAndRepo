@@ -35,7 +35,7 @@ export class SharedVendorAssignmentsComponent implements OnInit, OnDestroy {
   getSubscriptions() {
     this.assignmentSubscription = this.assignmentsService.getActiveAssignmentsRoute(this.vendorId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

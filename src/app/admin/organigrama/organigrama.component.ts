@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CustomersService } from 'src/app/customers/services/customers.service';
@@ -23,8 +23,8 @@ export class OrganigramaComponent implements OnInit {
   usersCollection: AngularFirestoreCollection<any>;
   accountId$ = new Subject<string>();
   routeId$ = new Subject<string>();
-  validateForm: FormGroup;
-  validateFormP: FormGroup;
+  validateForm: UntypedFormGroup;
+  validateFormP: UntypedFormGroup;
   stopSubscription$: Subject<any> = new Subject();
   routes: any ;
   routesP : any;
@@ -50,7 +50,7 @@ rowDataPush: any  = [];
   constructor( private afs: AngularFirestore,
     private usersService: UsersService, 
     private routesService: RoutesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private customersService: CustomersService) { 
      
       this.defaultColDef = {
@@ -120,7 +120,7 @@ rowDataPush: any  = [];
       
     this.cCollection = this.afs.collection<any>('customers', ref => ref.where('active','==',true));
     this.customerSubscription  = this.cCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -174,7 +174,7 @@ rowDataPush: any  = [];
   fillCustomerRoute(customerID) {   
     this.routesService.getRoutes(customerID).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -187,7 +187,7 @@ rowDataPush: any  = [];
   fillCustomerRouteP(customerID) {   
     this.routesService.getRoutes(customerID).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -238,7 +238,7 @@ rowDataPush: any  = [];
       .where('defaultRoute','==',routeID)
       .orderBy('displayName'));    
     this.userSubscription = this.usersCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -298,7 +298,7 @@ rowDataPush: any  = [];
      .where('defaultRoute','==',routeID).orderBy('displayName')
     );    
     this.userSubscription = this.usersCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
+/* import { NgZorroAntdModule } from 'ng-zorro-antd'; */
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ThemeConstantService } from './services/theme-constant.service';
 import { SearchPipe } from './pipes/search.pipe';
@@ -22,7 +22,7 @@ import { SharedVendorVehiclesComponent } from './components/vendor/vehicles/vehi
 import { SortablejsModule } from 'ngx-sortablejs';
 import { TableService } from './services/table.service';
 import { TreeComponent } from './components/users/charts/tree/tree.component';
-import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { SharedUsersUsageHistoryComponent } from './components/users/boardingPass/usage-history/usage-history.component';
 import { SharedRouteProgramsComponent } from './components/routes/programs/programs.component';
 import { SharedVendorAssignmentsComponent } from './components/vendor/assignments/assignments.component';
@@ -43,7 +43,7 @@ import { PromotionsComponent } from './components/promotions/promotions/promotio
         CommonModule,
         FormsModule,
         HttpClientModule,
-        NgZorroAntdModule,
+        //NgZorroAntdModule,
         PerfectScrollbarModule,
         SearchPipe,
         NgxPermissionsModule,
@@ -77,7 +77,7 @@ import { PromotionsComponent } from './components/promotions/promotions/promotio
     imports: [
         RouterModule,
         CommonModule,
-        NgZorroAntdModule,
+       // NgZorroAntdModule,
         FormsModule,
         NgxQRCodeModule,
         ReactiveFormsModule,
@@ -116,10 +116,6 @@ import { PromotionsComponent } from './components/promotions/promotions/promotio
         ThemeConstantService,
         NoticeService,
         TableService
-    ],
-    entryComponents: [
-        SharedStopPointsEditComponent,
-        SharedStopPointsNewComponent
     ]
 })
 

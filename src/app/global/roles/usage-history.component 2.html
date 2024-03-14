@@ -1,0 +1,10 @@
+<nz-timeline nzMode="alternate">
+    <nz-timeline-item *ngFor="let item of activityLogList" [nzColor]="item.allowedOnBoard ? 'green' : 'red'">
+        {{ (item.created).toDate() | date: 'medium' }}
+        <p>Programa: {{ item.program === 'S' ? 'Salida':'Entrada' }}</p>
+        <p>Turno: {{ item.round }}</p>
+        <p>Unidad: {{ item.vehicle }}</p>
+        <p>PR: {{ item.driver }}</p>
+        <p>Mensaje: {{ item.description }}</p>
+    </nz-timeline-item>
+  </nz-timeline>

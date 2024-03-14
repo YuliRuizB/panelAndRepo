@@ -2,14 +2,14 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { takeUntil, map } from 'rxjs/operators';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { IBaseProgram } from 'src/app/shared/interfaces/program.type';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
 import * as _ from 'lodash';
 import { AssignmentType } from 'src/app/shared/interfaces/assignment.type';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -33,7 +33,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
   isCreateVisible: boolean = false;
   isEditMode: boolean = false;
   currentSelectedId: string;
-  programForm: FormGroup;
+  programForm: UntypedFormGroup;
   assigmentType: AssignmentType
   infoLoad: any = [];
   userlevelAccess: string;
@@ -47,7 +47,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
     private rolService: RolService,
     private userService: UsersService,
     public authService: AuthenticationService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.authService.user.subscribe((user) => {
       this.user = user;
@@ -77,7 +77,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
     this.routesService.getRouteAssignments(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBaseProgram;
         return { id, ...data }
@@ -89,7 +89,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
     this.routesService.getRouteStopPoints(this.accountId, this.routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id, ...data }
@@ -101,7 +101,7 @@ export class SharedRouteProgramsComponent implements OnInit, OnDestroy {
 
     this.vendorsService.getVendors().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IVendor;
         return { id, ...data }

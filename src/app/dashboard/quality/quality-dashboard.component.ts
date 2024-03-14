@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { CellEditingStartedEvent, ColDef, GridReadyEvent } from 'ag-grid-community';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { Observable, Subscription } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { IFileInfo, QualityColumnDef } from 'src/app/logistics/classes';
@@ -37,7 +37,7 @@ export class QualityDashboardComponent implements OnInit {
   // Uploaded File URL
   UploadedFileURL: Observable<string>;
   fileListInfo: any;
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
 
   rowFleetData: any[];
   columnFleetDefsProgram = QualityColumnDef;
@@ -61,7 +61,7 @@ export class QualityDashboardComponent implements OnInit {
 
   constructor(private msg: NzMessageService,
     private bucketStorage: AngularFireStorage,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private rolService: RolService,
     public authService: AuthenticationService,
     private qualityService: QualityService) {
@@ -159,7 +159,7 @@ export class QualityDashboardComponent implements OnInit {
     this.addNewFolder = true;
   }
 
-  handleChange({ file, fileList }: UploadChangeParam): void { 
+  handleChange({ file, fileList }: NzUploadChangeParam): void { 
   }
   
   async updateURL(url) {
@@ -230,7 +230,7 @@ export class QualityDashboardComponent implements OnInit {
     this.isEditModalVisible = false;
   }
 
-  handleChangeUpload(info: UploadChangeParam): void {
+  handleChangeUpload(info: NzUploadChangeParam): void {
     console.log("pasa1 : " + info.file.status);
     if (info.file.status !== 'uploading') {
       console.log(info.file, info.fileList);

@@ -2,17 +2,17 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { columnDefs, rowGroupPanelShow } from 'src/app/customers/classes/customers';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { GridOptions } from 'ag-grid-community';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 
 import { NgxCsvParser } from 'ngx-csv-parser';
 import { NgxCSVParserError } from 'ngx-csv-parser';
 import { map } from 'rxjs/operators';
 
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -45,14 +45,14 @@ export class SharedSystemUsersListComponent implements OnInit, OnDestroy {
   header = true;
   isSavingUsers: boolean = false;
   isDone: boolean = false;
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
 
   constructor(
     private usersService: CustomersService,
     private afs: AngularFirestore,
     private msg: NzMessageService,
     private ngxCsvParser: NgxCsvParser,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.popupParent = document.querySelector("body");
   }
@@ -68,7 +68,7 @@ export class SharedSystemUsersListComponent implements OnInit, OnDestroy {
 
   getSubscriptions() {
     this.sub = this.usersService.getAccountSystemUsers(this.accountId, 'customer').pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -97,7 +97,7 @@ export class SharedSystemUsersListComponent implements OnInit, OnDestroy {
     Promise.resolve().then(() => this.validateForm.controls.checkPassword.updateValueAndValidity());
   }
 
-  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+  confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
     } else if (control.value !== this.validateForm.controls.password.value) {
@@ -248,7 +248,7 @@ export class SharedSystemUsersListComponent implements OnInit, OnDestroy {
     return userObj;
   }
 
-  handleChange({ file, fileList }: UploadChangeParam): void {
+  handleChange({ file, fileList }: NzUploadChangeParam): void {
     const status = file.status;
     if (fileList.length == 0) {
       this.csvRecords = [];

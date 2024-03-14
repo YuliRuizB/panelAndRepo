@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreCollectionGroup } from '@angular/fire/firestore';
+
+import { AngularFirestore, AngularFirestoreCollection ,AngularFirestoreCollectionGroup,AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -8,11 +9,11 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import * as _ from 'lodash';
-import { Form, FormBuilder, FormGroup } from '@angular/forms';
+import { Form, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { GridReadyEvent, SideBarDef } from 'ag-grid-community';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   templateUrl: './reports-dashboard.component.html',
@@ -59,14 +60,14 @@ export class ReportsDashboardComponent implements OnInit {
   joined$: Observable<any>;
   cCollection: AngularFirestoreCollectionGroup<any>;
   productsListV:any;
-  validateForm: FormGroup;
-  validateFormTurn:FormGroup;
-  validateFormPase: FormGroup;
-  validateFormAnticipos:FormGroup;
-  validateFormCV:FormGroup;
-  validateFormCVByRoute:FormGroup;
-  signupForm: FormGroup;
-  signupFormCV:FormGroup;
+  validateForm: UntypedFormGroup;
+  validateFormTurn:UntypedFormGroup;
+  validateFormPase: UntypedFormGroup;
+  validateFormAnticipos:UntypedFormGroup;
+  validateFormCV:UntypedFormGroup;
+  validateFormCVByRoute:UntypedFormGroup;
+  signupForm: UntypedFormGroup;
+  signupFormCV:UntypedFormGroup;
   shift: any = [];
   public rowSelection = 'multiple';
   isModalVisible: boolean = false;
@@ -79,7 +80,7 @@ export class ReportsDashboardComponent implements OnInit {
 
   constructor(  private usersService: UsersService, 
       private productsService: ProductsService ,
-      private fb: FormBuilder,
+      private fb: UntypedFormBuilder,
       private routesService: RoutesService,
       private msg: NzMessageService,
       private authService: AuthenticationService,
@@ -487,7 +488,7 @@ export class ReportsDashboardComponent implements OnInit {
       this.getSubscriptionsByRoute(user.vendorId);
       this.cCollection = this.afs.collectionGroup<any>('products', ref => ref.where('active','==',true));
       this.productsListV = this.cCollection.snapshotChanges().pipe(
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }

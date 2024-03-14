@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, Input, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { IRoute, IStopPoint } from '../../../interfaces/route.type';
@@ -20,13 +21,13 @@ export class SharedRoutesListComponent implements OnInit, OnDestroy {
   selectedIndex = 0;
   routesList: IRoute[] = [];
   stopPointsList: IStopPoint[] = [];
-  objectForm: FormGroup;
+  objectForm: UntypedFormGroup;
 
   constructor(
     private modalService: NzModalService,
     public messageService: NzMessageService,
     public routesService: RoutesService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
   }
 
@@ -98,7 +99,7 @@ export class SharedRoutesListComponent implements OnInit, OnDestroy {
   getSubscriptions() {
    // console.log(this.accountId);
     this.sub = this.routesService.getRoutes(this.accountId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IRoute;
         return { id:id, ...data }

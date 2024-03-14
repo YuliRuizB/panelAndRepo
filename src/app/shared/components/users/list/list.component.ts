@@ -2,18 +2,19 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { columnDefs, rowGroupPanelShow } from 'src/app/customers/classes/customers';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { GridOptions } from 'ag-grid-community';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { UploadChangeParam, UploadFile } from 'ng-zorro-antd/upload';
-
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NgxCsvParser } from 'ngx-csv-parser';
 import { NgxCSVParserError } from 'ngx-csv-parser';
 import { map, take, tap } from 'rxjs/operators';
-import * as firebase from 'firebase/app';
+//import * as firebase from 'firebase/app';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { query, where, getDocs } from 'firebase/firestore';
 
 @Component({
   selector: 'app-shared-users-list',
@@ -84,7 +85,7 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
 
   getSubscriptions() {
     this.sub = this.usersService.getAccountUsers(this.accountId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -266,10 +267,11 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
     let route;
     let stopPoint;
 
-    const servicesRef = firebase.firestore().collection('customers').doc(this.accountId).collection('products');
-    const actualService = servicesRef.where('name', '==', user.service);
-    const routeRef = firebase.firestore().collection('customers').doc(this.accountId).collection('routes');
-    const actualRoute = routeRef.where('name', '==', user.routeName);
+    const servicesRef: AngularFirestoreCollection<any> = this.afs.collection('customers').doc(this.accountId).collection('products');
+    const actualService = servicesRef.ref.where('name', '==', user.service);
+
+    const routeRef = this.afs.collection('customers').doc(this.accountId).collection('routes');
+    const actualRoute = routeRef.ref.where('name', '==', user.routeName);
 
     if (this.userlevelAccess != "3") {
       actualService.get().then(serviceQuerySnapshot => {
@@ -294,7 +296,7 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
               const data = doc.data() as any;
               route = { id, ...data }
 
-              const stopPointRef = firebase.firestore().collection('customers').doc(this.accountId).collection('routes').doc(route.id).collection('stops');
+             /*  const stopPointRef = firebase.firestore().collection('customers').doc(this.accountId).collection('routes').doc(route.id).collection('stops');
               const actualStop = stopPointRef.where('order', '==', +user.stop);
 
               actualStop.get().then(stopQuerySnapshot => {
@@ -305,8 +307,22 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
                     const id = doc.id;
                     const data = doc.data() as any;
                     stopPoint = { id, ...data }
-                  });
+                  }); */
+                  const stopPointRef = this.afs.collection('customers').doc(this.accountId).collection('routes').doc(route.id).collection('stops').ref;
+                  const actualStop = query(stopPointRef, where('order', '==', +user.stop));
 
+                  getDocs(actualStop).then((stopQuerySnapshot) => {
+                    const count = stopQuerySnapshot.size;
+                    console.log('size of stop found; ', count);
+
+                    if (count > 0) {
+                      stopQuerySnapshot.forEach((doc) => {
+                        const id = doc.id;
+                        const data = doc.data();
+                        const stopPoint = { id, ...data };
+                        // Do something with stopPoint
+                      });
+                    
                   console.log(service, route, stopPoint);
 
 
@@ -412,7 +428,7 @@ export class SharedUsersListComponent implements OnInit, OnDestroy {
     return userObj;
   }
 
-  handleChange({ file, fileList }: UploadChangeParam): void {
+  handleChange({ file, fileList }: NzUploadChangeParam): void {
     const status = file.status;
     if (fileList.length == 0) {
       this.csvRecords = [];

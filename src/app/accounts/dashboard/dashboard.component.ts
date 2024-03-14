@@ -4,8 +4,9 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 import { map } from 'rxjs/operators';
 import { SummarizeService } from 'src/app/shared/services/summarize.service';
 import { Subscription } from 'rxjs';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UntypedFormBuilder, UntypedFormGroup, FormControl, Validators } from '@angular/forms';
 import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
@@ -26,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isVisible = false;
   isDeleteVisible = false;
   isOkLoading = false;
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
   infoLoad: any = [];
   userlevelAccess:string;
 
@@ -37,7 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private messageService: NzMessageService,
     public modalService: NzModalService,
     public rolService: RolService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
     ) { }
 
   ngOnInit() {
@@ -113,7 +114,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getSubscriptions() {
     this.loading = true;
     this.accountsSubscription = this.accountsService.getAccounts().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }
@@ -136,7 +137,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       nzContent: 'Eliminará toda la información de ' + account.name,
       nzCancelText: 'Cancelar',
       nzOkText: 'Eliminar',
-      nzOkType: 'danger',
       nzOkLoading: this.isOkLoading,
       nzOnOk: () => {
         this.deleteAccount(account);

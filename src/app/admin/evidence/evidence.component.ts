@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { NzTabComponent } from 'ng-zorro-antd';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup } from '@angular/forms';
+import { NzTabComponent } from 'ng-zorro-antd/tabs';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { IVendor } from 'src/app/shared/interfaces/vendor.type';
@@ -23,8 +23,8 @@ export class EvidenceComponent implements OnInit {
   loadingevidenceInfo =false;
   loadingevidenceInfoDriver = false;
   stopSubscription$: Subject<any> = new Subject();
-  dateFilterForm: FormGroup;
-  dateFilterFormDriver: FormGroup;
+  dateFilterForm: UntypedFormGroup;
+  dateFilterFormDriver: UntypedFormGroup;
   userlevelAccess: string;
   infoLoad: any = [];
   driversList:any;
@@ -36,7 +36,7 @@ export class EvidenceComponent implements OnInit {
     private datePipe: DatePipe,
     public authService: AuthenticationService,
     private rolService: RolService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
       this.authService.user.subscribe((user) => {
         this.user = user;  
@@ -64,7 +64,7 @@ export class EvidenceComponent implements OnInit {
 
       this.vendorsService.getVendors().pipe(
         takeUntil(this.stopSubscription$),
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as IVendor;
           return { id, ...data }
@@ -100,7 +100,7 @@ export class EvidenceComponent implements OnInit {
 
   fillDataDriver(vendorId: string) {
     this.driverService.getDrivers(vendorId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }
@@ -133,7 +133,7 @@ export class EvidenceComponent implements OnInit {
    
     console.log(formattedDate + " == " + record.id );
       this.driverService.getEvidenceDriversperDriver(formattedDate.toString(),record.id).pipe(
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id: id, ...data }
@@ -157,7 +157,7 @@ export class EvidenceComponent implements OnInit {
     this.loadingevidenceInfo = true;
   
     this.driverService.getEvidenceDrivers(selectedDate).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }

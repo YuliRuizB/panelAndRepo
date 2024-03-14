@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { UsersService } from '../../services/users.service';
@@ -12,13 +12,13 @@ import { Subscription } from 'rxjs';
 })
 export class BajaUsuarioComponent implements OnInit {
 
-  formDeleteAccount: FormGroup;
+  formDeleteAccount: UntypedFormGroup;
   accountsSubscription: Subscription;
 
   constructor(private messageService: NzNotificationService,
     private customersService: CustomersService,
     private usersService: UsersService,
-    private fb: FormBuilder) { }
+    private fb: UntypedFormBuilder) { }
 
   ngOnInit() {
     this.formDeleteAccount = this.fb.group({

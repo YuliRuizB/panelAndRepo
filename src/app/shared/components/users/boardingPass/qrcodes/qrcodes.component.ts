@@ -32,7 +32,7 @@ export class SharedUsersQRCodesComponent implements OnInit, OnDestroy {
   getSubscriptions() {
     this.customersService.getAccountSystemUsers(this.accountId, 'user').pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -48,7 +48,7 @@ export class SharedUsersQRCodesComponent implements OnInit, OnDestroy {
     this.userBoardingPass = [];
     users.forEach(user => {
       return this.usersService.getLastValidBoardingPass(user.id).pipe(
-        tap(boardingPasses => {
+        tap((boardingPasses:any) => {
           // console.log({ user: user, boardingPass: boardingPasses[0] || {} });
           this.userBoardingPass.push({ user: user, boardingPass: boardingPasses[0] });
           return boardingPasses;

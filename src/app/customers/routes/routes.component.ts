@@ -1,12 +1,15 @@
 import { Component, OnInit, TemplateRef, OnDestroy } from '@angular/core';
-import { NzModalService, NzModalRef, NzMessageService } from 'ng-zorro-antd';
+import {  NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { IRoute } from 'src/app/shared/interfaces/route.type';
 import { AccountsService } from 'src/app/shared/services/accounts.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import * as _ from 'lodash';
 import { RolService } from 'src/app/shared/services/roles.service';
 
@@ -24,7 +27,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
   stopSubscription$: Subject<boolean> = new Subject();
   routesList: any = [];
   accountsList: any = [];
-  objectForm: FormGroup;
+  objectForm: UntypedFormGroup;
 
   confirmModal: NzModalRef;
   duplicateVisible: boolean = false;
@@ -42,8 +45,8 @@ export class RoutesComponent implements OnInit, OnDestroy {
     private accountsService: AccountsService,
     private messageService: NzMessageService,
     private rolService: RolService,
-    private fb: FormBuilder,
-    private modal: NzModalService
+    private fb: UntypedFormBuilder,
+    private modal: NzModalModule
   ) { }
 
   ngOnInit() {
@@ -87,7 +90,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
     });
     this.accountsService.getAccounts().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

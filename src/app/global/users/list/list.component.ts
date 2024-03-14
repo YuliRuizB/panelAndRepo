@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RoutesService } from 'src/app/shared/services/routes.service';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { IStopPoint } from 'src/app/shared/interfaces/route.type';
-import { NzMessageService } from 'ng-zorro-antd';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -34,7 +34,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
   isUserSelected = false;
   isDriverSelected = false;
   isBoardingPassSelected = false;
-  validateEditForm: FormGroup;
+  validateEditForm: UntypedFormGroup;
   stopPointsList: any = [];
   isEditUserVisible = false;
   isCustomersVisible = false;
@@ -76,7 +76,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
     private msg: NzMessageService,
     private vendorService: VendorService,
     public authService: AuthenticationService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
     this.authService.user.subscribe((user) => {
       this.user = user;
       if (this.user.rolId != undefined) { // get rol assigned               
@@ -134,7 +134,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
     this.usersCollection = this.afs.collection<any>('users', ref => ref.orderBy('displayName'));
     //  this.afs.collection<any>('users', ref => ref.where('disabled', '==', false).orderBy('displayName'));
     this.users = this.usersCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -148,7 +148,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
     this.driversCollection = this.afs.collection<any>('drivers', ref => ref.orderBy('displayName'));
     //  this.afs.collection<any>('users', ref => ref.where('disabled', '==', false).orderBy('displayName'));
     this.users = this.driversCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -238,7 +238,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
     }
     if (data.vendorId != undefined) {
       this.vendorService.getVendor(data.vendorId).pipe(
-        map(a => {
+        map((a:any) => {
           const id = a.payload.id;
           const data = a.payload.data() as any;
           return { id: id, ...data }

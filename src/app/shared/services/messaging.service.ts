@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
-import * as firebase from 'firebase/app';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+//import * as firebase from 'firebase/app';
+import { getMessaging } from 'firebase/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -10,7 +11,7 @@ import { take } from 'rxjs/operators';
 })
 export class MessagingService {
 
-  messaging = firebase.messaging();
+  messaging = getMessaging();
   currentMessage = new BehaviorSubject(null);
 
   constructor(private afs: AngularFirestore, private afAuth: AngularFireAuth) { }

@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, Input, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Product } from 'src/app/shared/interfaces/product.type';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { map } from 'rxjs/operators';
 import { RolService } from 'src/app/shared/services/roles.service';
@@ -23,7 +24,7 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
   view: string = 'cardView';
   sub: Subscription;
   productsList: Product[] = [];
-  validateForm: FormGroup;
+  validateForm: UntypedFormGroup;
   infoLoad: any = [];
   userlevelAccess:string;
  user: any;
@@ -37,7 +38,7 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
     private rolService: RolService,
     private userService: UsersService,
     public authService: AuthenticationService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
       this.authService.user.subscribe((user) => {
         this.user = user;
@@ -130,7 +131,7 @@ export class SharedProductsListComponent implements OnInit, OnDestroy {
 
   getSubscriptions() {
     this.sub = this.usersService.getAccountProducts(this.accountId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as Product;
         return { id:id, ...data }

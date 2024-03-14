@@ -1,18 +1,19 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
-import * as firebase from 'firebase/app';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { firestore } from 'firebase/firestore'; 
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { IBoardingPass } from 'src/app/customers/classes/customers';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { CustomersService } from 'src/app/customers/services/customers.service';
-import { NzModalService, UploadFile } from 'ng-zorro-antd';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { DashboardService } from 'src/app/shared/services/admin/dashboard.service';
 import { finalize, ignoreElements, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
-import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { differenceInCalendarDays } from 'date-fns';
 import { RoutesService } from 'src/app/shared/services/routes.service';
@@ -23,7 +24,7 @@ import html2canvas from 'html2canvas';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { UsersService } from 'src/app/shared/services/users.service';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 
 export const months = {
@@ -153,10 +154,10 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
 
 
 
-  validateForm: FormGroup;
-  credentialForm: FormGroup;
-  validateEditForm: FormGroup;
-  validateLiqForm: FormGroup;
+  validateForm: UntypedFormGroup;
+  credentialForm: UntypedFormGroup;
+  validateEditForm: UntypedFormGroup;
+  validateLiqForm: UntypedFormGroup;
   checked = false;
   routes: any = [];
   userRoutes: any = [];
@@ -238,7 +239,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     private customersService: CustomersService,
     public modalService: NzModalService,
     private productsService: ProductsService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private routesService: RoutesService,
     private dashboardService: DashboardService,
     private rolService: RolService,
@@ -507,12 +508,12 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     this.usersByAccount.forEach(item => {
       this.customersService.getLatestValidUserPurchases(item.uid).pipe(
         take(1),
-        map(actions => actions.map(a => {
+        map((actions:any) => actions.map(a => {
           const id = a.payload.doc.id;
           const data = a.payload.doc.data() as any;
           return { id, ...data }
         })),
-        tap((boardingPasses) => {
+        tap((boardingPasses:any) => {
           this.mapOfCredentialsCheckedId[item.uid] = boardingPasses.length > 0;
         })
       ).subscribe();
@@ -570,7 +571,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     this.isLoadingUsers = true;
     this.usersCollection = this.afs.collection<any>('users', ref => ref.orderBy('displayName'));
     this.users = this.usersCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -789,7 +790,8 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
 
               this.lastPurchase.status = 'completed';
               this.lastPurchase.active = true;
-              this.lastPurchase.validTo = firebase.firestore.Timestamp.fromDate(new Date(validTo));;
+              const validTo = new Date(this.lastPurchase.realValidTo);
+              this.lastPurchase.validTo = firestore.Timestamp.fromDate(validTo);
               this.lastPurchase.typePayment = this.validateLiqForm.controls['typePayment'].value;
               this.lastPurchase.status = 'completed';
               this.lastPurchase.price = this.validateLiqForm.controls['amount'].value;
@@ -830,7 +832,8 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
       this.lastPurchase.status = 'completed';
       this.lastPurchase.amount = event;
       this.lastPurchase.active = true;
-      this.lastPurchase.validTo = firebase.firestore.Timestamp.fromDate(new Date(this.lastPurchase.realValidTo));
+      const validToDate = new Date(this.lastPurchase.realValidTo);
+      this.lastPurchase.validTo = firestore.Timestamp.fromDate(validToDate);
     } else {
       this.lastPurchase.amount = event;
     }
@@ -879,7 +882,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
   getLatestPurchases(userId) {
     this.loadingLatestPurchases = true;
     this.customersService.getLatestUserPurchases(userId, 10).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBoardingPass;
         return { id, ...data };
@@ -898,7 +901,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
   getLastestPurchaseRequest(userId){
     this.loadinglatestPurRequest = true;
     this.customersService.getLatestUserPurchasesRequest(userId, 10).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBoardingPass;
         return { id, ...data };
@@ -916,7 +919,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
 
   getLatestPurchaseDetail(userId, purchaseId) {
     this.customersService.getLatestUserPurchaseDetail(userId, 10, purchaseId).pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IBoardingPass;
         return { id, ...data };
@@ -1006,7 +1009,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
   fillCustomerRouteEditUser(customerID) {
     this.routesService.getRoutes(customerID).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
@@ -1020,7 +1023,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
 
     this.routesService.getRouteStopPoints(customerId, routeId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as IStopPoint;
         return { id, ...data }
@@ -1195,7 +1198,6 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
       nzTitle: '¿Está seguro de eliminar esta cuenta?',
       nzContent: '<b style="color: red;">Toda la información relacionada a esta cuenta será eliminada permanentemente.</b>',
       nzOkText: 'Eliminar',
-      nzOkType: 'danger',
       nzOnOk: () => {
         this.customersService.deleteUser(this.currentUserSelected.uid);
         this.currentUserSelected = null;
@@ -1209,12 +1211,12 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     const customersCollection = this.afs.collection('customers', ref => ref.orderBy('name'));
     customersCollection.snapshotChanges().pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
       })),
-      tap(customers => {
+      tap((customers:any) => {
         this.customersList = customers;
         return customers;
       })
@@ -1378,7 +1380,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
               this.isConfirmLoading = false;
               this.customersService.getLatestValidUserPurchasesAdvance(this.currentUserSelected.uid, 2, promiseDateValue, paymentSelected, creation_date).pipe(
                 take(1),
-                map((actions) =>
+                map((actions:any) =>
                   actions.map((a) => {
                     const data = a.payload.doc.data() as any;
                     const id = a.payload.doc.id;
@@ -1660,7 +1662,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
   }
 
 
-  handleChange({ file, fileList }: UploadChangeParam, nValue: number): void {
+  handleChange({ file, fileList }: NzUploadChangeParam, nValue: number): void {
     const status = file.status;
     if (status !== 'uploading') {
       console.log(file, fileList);

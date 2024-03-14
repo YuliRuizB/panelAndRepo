@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgZorroAntdModule, NZ_I18N, es_ES } from 'ng-zorro-antd';
+//import {  NZ_I18N, es_ES } from 'ng-zorro-antd';
+//NgZorroAntdModule
+
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 
@@ -17,18 +19,18 @@ import { FullLayoutComponent } from './layouts/full-layout/full-layout.component
 import { NgxCsvParserModule } from 'ngx-csv-parser';
 
 //QRCode
-import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 
 import { NgChartjsModule } from 'ng-chartjs';
 import { ThemeConstantService } from './shared/services/theme-constant.service';
 registerLocaleData(es);
 
 // Firebase
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireStorageModule } from '@angular/fire/storage';
-import { AngularFireMessagingModule } from '@angular/fire/messaging';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 
 import { environment } from 'src/environments/environment';
@@ -45,7 +47,7 @@ import { LicenseManager } from 'ag-grid-enterprise';
 LicenseManager.setLicenseKey('Evaluation_License_Valid_Until_29_August_2018__MTUzNTQ5NzIwMDAwMA==00c7d5ad3b64cd638c04ea5496156d8b');
 
 import { SharedUsersListComponent } from './shared/components/users/list/list.component';
-import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
 
 @NgModule({
     declarations: [
@@ -63,7 +65,7 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
         AngularFireFunctionsModule,
         AngularFirestoreModule,
         NgxPermissionsModule.forRoot(),
-        NgZorroAntdModule,
+       // NgZorroAntdModule,
         AppRoutingModule,
         TemplateModule,
         SortablejsModule.forRoot({ animation: 150 }),
@@ -77,8 +79,8 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
     ],
     providers: [
         {
-            provide: NZ_I18N,
-            useValue: es_ES,
+        //    provide: NZ_I18N,
+          //  useValue: es_ES,
         },
         AngularFireAuthGuard,
         ThemeConstantService

@@ -46,7 +46,7 @@
             <div class="conversation-header justify-content-between"  style="background-color: white ;  color: #4F6F57;" *ngIf="isUserSelected">
                 <ng-container>
                 <div class="media align-items-center"  style="background-color: white ;  color: #4F6F57;">
-                    <a [routerLink]="" class="m-r-20 d-md-none d-block text-dark font-size-18 m-t-5">
+                    <a [routerLink]="[]" class="m-r-20 d-md-none d-block text-dark font-size-18 m-t-5">
                     <i nz-icon type="left-circle" theme="outline"></i>
                     </a>
                     <div>
@@ -725,9 +725,9 @@
                     </app-shared-usage-history>
                 </nz-tab>
                 <nz-tab nzTitle="Código QR">
-                    <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-                    qrc-value="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" qrc-class="qrCode-size"
-                    qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+                    <ngx-qrcode [elementType]="elementType" 
+                    [value]="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" cssClass="qrCode-size"
+                    errorCorrectionLevel="Q"></ngx-qrcode>
                    {{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}} 
                 </nz-tab>
                 <nz-tab nzTitle="Credencial">
@@ -761,9 +761,9 @@
                         </div>
                       </div>
                       <div style="display:flex; justify-content: center;align-items: center;">
-                        <ngx-qrcode [qrc-element-type]="elementType" qrc-version="5"
-                        qrc-value="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" qrc-class="qrCode-size"
-                        qrc-errorCorrectionLevel="Q"></ngx-qrcode>
+                        <ngx-qrcode [elementType]="elementType" 
+                        [value]="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" cssClass="qrCode-size"
+                        errorCorrectionLevel="Q"></ngx-qrcode>
                       </div>
                     </nz-card>
                         <ng-template #avatarTemplate>

@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import * as firebase from 'firebase';
-import { NzMessageService } from "ng-zorro-antd";
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+//import * as firebase from 'firebase';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
     providedIn: 'root'
   })
   export class PromotionService{
 
-    db = firebase.firestore(); 
+   // db = firebase.firestore(); 
     promotion: AngularFirestoreCollection<any>;
     promotionCollection: AngularFirestoreCollection<any>;
 
@@ -25,14 +25,14 @@ import { NzMessageService } from "ng-zorro-antd";
 
     savePromotion(promotion: any, customerID:string) {
       const docId = this.afs.createId();
-      const newProductRef = this.db.collection('customers').doc(customerID).collection('promotions').doc(docId);
-      const batch = this.db.batch();
-      batch.set(newProductRef, promotion);
+      const newProductRef = this.afs.collection('customers').doc(customerID).collection('promotions').doc(docId);
+      const batch = this.afs.firestore.batch();
+      batch.set(newProductRef.ref, promotion);
       return batch.commit();
     }
 
     editPromotion(promId:string, customerId:string, name:string, description:string, validFrom:any, validTo:any){
-      const promRef = this.db.collection('customers').doc(customerId).collection('promotions').doc(promId);
+      const promRef = this.afs.collection('customers').doc(customerId).collection('promotions').doc(promId);
       return promRef.update({
         name: name ,
         description: description,
@@ -48,7 +48,7 @@ import { NzMessageService } from "ng-zorro-antd";
     }
 
     deactivePromotion(accountId: string,value:boolean,customerID:string ){
-      const promRef = this.db.collection('customers').doc(customerID).collection('promotions').doc(accountId);
+      const promRef = this.afs.collection('customers').doc(customerID).collection('promotions').doc(accountId);
       return promRef.update({
         active: value       
       })

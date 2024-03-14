@@ -89,7 +89,7 @@ export class ListComponent implements OnInit {
 
   getSubscriptions() {
     this.accountsService.getAccounts().pipe(
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id: id, ...data }

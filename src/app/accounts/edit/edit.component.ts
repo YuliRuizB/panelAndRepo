@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UploadFile } from 'ng-zorro-antd';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AccountsService } from 'src/app/shared/services/accounts.service';
@@ -15,7 +15,7 @@ import { map } from 'rxjs/operators';
 })
 export class EditComponent implements OnInit, OnDestroy {
 
-    changePWForm: FormGroup;
+    changePWForm: UntypedFormGroup;
     sub: Subscription;
     recordId: any;
     selectedIndex: number = 0;
@@ -24,7 +24,7 @@ export class EditComponent implements OnInit, OnDestroy {
     selectedCountry: any;
     selectedLanguage: any;
 
-    constructor(private fb: FormBuilder, private route: ActivatedRoute, private accountsService: AccountsService, private modalService: NzModalService, private message: NzMessageService) {
+    constructor(private fb: UntypedFormBuilder, private route: ActivatedRoute, private accountsService: AccountsService, private modalService: NzModalService, private message: NzMessageService) {
     }
 
     ngOnInit() {
@@ -55,7 +55,7 @@ export class EditComponent implements OnInit, OnDestroy {
 
     getSubscriptions() {
       this.accountsService.getAccount(this.recordId).pipe(
-        map(a => {
+        map((a:any) => {
           const id = a.payload.id;
           const data = a.payload.data() as any;
           return { id: id, ...data }
@@ -81,9 +81,9 @@ export class EditComponent implements OnInit, OnDestroy {
         reader.readAsDataURL(img);
     }
 
-    handleChange(info: { file: UploadFile }): void {
+   /*  handleChange(info: { file: UploadFile }): void {
         this.getBase64(info.file.originFileObj, (img: string) => {
             this.avatarUrl = img;
         });
-    }
+    } */
 }    

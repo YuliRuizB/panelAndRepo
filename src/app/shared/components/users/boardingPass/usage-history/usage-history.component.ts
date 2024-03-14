@@ -31,7 +31,7 @@ export class SharedUsersUsageHistoryComponent implements OnInit, OnDestroy {
   getSubscriptions() {
     this.usersService.getBoardingPassActivityLog(this.userId, this.boardingPassId).pipe(
       takeUntil(this.stopSubscription$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }

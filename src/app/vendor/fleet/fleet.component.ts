@@ -4,10 +4,10 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IVehicle, columnDefs } from 'src/app/shared/interfaces/vehicle.type';
 import * as _ from 'lodash';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { RolService } from 'src/app/shared/services/roles.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class FleetComponent implements OnInit, OnDestroy {
   isVisible: boolean = false;
   isOkLoading: boolean = false;
   columnDefs = columnDefs;
-  vehicleForm: FormGroup;
+  vehicleForm: UntypedFormGroup;
   user: any;
   infoLoad: any = [];
   userlevelAccess: string;
@@ -34,7 +34,7 @@ export class FleetComponent implements OnInit, OnDestroy {
   popupParent: any;
 
   constructor(private devicesService: DevicesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private authService: AuthenticationService,
     private messageService: NzMessageService,
     private rolService: RolService,
@@ -73,7 +73,7 @@ export class FleetComponent implements OnInit, OnDestroy {
   getSubscriptions(vendorId) {
     this.devicesService.getDevices(vendorId).pipe(
       takeUntil(this.stopSubscriptions$),
-      map(actions => actions.map(a => {
+      map((actions:any) => actions.map(a => {
         const data = a.payload.doc.data() as IVehicle;
         const id = a.payload.doc.id;
         return { id: id, ...data }

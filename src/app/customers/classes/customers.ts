@@ -1,5 +1,5 @@
-import * as firebase from 'firebase/app';
-
+//import * as firebase from 'firebase/app';
+import { Timestamp } from 'firebase/firestore';
 export const columnDefs = [
   { headerName: 'Id', field: 'uid', hide:true, sortable: true, filter: 'agTextColumnFilter' },
   { headerName: 'Matrícula', field: 'studentId', sortable: true, filter: 'agTextColumnFilter', aggFunc: 'count', chartDataType: 'series' },
@@ -171,7 +171,7 @@ export interface IBoardingPass {
   currency: string;
   customer_id?: string;
   customer?: ICustomer;
-  date_created: firebase.firestore.Timestamp;
+  date_created: Timestamp;
   due_date?: Date;
   description: string;
   error_message: string;
@@ -194,8 +194,8 @@ export interface IBoardingPass {
   stopId: string;
   stopName: string;
   transaction_type: string;
-  validFrom: firebase.firestore.Timestamp;
-  validTo: firebase.firestore.Timestamp;
+  validFrom: Timestamp;
+  validTo: Timestamp;
   realValidTo?: Date;
   isTaskIn: boolean;
   isTaskOut: boolean;
@@ -211,7 +211,7 @@ export interface IBoardingPass {
 export interface ICredential {
   active: boolean;
   disabled?: boolean;
-  disabledAt?: string | firebase.firestore.Timestamp;
+  disabledAt?: string | Timestamp;
   disabledInstructions?: string;
   disabledResons?: string;
   disabledType?: string;
@@ -220,6 +220,6 @@ export interface ICredential {
   path?: string;
   studentId: string;
   userId: string;
-  validFrom: string | firebase.firestore.Timestamp;
-  validTo: string | firebase.firestore.Timestamp;
+  validFrom: string | Timestamp;
+  validTo: string | Timestamp;
 }

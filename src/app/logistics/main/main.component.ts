@@ -66,7 +66,7 @@ export class LogisticsMainComponent implements OnInit {
     let chart = am4core.create("chartdiv", am4charts.SankeyDiagram);
 
     this.logisticsService.getChartData(this.startDate, this.endDate).pipe(
-      map(actions => {
+      map((actions:any) => {
         return actions.map(a => {
           const data = a.payload.doc.data() as any;
           const id = a.payload.doc.id;
@@ -377,7 +377,7 @@ export class LogisticsMainComponent implements OnInit {
 
   loadData() {
     this.logisticsService.getActivityLog(this.startDate, this.endDate).pipe(
-      map(actions => {
+      map((actions:any) => {
         return actions.map(a => {
           const data = a.payload.doc.data();
           const id = a.payload.doc.id;

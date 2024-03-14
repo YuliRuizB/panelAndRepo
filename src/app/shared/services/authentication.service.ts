@@ -1,19 +1,22 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { auth } from 'firebase/app';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { NzNotificationService } from 'ng-zorro-antd';
+//import { auth } from 'firebase/app';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Observable, of } from 'rxjs';
 import { switchMap, take, map, tap } from 'rxjs/operators';
-import * as firebase from 'firebase';
-import { User, Permission, Role } from 'src/app/shared/interfaces/user.type';
+//import * as firebase from 'firebase';
+import { User1, Permission, Role } from 'src/app/shared/interfaces/user.type';
 import * as _ from 'lodash';
+import { GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, updateProfile, User } from 'firebase/auth';
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-  user: Observable<User>;
+  user: Observable<User1>;
   role: Role;
 
   constructor(
@@ -26,10 +29,10 @@ export class AuthenticationService {
    
     //// Get auth data, then get firestore user document || null
     this.user = this.afAuth.authState.pipe(
-      switchMap(user => {
+      switchMap((user:any) => {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
-          const data = this.afs.doc<User>(`users/${user.uid}`);
+          const data = this.afs.doc<User1>(`users/${user.uid}`);
           return data.valueChanges();
         } else {         
           localStorage.setItem('user', null);
@@ -46,7 +49,7 @@ export class AuthenticationService {
 
   // Sign in with email/password
   signIn(email, password) {
-    return this.afAuth.auth.signInWithEmailAndPassword(email, password)
+    return this.afAuth.signInWithEmailAndPassword(email, password)
       .then((result:any) => {
         this.ngZone.run(() => {
           if (!result.user.emailVerified) {
@@ -70,7 +73,7 @@ export class AuthenticationService {
     const userRef$ = await this.afs.collection('users').doc(userId);
     userRef$.snapshotChanges().pipe(
       take(1),
-      map( (a) => {
+      map( (a:any) => {
         const id = a.payload.id;
         const data = a.payload.data() as any;
         return { id: id, ...data }
@@ -93,28 +96,28 @@ export class AuthenticationService {
   ///// Role-based Authorization //////
 
 
-  canEnter(user: User): boolean {
+  canEnter(user: User1): boolean {
     const allowed = ['admin', 'vendor', 'sales'];
     return this.checkAuthorization(user, allowed);
   }
 
-  canRead(user: User): boolean {
+  canRead(user: User1): boolean {
     const allowed = ['admin', 'editor', 'subscriber'];
     return this.checkAuthorization(user, allowed);
   }
 
-  canEdit(user: User): boolean {
+  canEdit(user: User1): boolean {
     const allowed = ['admin', 'editor'];
     return this.checkAuthorization(user, allowed);
   }
 
-  canDelete(user: User): boolean {
+  canDelete(user: User1): boolean {
     const allowed = ['admin'];
     return this.checkAuthorization(user, allowed);
   }
 
   // determines if user has matching role
-  private checkAuthorization(user: User, allowedRoles: string[]): boolean {
+  private checkAuthorization(user: User1, allowedRoles: string[]): boolean {
     if (!user) { return false; }
     for (const role of allowedRoles) {
       if ( user.roles[role] ) {
@@ -128,7 +131,7 @@ export class AuthenticationService {
   signUp(form: any) {
     const email = form.email;
     const password = form.password;
-    return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+    return this.afAuth.createUserWithEmailAndPassword(email, password)
       .then((result) => {
         /* Call the SendVerificaitonMail() function when new user sign
         up and returns promise */
@@ -142,10 +145,28 @@ export class AuthenticationService {
       });
   }
 
+  async sendVerificationMail() {
+    console.log("sendVerificationMail");
+    try {
+      const user = await this.afAuth.currentUser;
+      
+      if (user) {
+        await user.sendEmailVerification();
+        this.router.navigate(['authentication/verify-email']);
+        this.notification.create('info', '¡Perfecto!', 'El correo ha sido enviado');
+      } else {
+        // Handle the case when there is no logged-in user
+        this.notification.create('error', 'Error de verificación de correo', 'No hay usuario registrado');
+      }
+    } catch (error) {
+      this.notification.create('error', 'Error de verificación de correo', error.message);
+    }
+  }
+
   // Send email verfificaiton when new user sign up
-  sendVerificationMail() {
+  /* sendVerificationMail() {
     console.log("sendverificationMail)");
-    return this.afAuth.auth.currentUser.sendEmailVerification()
+    return this.afAuth.currentUser.sendEmailVerification()
       .then(() => {
         this.router.navigate(['authentication/verify-email']);
         this.notification.create('info', '¡Perfecto!', 'El correo ha sido enviado');
@@ -153,10 +174,10 @@ export class AuthenticationService {
         this.notification.create('error', 'Error de verificación de correo', error);
       });
   }
-
+ */
   // Reset Forggot password
   forgotPassword(passwordResetEmail) {
-    return this.afAuth.auth.sendPasswordResetEmail(passwordResetEmail)
+    return this.afAuth.sendPasswordResetEmail(passwordResetEmail)
       .then(() => {
         // tslint:disable-next-line: max-line-length
         this.notification.create('info', '¡Listo!', 'Se ha enviado un correo electrónico a su cuenta con la información necesaria para recuperar su contraseña.');
@@ -175,12 +196,12 @@ export class AuthenticationService {
 
   // Sign in with Google
   googleAuth() {
-    return this.AuthLogin(new auth.GoogleAuthProvider());
+    return this.AuthLogin(new GoogleAuthProvider());
   }
 
   // Auth logic to run auth providers
   AuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
+    return this.afAuth.signInWithPopup(provider)
       .then((result) => {
         this.ngZone.run(() => {
           this.router.navigate(['dashboard']);
@@ -251,7 +272,7 @@ export class AuthenticationService {
   }
 
   updateUserProfile(form) {
-    const currentUser = firebase.auth().currentUser;
+    /* const currentUser = firebase.auth().currentUser;
     currentUser.updateProfile({
       displayName: form && form.fullName ? form.fullName : null,
       photoURL: 'https://example.com/jane-q-user/profile.jpg',
@@ -259,7 +280,23 @@ export class AuthenticationService {
       console.log('update successfull');
     }).catch(function(error) {
       console.log('an error happened; ', error);
-    });
+    }); */
+
+    const auth = getAuth();
+    const user: User = auth.currentUser;
+  
+    if (user) {
+      updateProfile(user, {
+        displayName: form && form.fullName ? form.fullName : null,
+        photoURL: 'https://example.com/jane-q-user/profile.jpg',
+      }).then(() => {
+        console.log('Update successful');
+      }).catch((error) => {
+        console.log('An error occurred:', error);
+      });
+    } else {
+      console.log('No user is currently signed in.');
+    }
   }
 
   // updateRolesAndPermissions(user) {
@@ -273,19 +310,19 @@ export class AuthenticationService {
   // }
 
   googleLogin() {
-    const provider = new auth.GoogleAuthProvider();
+    const provider = new GoogleAuthProvider();
     return this.oAuthLogin(provider);
   }
 
   private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
+    return this.afAuth.signInWithPopup(provider)
       .then((credential) => {
         this.updateUserData(credential.user);
       });
   }
 
   signOut() {
-    this.afAuth.auth.signOut().then(() => {
+    this.afAuth.signOut().then(() => {
       this.router.navigate(['/authentication/login']);
     });
   }

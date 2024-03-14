@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeConstantService } from '../../services/theme-constant.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { Observable } from 'rxjs';
-import { User } from 'src/app/shared/interfaces/user.type';
+import { User1} from 'src/app/shared/interfaces/user.type';
 import { RolService } from '../../services/roles.service';
 
 @Component({
