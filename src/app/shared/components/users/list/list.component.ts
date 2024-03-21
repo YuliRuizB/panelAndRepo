@@ -10,7 +10,8 @@ import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NgxCsvParser } from 'ngx-csv-parser';
 import { NgxCSVParserError } from 'ngx-csv-parser';
-import { map, take, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+//import { map, take, tap } from 'rxjs/operators';
 //import * as firebase from 'firebase/app';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
@@ -18,8 +19,7 @@ import { query, where, getDocs } from 'firebase/firestore';
 
 @Component({
   selector: 'app-shared-users-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css']
+  templateUrl: './list.component.html' 
 })
 export class SharedUsersListComponent implements OnInit, OnDestroy {
 

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
-import { firestore } from 'firebase/firestore'; 
+import { Firestore } from 'firebase/firestore'; 
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { IBoardingPass } from 'src/app/customers/classes/customers';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
@@ -25,6 +25,7 @@ import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { Timestamp } from 'firebase/firestore';
 
 
 export const months = {
@@ -42,8 +43,8 @@ export const months = {
   11: 'Diciembre'
 };
 @Component({
-  templateUrl: './default-dashboard.component.html',
-  styles: ['./default-dashboard.component.css']
+  templateUrl: './default-dashboard.component.html'//,
+  //styles: ['./default-dashboard.component.css']
 })
 
 export class DefaultDashboardComponent implements OnInit, OnDestroy {
@@ -791,7 +792,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
               this.lastPurchase.status = 'completed';
               this.lastPurchase.active = true;
               const validTo = new Date(this.lastPurchase.realValidTo);
-              this.lastPurchase.validTo = firestore.Timestamp.fromDate(validTo);
+              this.lastPurchase.validTo = Timestamp.fromDate(validTo);
               this.lastPurchase.typePayment = this.validateLiqForm.controls['typePayment'].value;
               this.lastPurchase.status = 'completed';
               this.lastPurchase.price = this.validateLiqForm.controls['amount'].value;
@@ -833,7 +834,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
       this.lastPurchase.amount = event;
       this.lastPurchase.active = true;
       const validToDate = new Date(this.lastPurchase.realValidTo);
-      this.lastPurchase.validTo = firestore.Timestamp.fromDate(validToDate);
+      this.lastPurchase.validTo = Timestamp.fromDate(validToDate);
     } else {
       this.lastPurchase.amount = event;
     }

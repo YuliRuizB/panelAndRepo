@@ -11,8 +11,8 @@ import { AuthenticationService } from 'src/app/shared/services/authentication.se
 
 @Component({
   selector: 'app-shared-vendor-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.css']
+  templateUrl: './settings.component.html'
+ 
 })
 export class SharedVendorSettingsComponent implements OnInit, OnDestroy {
 

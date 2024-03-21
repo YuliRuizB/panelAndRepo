@@ -4,7 +4,7 @@ import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, take } from 'rxjs/operators';
 
-export interface IFormRol {
+export interface IFormRol { 
     active: boolean;
     idForm?:string;
     name?:string;

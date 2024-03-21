@@ -9,10 +9,15 @@ import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Subscription, Subject } from 'rxjs';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { IBoardingPass, ICredential } from '../classes/customers';
-import * as firebase from 'firebase/app';
+import { Firestore, serverTimestamp } from 'firebase/firestore'; 
 import { DashboardService } from 'src/app/shared/services/admin/dashboard.service';
 import { RolService } from 'src/app/shared/services/roles.service';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+//import * as firebase from 'firebase/compat';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore'; // Asegúrate de importar firestore
+import { firestore } from 'firebase-functions/v1';
+import { Timestamp }  from 'firebase/firestore';
 
 export const months = { 
   0: 'Enero',
@@ -437,7 +442,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.lastPurchase.status = 'completed';
       this.lastPurchase.amount = event;
       this.lastPurchase.active = true;
-      this.lastPurchase.validTo = firebase.firestore.Timestamp.fromDate(new Date(this.lastPurchase.realValidTo));
+      this.lastPurchase.validTo = Timestamp.fromDate(new Date(this.lastPurchase.realValidTo));
+      
+     // this.lastPurchase.validTo =  firestore.Timestamp.fromDate(new Date(this.lastPurchase.realValidTo));//firebase.Timestamp.fromDate(new Date(this.lastPurchase.realValidTo));
     } else {
       this.lastPurchase.amount = event;
     }

@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
-@Component({
+@Component({ 
   templateUrl: './preRegister.component.html'
 })
 
@@ -66,7 +66,7 @@ export class preRegisterComponent implements OnInit {
  
     this.cCollection = this.afs.collection<any>('customers', ref => ref.where('active','==',true));
     this.customers = this.cCollection.snapshotChanges().pipe(
-      map((actions:any) => actions.map(a => {
+      map((actions:any) => actions.map(a => { 
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data }
