@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { ColumnController, _ } from 'ag-grid-community';
+import { _ } from 'ag-grid-community';
+import { filter } from 'lodash';
 //import { isTemplateRef } from 'ng-zorro-antd/';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -260,7 +261,7 @@ export class MessageCenterComponent implements OnInit {
     if (singleItemChecked.checked) {
       //singleRoute
       const eachRoute = this.listOfSelectedRoutes;
-      const recordArray = _.filter(this.routes, r => {
+      const recordArray = filter(this.routes, r => {
         return r.routeId == this.listOfSelectedRoutes;
       });
       const record = recordArray[0];

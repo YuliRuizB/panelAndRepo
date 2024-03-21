@@ -124,7 +124,7 @@ export class SharedSystemUsersListComponent implements OnInit, OnDestroy {
 
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOptions {
     return {
       columnDefs: columnDefs,
       context: {
@@ -133,7 +133,11 @@ export class SharedSystemUsersListComponent implements OnInit, OnDestroy {
       rowData: null,
       rowSelection: 'single',
       pagination: true,
-      enableFilter: true,
+      defaultColDef: {
+        sortable: true,
+        filter: true,
+        // Add more default column properties as needed
+      },
       statusBar: {
         statusPanels: [
           { statusPanel: 'agFilteredRowCountComponent' },

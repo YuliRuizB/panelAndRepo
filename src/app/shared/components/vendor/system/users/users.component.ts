@@ -30,7 +30,9 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
   usersList: any = [];
   columnDefs = columnDefs;
   rowGroupPanelShow = rowGroupPanelShow;
+  
   gridOptions: GridOptions = this.getGridOptions();
+
   popupParent: any;
 
   //Modal
@@ -71,6 +73,33 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
     });
     this.popupParent = document.querySelector("body");
   }
+
+  getGridOptions(): GridOptions {
+    return {
+      columnDefs: columnDefs,
+      context: {
+        thisComponent: this
+      },
+      rowData: null,
+      rowSelection: 'single',
+      pagination: true,
+      defaultColDef: {
+        sortable: true,
+        filter: true,
+        // Add more default column properties as needed
+      },
+      statusBar: {
+        statusPanels: [
+          { statusPanel: 'agFilteredRowCountComponent' },
+          { statusPanel: 'agSelectedRowCountComponent' },
+          { statusPanel: 'agAggregationComponent' }
+        ]
+      },
+      enableRangeSelection: true,
+      paginationPageSize: 20,
+    };
+  }
+
   sendMessage(type: string, message: string): void {
     this.msg.create(type, message);
   }
@@ -142,27 +171,6 @@ export class SharedVendorUsersListComponent implements OnInit, OnDestroy {
 
   }
 
-  getGridOptions() {
-    return {
-      columnDefs: columnDefs,
-      context: {
-        thisComponent: this
-      },
-      rowData: null,
-      rowSelection: 'single',
-      pagination: true,
-      enableFilter: true,
-      statusBar: {
-        statusPanels: [
-          { statusPanel: 'agFilteredRowCountComponent' },
-          { statusPanel: 'agSelectedRowCountComponent' },
-          { statusPanel: 'agAggregationComponent' }
-        ]
-      },
-      enableRangeSelection: true,
-      paginationPageSize: 20,
-    };
-  }
 
   getContextMenuItems(params) {
     var result = [

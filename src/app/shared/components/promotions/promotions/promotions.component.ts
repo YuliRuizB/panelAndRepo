@@ -282,7 +282,7 @@ export class PromotionsComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
   }
 
-  getGridOptions() {
+  getGridOptions(): GridOptions {
     return {
       columnDefs: this.columnDefs,
       context: {
@@ -292,8 +292,11 @@ export class PromotionsComponent implements OnInit {
       rowSelection: 'single',
       pagination: true,
       paginationPageSize: this.pageSize,
-
-      enableFilter: true,
+      defaultColDef: {
+        sortable: true,
+        filter: true,
+        // Add more default column properties as needed
+      },
       statusBar: {
         statusPanels: [
           { statusPanel: 'agFilteredRowCountComponent' },

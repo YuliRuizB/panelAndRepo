@@ -73,9 +73,10 @@ import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
         NgChartjsModule,
         NgxQRCodeModule,
         NgxCsvParserModule,
-        AgGridModule.withComponents([
+        AgGridModule
+        /* AgGridModule.withComponents([
             SharedUsersListComponent
-        ])
+          ]) */
     ],
     providers: [
        /*  {

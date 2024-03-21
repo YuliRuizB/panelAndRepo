@@ -21,7 +21,7 @@ import { RoutesService } from 'src/app/shared/services/routes.service';
 import { CustomersModule } from 'src/app/customers/customers.module';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { CellValueChangedEvent, ColDef, GridReadyEvent, ICellEditorParams, ValueParserParams } from 'ag-grid-community';
-import 'ag-grid-community/dist/styles/ag-grid.css';
+//import 'ag-grid-community/dist/styles/ag-grid.css';
 import { AssignmentsService } from 'src/app/shared/services/assignments.service';
 import { DriversService } from 'src/app/shared/services/drivers.service';
 import { VehiclesService } from 'src/app/shared/services/vehicles.service';
