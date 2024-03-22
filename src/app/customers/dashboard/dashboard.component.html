@@ -482,7 +482,7 @@
               </nz-tab>
               <nz-tab nzTitle="Código QR">
                 <ngx-qrcode [elementType]="elementType"
-                [value]="{{currentUserSelected.uid}}-{{lastPurchase.idBoardingPass}}" cssClass="qrCode-size"
+                [value]="currentUserSelected.uid-lastPurchase.idBoardingPass" cssClass="qrCode-size"
                 errorCorrectionLevel="Q"></ngx-qrcode>
                 {{currentUserSelected.uid}}-{{lastPurchase.id}}
               </nz-tab>

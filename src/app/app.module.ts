@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //import {  NZ_I18N, es_ES } from 'ng-zorro-antd';
 //NgZorroAntdModule
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
@@ -67,6 +68,7 @@ import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
         NgxPermissionsModule.forRoot(),
        // NgZorroAntdModule,
         AppRoutingModule,
+        NzNotificationModule,
         TemplateModule,
         SortablejsModule.forRoot({ animation: 150 }),
         SharedModule,

@@ -20,9 +20,11 @@
         <tr *ngFor="let qrcode of userBoardingPass; let index=index">
             <td>{{ index + 1 }}</td>
             <td *ngIf="!!qrcode && qrcode.user && qrcode.user.id && qrcode.boardingPass && qrcode.boardingPass.id">
-                <ngx-qrcode [elementType]="elementType"
-                [value]="{{qrcode.user.id}},{{qrcode.boardingPass.id}}" cssClass="qrCode-size"
-                errorCorrectionLevel="Q"></ngx-qrcode>
+               <!--  <ngx-qrcode [elementType]="elementType"
+                [value]="qrcode.user.id,qrcode.boardingPass.id" cssClass="qrCode-size"
+                errorCorrectionLevel="Q"></ngx-qrcode> -->
+                <ngx-qrcode [elementType]="elementType" [value]="qrcode.user.id + ',' + qrcode.boardingPass.id" cssClass="qrCode-size" errorCorrectionLevel="Q"></ngx-qrcode>
+
             </td>
             <!-- <td *ngIf="!!qrcode && qrcode.user && qrcode.user.id && qrcode.boardingPass && qrcode.boardingPass.id">
                 DATA {{ qrcode.user.id }} {{ qrcode.boardingPass.id }}
@@ -30,8 +32,8 @@
             <td *ngIf="!!qrcode && !!!qrcode.user || !!!qrcode.boardingPass">
                 No qrCode available
             </td>
-            <td>{{ qrcode.user.studentId }}</td>
-            <td>{{ qrcode.user.displayName }}</td>
+            <td>qrcode.user.studentId</td>
+            <td>qrcode.user.displayName </td>
         </tr>
     </tbody>
   </table>
