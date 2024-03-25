@@ -6,7 +6,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription, Subject, Observable } from 'rxjs';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { IBoardingPass, ICredential } from '../classes/customers';
 import { Firestore, serverTimestamp } from 'firebase/firestore'; 
@@ -200,7 +200,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    const routesObservable = this.accountId$.pipe(
+    const routesObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('routes', ref => ref.where('active', '==', true)).valueChanges({ idField: 'routeId' })
       ));
 
@@ -209,15 +209,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.routes = routes;
     });
 
-    const productsObservable = this.accountId$.pipe(
+    const productsObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('products', ref => ref.where('active', '==', true)).valueChanges({ idField: 'productId' })
       ));
 
-    const usersObservable = this.accountId$.pipe(
+    const usersObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('users', ref => ref.where('customerId', '==', accountId).orderBy('studentId')).valueChanges({ idField: 'uid' })
       ));
 
-    const stopPointsObservable = this.routeId$.pipe(
+    const stopPointsObservable: Observable<any>  = this.routeId$.pipe(
       switchMap(routeId => this.afs.collection('customers').doc(this.currentSelectedCustomerId).collection('routes').doc(routeId).collection('stops', ref => ref.orderBy('order', 'asc').where('active', '==', true)).valueChanges({ idField: 'stopPointId' })
       ));
 
@@ -315,7 +315,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.productsSubscription) {
       this.productsSubscription.unsubscribe();
     }
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

@@ -48,7 +48,7 @@ export class SharedAccountPaymentMethodsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

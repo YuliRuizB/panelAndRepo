@@ -151,7 +151,7 @@ export class preRegisterComponent implements OnInit {
 
   
    ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
 
     if(this.customerSuscription) {

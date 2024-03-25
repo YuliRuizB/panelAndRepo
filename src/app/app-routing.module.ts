@@ -18,18 +18,18 @@ const appRoutes: Routes = [
         path: '',
         redirectTo: 'authentication/login',
         pathMatch: 'full'
-    },
+    }, /* 
     {
         path: '',
         component: CommonLayoutComponent,
-        canActivate: [redirectUnauthorizedToLogin] as AuthPipe[],
+        canActivate: [redirectUnauthorizedToLogin] as any,
         children: CommonLayout_ROUTES
-    },
+    }, 
     {
         path: '',
         component: FullLayoutComponent,
         children: FullLayout_ROUTES
-    },
+    }, */
     {
         path: "external-privacy",
         component: ExternalPrivacyComponent

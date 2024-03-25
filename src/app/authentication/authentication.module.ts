@@ -17,7 +17,7 @@ import { preRegisterComponent } from './preRegister/preRegister.component';
     SharedModule,
     ReactiveFormsModule,
     AuthenticationRoutingModule,
-    TemplateModule
+    //TemplateModule
   ],
   declarations: [
     LoginComponent,

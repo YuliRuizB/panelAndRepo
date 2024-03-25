@@ -4,7 +4,7 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { GeoPoint } from 'firebase/firestore';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { Observable, combineLatest, of, observable, EMPTY } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { IVendor } from '../interfaces/vendor.type';
 import { IRoute } from '../interfaces/route.type';
 
@@ -110,7 +110,7 @@ export class RoutesService {
             )
           )
         }),
-        map(([customers, routes]) => {
+        map(([customers, routes]: [any[], any[]]) => { 
           console.log("rutasgetroutesbycustomer");
           console.log(routes);
           return routes.map((route:any) => {

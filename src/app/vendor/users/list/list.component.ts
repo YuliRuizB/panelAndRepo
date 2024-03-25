@@ -177,7 +177,7 @@ export class VendorUsersListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
 
     this.zone.runOutsideAngular(() => {

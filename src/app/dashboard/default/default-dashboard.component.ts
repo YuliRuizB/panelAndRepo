@@ -10,8 +10,7 @@ import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ProductsService } from 'src/app/shared/services/products.service';
 import { DashboardService } from 'src/app/shared/services/admin/dashboard.service';
-import { finalize, ignoreElements, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
+import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -253,7 +252,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    const routesObservable = this.accountId$.pipe(
+    const routesObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('routes', ref => ref.where('active', '==', true)).valueChanges({ idField: 'routeId' })
       ));
 
@@ -261,23 +260,23 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     routesObservable.subscribe((routes: any) => {
       this.routes = routes;
     });
-    const routeEditUserObservable = this.accountId$.pipe(
+    const routeEditUserObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('products', ref => ref.where('active', '==', true)).valueChanges({ idField: 'productId' })
       ));
 
-    const productsObservable = this.accountId$.pipe(
+    const productsObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('products', ref => ref.where('active', '==', true)).valueChanges({ idField: 'productId' })
       ));
 
-    const usersObservable = this.accountId$.pipe(
+    const usersObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('users', ref => ref.where('customerId', '==', accountId).orderBy('studentId')).valueChanges({ idField: 'uid' })
       ));
 
-    const stopPointsObservable = this.routeId$.pipe(
+    const stopPointsObservable: Observable<any>  = this.routeId$.pipe(
       switchMap(routeId => this.afs.collection('customers').doc(this.currentSelectedCustomerId).collection('routes').doc(routeId).collection('stops', ref => ref.orderBy('order', 'asc').where('active', '==', true)).valueChanges({ idField: 'stopPointId' })
       ));
 
-    const customerSuscription = this.accountId$.pipe(
+    const customerSuscription: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers', ref => ref.where('active', '==', true)).valueChanges({ idField: 'uid' })
       ));
 
@@ -418,7 +417,7 @@ export class DefaultDashboardComponent implements OnInit, OnDestroy {
     if (this.productsSubscription) {
       this.productsSubscription.unsubscribe();
     }
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
 
     if (this.customerSuscription) {

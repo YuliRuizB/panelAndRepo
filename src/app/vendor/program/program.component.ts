@@ -358,7 +358,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
     
   }
@@ -387,7 +387,7 @@ export class ProgramComponent implements OnInit, OnDestroy {
 
   handleCancel() {
     this.isAssignmentsModalVisible = false;
-     this.stopSubscriptions$.next();
+     this.stopSubscriptions$.next(undefined);
      this.stopSubscriptions$.complete();
      (document.getElementById('quickFilter') as HTMLInputElement).value = "";
      (document.getElementById('filterDetail') as HTMLInputElement).value = "";

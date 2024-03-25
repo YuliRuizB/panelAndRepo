@@ -16,7 +16,7 @@ import { getAuth, updateProfile, User } from 'firebase/auth';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-  user: Observable<User1>;
+  user: Observable<User1 | null>;
   role: Role;
 
   constructor(
@@ -27,20 +27,19 @@ export class AuthenticationService {
     private notification: NzNotificationService
   ) {
    
-    //// Get auth data, then get firestore user document || null
-    this.user = this.afAuth.authState.pipe(
-      switchMap((user:any) => {
+    //// Get auth data, then get firestore user/*  */ document || null
+   console.log("TODO3");
+    /*  this.user = this.afAuth.authState.pipe(
+      switchMap(user => {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
-          const data = this.afs.doc<User1>(`users/${user.uid}`);
-          return data.valueChanges();
+          return this.afs.doc<User1>(`users/${user.uid}`).valueChanges();
         } else {         
-          localStorage.setItem('user', null);
+          localStorage.removeItem('user');
           return of(null);
         }
       })
-    );
-    
+    );   */  
   }
 
   getUser() {

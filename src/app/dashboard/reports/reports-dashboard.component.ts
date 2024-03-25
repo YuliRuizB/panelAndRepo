@@ -143,7 +143,7 @@ export class ReportsDashboardComponent implements OnInit {
           { id: 'Noche', name: 'Noche' }
         ];
 
-    const productsObservable = this.accountId$.pipe(
+    const productsObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('products', ref => ref.where('active', '==', true)).valueChanges({ idField: 'productId' })
       ));
        
@@ -520,7 +520,7 @@ export class ReportsDashboardComponent implements OnInit {
   ngOnDestroy() {
    
     if (this.stopSubscription$) {
-      this.stopSubscription$.next();
+      this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
     }
     if (this.productsSubscription) {

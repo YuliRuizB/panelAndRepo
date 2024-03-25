@@ -101,7 +101,7 @@ export class SignupComponent implements OnInit {
     });
     
     this.customers$ = this.cCollection.snapshotChanges().pipe(
-      map((actions:any) => actions.map(a => {
+      map((actions:any[] ) => actions.map(a => {
         const id = a.payload.doc.id;
         const data = a.payload.doc.data() as any;
         return { id, ...data };
@@ -181,7 +181,7 @@ export class SignupComponent implements OnInit {
 
   
    ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
 
     if(this.customerSuscription) {

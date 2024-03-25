@@ -68,7 +68,7 @@ export class SharedStopPointsListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub.unsubscribe();
-    this.stopSubscriptions$.next();
+    this.stopSubscriptions$.next(undefined);
     this.stopSubscriptions$.complete();
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { CustomersService } from 'src/app/customers/services/customers.service';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
@@ -92,13 +92,13 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    const routesObservable = this.accountId$.pipe(
+    const routesObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId).collection('routes', ref => ref.where('active', '==', true)).valueChanges({ idField: 'routeId' })
       ));
-    const usersObservable = this.accountId$.pipe(
+    const usersObservable: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('users', ref => ref.where('customerId', '==', accountId).orderBy('studentId')).valueChanges({ idField: 'uid' })
       ));
-    const rolSuscription = this.accountId$.pipe(
+    const rolSuscription: Observable<any>  = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('roles', ref => ref.where('active', '==', true)).valueChanges({ idField: 'uid' })
       ));
 
@@ -120,7 +120,7 @@ export class GlobalUsersListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

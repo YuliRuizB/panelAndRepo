@@ -167,7 +167,7 @@ rowDataPush: any  = [];
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

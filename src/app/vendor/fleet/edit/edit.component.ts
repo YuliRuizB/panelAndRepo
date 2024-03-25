@@ -89,7 +89,7 @@ export class VehicleEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.stopSubscriptions$.next();
+    this.stopSubscriptions$.next(undefined);
     this.stopSubscriptions$.complete();
     this.autosave = false;
   }

@@ -28,7 +28,7 @@ export class SharedVendorAssignmentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

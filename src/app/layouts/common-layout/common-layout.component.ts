@@ -20,8 +20,10 @@ export class CommonLayoutComponent implements OnInit {
   selectedHeaderColor: string;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private themeService: ThemeConstantService) {
+    console.log("TODO2:1")
+
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       map(() => {
         let child = this.activatedRoute.firstChild;
         while (child) {
@@ -38,6 +40,7 @@ export class CommonLayoutComponent implements OnInit {
     ).subscribe((data: any) => {      
       this.contentHeaderDisplay = data;
      });
+     console.log("TODO2:End")
   }
 
   ngOnInit() {

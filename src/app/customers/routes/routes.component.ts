@@ -73,7 +73,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

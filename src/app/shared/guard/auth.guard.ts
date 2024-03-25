@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
-import { Observable } from 'rxjs';
 import { tap, map, take } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { User1 } from 'src/app/shared/interfaces/user.type';

@@ -5,7 +5,7 @@ import { filter } from 'lodash';
 //import { isTemplateRef } from 'ng-zorro-antd/';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { single } from 'rxjs-compat/operator/single';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { CustomersService } from 'src/app/customers/services/customers.service';
@@ -91,7 +91,7 @@ export class MessageCenterComponent implements OnInit {
       this.listOfCustomer = accounts;
     });
 
-    const routesObservable = this.accountId$.pipe(
+    const routesObservable : Observable<any> = this.accountId$.pipe(
       switchMap(accountId => this.afs.collection('customers').doc(accountId)
         .collection('routes', ref => ref.where('active', '==', true))
         .valueChanges({ idField: 'routeId' })
@@ -342,7 +342,7 @@ export class MessageCenterComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
 
   }

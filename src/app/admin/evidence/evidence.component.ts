@@ -80,7 +80,7 @@ export class EvidenceComponent implements OnInit {
     this.driversList = [];
   }
   ngOnDestroy() {
-    this.stopSubscription$.next();
+    this.stopSubscription$.next(undefined);
     this.stopSubscription$.complete();
   }
 

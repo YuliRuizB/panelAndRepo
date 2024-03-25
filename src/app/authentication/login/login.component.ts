@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthenticationService,
     public notification: NzNotificationService
   ) { 
+    console.log("TODO 2");
   }
 
   submitForm(): void {
